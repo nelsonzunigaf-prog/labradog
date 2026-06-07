@@ -4,7 +4,7 @@ baseline_commit: NO_VCS
 
 # Story 1.1: Scaffold del proyecto y pipeline
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -33,12 +33,12 @@ so that toda story posterior se construye sobre una base estable, auditable y de
   - [x] `src/lib/db/index.ts` con driver `drizzle-orm/neon-http`
   - [x] `.env.example` con `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `R2_*` (placeholder, se usa en 1.4), `SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_DSN`, `RESEND_API_KEY` (placeholder, se usa en 1.2)
   - [x] Scripts npm: `db:generate` (drizzle-kit generate), `db:migrate` (drizzle-kit migrate)
-- [ ] Task 3: Patrón de auditoría (AC: 4)
+- [x] Task 3: Patrón de auditoría (AC: 4)
   - [x] Helper de columnas de auditoría en `src/lib/db/schema.ts`: `columnasAuditoria` (+ `columnaVersion` para lock optimista) para componer en toda tabla
   - [x] Tabla `event_log` en schema: `id`, `tipo`, `entidad`, `entidad_id`, `payload` (jsonb), `actor_id`, `created_at` — inmutable (solo INSERT)
   - [x] Writer tipado `registrarEvento(tipo, entidad, payload, actor)` en `src/lib/db/eventos.ts` (CatalogoEventos: tipos TS estrictos por tipo de evento)
   - [x] Tests Vitest del writer (inserta fila correcta; payload serializado; rechaza tipo desconocido a nivel de tipos) — 3 tests ✅
-  - [ ] Migración inicial generada ✅ (`drizzle/0000_auditoria-event-log.sql`) y aplicada a Neon ⏳ **PENDIENTE: requiere DATABASE_URL de Nelson (BD en limpieza)**
+  - [x] Migración inicial generada (`drizzle/0000_auditoria-event-log.sql`) y aplicada a Neon — BD reseteada (37 tablas de prototipo Prisma anterior eliminadas), `event_log` creada, healthcheck local HTTP 200 con `db: ok`
 - [x] Task 4: Wrapper estándar de Server Action (AC: 3)
   - [x] `src/lib/action-wrapper.ts`: `crearAction({schema, roles, handler})`; retorna `{ ok: true, data } | { ok: false, error: string }`; nunca lanza hacia la UI
   - [x] Chequeo de rol como interfaz inyectable: `src/lib/actor.ts` con `getActor()` stub — Story 1.2 lo conecta a Better Auth sin tocar el wrapper
@@ -47,10 +47,10 @@ so that toda story posterior se construye sobre una base estable, auditable y de
   - [x] Vitest configurado (`vitest.config.ts`, tests co-ubicados `*.test.ts`); scripts `test`, `test:watch`, `test:e2e`
   - [x] `.github/workflows/ci.yml` (raíz del repo, `working-directory: labradog-app`): en cada PR y push a main → `npm ci`, `npm run lint`, `npm run test`
   - [x] Playwright configurado (proyecto mobile-chrome — móvil primero NFR-02) con smoke E2E `e2e/healthcheck.spec.ts` — 2 tests ✅
-- [ ] Task 6: Deploy Railway + Sentry (AC: 1, 2)
+- [x] Task 6: Deploy Railway + Sentry (AC: 1, 2)
   - [x] Ruta healthcheck `src/app/api/health/route.ts` → `{status, checks}` con chequeo de conexión a BD (200 ok / 503 degradado)
-  - [ ] Proyecto Railway conectado al repo GitHub con auto-deploy desde main; healthcheck path configurado ⏳ **PENDIENTE: requiere push a GitHub + cuenta Railway de Nelson (Root Directory: labradog-app, Healthcheck: /api/health)**
-  - [ ] `@sentry/nextjs` 10.56 instalado y configurado (instrumentation server/edge/client, activo solo con DSN) ✅; verificar que un error de prueba llega a Sentry ⏳ **PENDIENTE: requiere DSN de Nelson**
+  - [x] Proyecto Railway conectado al repo GitHub con auto-deploy desde main — `labradog-production.up.railway.app`, Root Directory `labradog-app`, PORT 2334, healthcheck producción HTTP 200 con `db: ok` (verificado 07-06-2026)
+  - [x] `@sentry/nextjs` 10.56 instalado y configurado (instrumentation server/edge/client, activo solo con DSN); error de prueba verificado en Sentry (id 69665c58, 07-06-2026); `SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_DSN` configuradas en Railway por Nelson
 - [x] Task 7: `project-context.md` (AC: 3, 5)
   - [x] Creado `labradog-app/project-context.md` con: naming español, estructura, patrón UI → Actions → Engine → DB, contrato de actions, dinero enteros CLP, fechas UTC/Santiago, patrón de auditoría, y decisiones de esquema transversales (snapshot económico, `version`, soft-delete vía estado)
   - [x] Documentados: contratos diferidos (seed 2.3, máquina estados 1.4, cola offline 4.2, materialización 3.2) y reglas de enforcement para agentes IA
@@ -123,7 +123,14 @@ claude-opus-4-8 (Claude Code)
 - Wrapper `crearAction()` con `getActor()` inyectable (stub hasta 1.2); contrato `{ok,data|error}` garantizado
 - Sentry 10.56 con instrumentación completa (server/edge/client + onRequestError), inactivo sin DSN; sin tracing (solo errores, free tier)
 - Validación: lint ✅ · 9 unit tests ✅ · 2 E2E smoke ✅ (mobile-chrome) · build producción ✅
-- ⏳ Pendientes que requieren credenciales de Nelson: aplicar migración a Neon (DATABASE_URL), conectar Railway (push GitHub + Root Directory labradog-app + healthcheck /api/health), verificar error de prueba en Sentry (DSN)
+- Infraestructura completada con Nelson (07-06-2026): push a GitHub (CI verde), BD Neon reseteada (37 tablas Prisma de prototipo anterior eliminadas) + migración aplicada, Railway desplegado (`labradog-production.up.railway.app`, Root Directory `labradog-app`, PORT 2334), Sentry verificado con error de prueba + vars en Railway
+- Verificación final: lint ✅ · 9/9 unit ✅ · 2/2 E2E ✅ · build ✅ · healthcheck producción HTTP 200 `{app: ok, db: ok}` ✅
+- DoD: todas las tasks [x], 5/5 ACs satisfechos, File List completa, solo secciones permitidas modificadas
+
+## Change Log
+
+- 2026-06-06: Implementación completa del scaffold (Tasks 1-5, 7 + healthcheck) — todo lo local
+- 2026-06-07: Infraestructura externa (Tasks 2/3/6 restantes): push GitHub + CI verde, reset BD Neon + migración, deploy Railway, Sentry verificado. Story → review
 
 ### File List
 
@@ -150,4 +157,8 @@ claude-opus-4-8 (Claude Code)
 - labradog-app/src/app/api/health/route.ts (nuevo)
 - labradog-app/e2e/healthcheck.spec.ts (nuevo)
 - labradog-app/drizzle/0000_auditoria-event-log.sql (generado)
+- labradog-app/scripts/db-inspect.mjs (nuevo, utilidad)
+- labradog-app/scripts/db-reset.mjs (nuevo, utilidad destructiva)
+- labradog-app/scripts/sentry-test.mjs (nuevo, utilidad)
+- labradog-app/.env (nuevo, NO versionado)
 - labradog-app/src/lib/engine/.gitkeep · src/lib/db/queries/.gitkeep · src/lib/validations/.gitkeep · src/actions/.gitkeep (esqueleto)
