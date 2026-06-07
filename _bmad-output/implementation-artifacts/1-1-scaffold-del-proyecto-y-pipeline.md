@@ -4,7 +4,7 @@ baseline_commit: NO_VCS
 
 # Story 1.1: Scaffold del proyecto y pipeline
 
-Status: review
+Status: done
 
 ## Story
 
