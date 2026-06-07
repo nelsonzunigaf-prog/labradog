@@ -12,7 +12,28 @@
       "PowerShell(npx tsc --noEmit; if \\($?\\) { \"typecheck OK\" })",
       "PowerShell(node scripts/db-inspect.mjs)",
       "PowerShell(npm test *)",
-      "PowerShell(node -e \"require\\('dotenv'\\).config\\(\\); const { neon } = require\\('@neondatabase/serverless'\\); const sql = neon\\(process.env.DATABASE_URL\\); \\(async \\(\\) => { const cols = await sql`select column_name from information_schema.columns where table_name='event_log'`; console.log\\('columnas:', cols.map\\(c=>c.column_name\\).join\\(', '\\)\\); const trg = await sql`select tgname from pg_trigger where not tgisinternal`; console.log\\('triggers:', trg.map\\(t=>t.tgname\\).join\\(', '\\) || '\\(ninguno\\)'\\); const mig = await sql`select hash, created_at from drizzle.__drizzle_migrations order by created_at`; console.log\\('migraciones aplicadas:', mig.length\\); }\\)\\(\\)\")"
+      "PowerShell(node -e \"require\\('dotenv'\\).config\\(\\); const { neon } = require\\('@neondatabase/serverless'\\); const sql = neon\\(process.env.DATABASE_URL\\); \\(async \\(\\) => { const cols = await sql`select column_name from information_schema.columns where table_name='event_log'`; console.log\\('columnas:', cols.map\\(c=>c.column_name\\).join\\(', '\\)\\); const trg = await sql`select tgname from pg_trigger where not tgisinternal`; console.log\\('triggers:', trg.map\\(t=>t.tgname\\).join\\(', '\\) || '\\(ninguno\\)'\\); const mig = await sql`select hash, created_at from drizzle.__drizzle_migrations order by created_at`; console.log\\('migraciones aplicadas:', mig.length\\); }\\)\\(\\)\")",
+      "PowerShell(git push *)",
+      "PowerShell(gh run *)",
+      "PowerShell(git *)",
+      "Bash(npm run *)",
+      "Bash(node scripts/db-inspect.mjs)",
+      "Bash(grep -rn '$context\\\\|$Infer\\\\|options:' index.d.mts)",
+      "Bash(sed -n '244,260p' @better-auth/core/dist/types/context.d.mts)",
+      "Bash(sed -n '55,115p' @better-auth/core/dist/types/context.d.mts)",
+      "Bash(node -p \"require\\('resend/package.json'\\).version\")",
+      "Bash(npx vitest *)",
+      "Bash(node scripts/crear-admin.mjs --confirmar --email admin@labradog.cl --password \"AdminLabradog123\" --nombre \"Nelson\")",
+      "Bash(curl -s -o /dev/null http://localhost:3000/login)",
+      "Bash(break)",
+      "Bash(curl -s -i -X POST http://localhost:3000/api/auth/sign-in/email -H 'Content-Type: application/json' -d '{\"email\":\"admin@labradog.cl\",\"password\":\"AdminLabradog123\"}')",
+      "Bash(curl -s -X POST http://localhost:3000/api/auth/sign-in/email -H 'Content-Type: application/json' -d '{\"email\":\"admin@labradog.cl\",\"password\":\"incorrecta\"}')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} → %{redirect_url}\\\\n\" http://localhost:3000/admin)",
+      "Bash(curl -s -c /tmp/cookies.txt -X POST http://localhost:3000/api/auth/sign-in/email -H 'Content-Type: application/json' -d '{\"email\":\"admin@labradog.cl\",\"password\":\"AdminLabradog123\"}' -o /dev/null)",
+      "Bash(curl -s -b /tmp/cookies.txt -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/admin)",
+      "Bash(curl -s -b /tmp/cookies.txt -o /dev/null -w \"HTTP %{http_code} → %{redirect_url}\\\\n\" http://localhost:3000/paseador)",
+      "Bash(node -e \"const http=require\\('http'\\);\")",
+      "Bash(powershell.exe -NoProfile -Command 'Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')"
     ]
   }
 }

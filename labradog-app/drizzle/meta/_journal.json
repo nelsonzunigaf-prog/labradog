@@ -15,6 +15,13 @@
       "when": 1780809953720,
       "tag": "0001_auditoria-rol-indices",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780870141470,
+      "tag": "0002_chemical_sauron",
+      "breakpoints": true
     }
   ]
 }
