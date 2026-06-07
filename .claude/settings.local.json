@@ -5,7 +5,14 @@
       "WebFetch(domain:wearewof.com)",
       "PowerShell(python3 _bmad/scripts/resolve_customization.py --skill .claude/skills/bmad-sprint-planning --key workflow)",
       "PowerShell(npx vitest run 2>&1 | Select-Object -Last 15)",
-      "PowerShell(npm install *)"
+      "PowerShell(npm install *)",
+      "PowerShell(node scripts/db-inspect.mjs; npx playwright test 2>&1 | Select-Object -Last 5)",
+      "PowerShell(npx drizzle-kit generate --name=auditoria-rol-indices 2>&1 | Select-Object -Last 5)",
+      "PowerShell(Get-Location; ls C:\\\\Users\\\\nelso\\\\source\\\\repos\\\\labradog | Where-Object { $_.Name -match 'node_modules|package' } | Select-Object Name; node -p \"try { require\\('C:/Users/nelso/source/repos/labradog/labradog-app/package.json'\\).devDependencies['@sentry/node'] || 'NO ESTA' } catch\\(e\\) { 'error' }\")",
+      "PowerShell(npx tsc --noEmit; if \\($?\\) { \"typecheck OK\" })",
+      "PowerShell(node scripts/db-inspect.mjs)",
+      "PowerShell(npm test *)",
+      "PowerShell(node -e \"require\\('dotenv'\\).config\\(\\); const { neon } = require\\('@neondatabase/serverless'\\); const sql = neon\\(process.env.DATABASE_URL\\); \\(async \\(\\) => { const cols = await sql`select column_name from information_schema.columns where table_name='event_log'`; console.log\\('columnas:', cols.map\\(c=>c.column_name\\).join\\(', '\\)\\); const trg = await sql`select tgname from pg_trigger where not tgisinternal`; console.log\\('triggers:', trg.map\\(t=>t.tgname\\).join\\(', '\\) || '\\(ninguno\\)'\\); const mig = await sql`select hash, created_at from drizzle.__drizzle_migrations order by created_at`; console.log\\('migraciones aplicadas:', mig.length\\); }\\)\\(\\)\")"
     ]
   }
 }

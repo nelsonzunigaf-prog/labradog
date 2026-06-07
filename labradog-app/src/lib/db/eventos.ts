@@ -6,6 +6,7 @@
  * 2. Llamar registrarEvento(...) desde la action correspondiente.
  * El compilador rechaza tipos no catalogados y payloads que no cumplen el contrato.
  */
+import type { ActorEvento } from '../actor';
 import { db } from './index';
 import { eventLog } from './schema';
 
@@ -19,12 +20,6 @@ export type CatalogoEventos = {
 
 export type TipoEvento = keyof CatalogoEventos;
 
-/** Quién ejecuta la operación. 'sistema' = procesos automáticos (cron, seeds). */
-export type Actor = {
-  id: string;
-  rol: 'admin' | 'paseador' | 'sistema';
-};
-
 /** Entidad afectada por el evento (tabla + id de la fila) */
 export type EntidadEvento = {
   tabla: string;
@@ -35,7 +30,7 @@ export async function registrarEvento<T extends TipoEvento>(
   tipo: T,
   entidad: EntidadEvento,
   payload: CatalogoEventos[T],
-  actor: Actor,
+  actor: ActorEvento,
 ) {
   const [fila] = await db
     .insert(eventLog)
@@ -45,8 +40,13 @@ export async function registrarEvento<T extends TipoEvento>(
       entidadId: entidad.id,
       payload,
       actorId: actor.id,
+      actorRol: actor.rol,
     })
     .returning();
+
+  if (!fila) {
+    throw new Error('registrarEvento: la inserción no retornó fila');
+  }
 
   return fila;
 }

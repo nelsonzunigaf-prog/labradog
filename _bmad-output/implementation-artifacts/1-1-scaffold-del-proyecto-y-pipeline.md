@@ -55,6 +55,24 @@ so that toda story posterior se construye sobre una base estable, auditable y de
   - [x] Creado `labradog-app/project-context.md` con: naming español, estructura, patrón UI → Actions → Engine → DB, contrato de actions, dinero enteros CLP, fechas UTC/Santiago, patrón de auditoría, y decisiones de esquema transversales (snapshot económico, `version`, soft-delete vía estado)
   - [x] Documentados: contratos diferidos (seed 2.3, máquina estados 1.4, cola offline 4.2, materialización 3.2) y reglas de enforcement para agentes IA
 
+### Review Findings
+
+- [x] [Review][Decision] Driver `neon-http` no soporta transacciones — la arquitectura exige "escribir BD + auditoría" como operación atómica (Process Patterns); con neon-http cada query es independiente: una mutación de negocio puede persistir y su `event_log` fallar (auditoría inconsistente). Opciones: (a) cambiar a driver con transacciones, (b) aceptar auditoría no-atómica y documentarlo
+- [x] [Review][Patch] layout.tsx/page.tsx boilerplate en inglés (`lang="en"`, "Create Next App") — viola "UI 100% español de Chile" [labradog-app/src/app/layout.tsx]
+- [x] [Review][Patch] Tipo de actor duplicado y divergente entre `actor.ts` (admin|paseador) y `eventos.ts` (+'sistema') — sin fuente única [labradog-app/src/lib/db/eventos.ts:24]
+- [x] [Review][Patch] El catch del wrapper dice "Sentry los captura" pero nunca llama `captureException` — errores de actions sin reporte [labradog-app/src/lib/action-wrapper.ts:63]
+- [x] [Review][Patch] `registrarEvento` descarta `actor.rol` — el rol no queda en el log de auditoría inmutable [labradog-app/src/lib/db/eventos.ts:45]
+- [x] [Review][Patch] `issues[0]` puede ser undefined (Zod sin issues) → TypeError cae al catch genérico [labradog-app/src/lib/action-wrapper.ts:35]
+- [x] [Review][Patch] `returning()` vacío → `registrarEvento` retorna undefined sin error [labradog-app/src/lib/db/eventos.ts:50]
+- [x] [Review][Patch] Healthcheck sin timeout de BD — un `select 1` colgado deja a Railway en timeout en vez de 503 limpio [labradog-app/src/app/api/health/route.ts:14]
+- [x] [Review][Patch] `db-reset.mjs` destructivo sin confirmación ni try/catch; DROP/CREATE no atómico puede dejar BD sin schema [labradog-app/scripts/db-reset.mjs]
+- [x] [Review][Patch] `sentry-test.mjs` da falso positivo (exit 0) si `SENTRY_DSN` está ausente [labradog-app/scripts/sentry-test.mjs]
+- [x] [Review][Patch] `sentry-test.mjs` importa `@sentry/node` no declarada en package.json (dependencia fantasma) [labradog-app/scripts/sentry-test.mjs:3]
+- [x] [Review][Patch] CI no corre `build` — errores de tipos pasan verdes; los `@ts-expect-error` de los tests no validan nada sin typecheck [.github/workflows/ci.yml]
+- [x] [Review][Patch] `event_log` sin índices (entidad/entidad_id, created_at) — full scan garantizado en consultas de auditoría [labradog-app/src/lib/db/schema.ts:40]
+- [x] [Review][Patch] Inmutabilidad de `event_log` solo por convención — sin trigger/regla en BD que rechace UPDATE/DELETE [labradog-app/drizzle/0000_auditoria-event-log.sql]
+- [x] [Review][Patch] Rol `'sistema'` introducido sin registrar la decisión en architecture.md (regla de enforcement #3) [labradog-app/src/lib/db/eventos.ts:24]
+
 ## Dev Notes
 
 ### Contexto crítico de arquitectura (OBLIGATORIO)

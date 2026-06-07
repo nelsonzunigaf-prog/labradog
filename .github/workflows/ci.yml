@@ -30,3 +30,9 @@ jobs:
 
       - name: Tests unitarios
         run: npm run test
+
+      - name: Build (typecheck completo)
+        run: npm run build
+        env:
+          # placeholder: el build no conecta a BD (imports dinámicos en runtime)
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci

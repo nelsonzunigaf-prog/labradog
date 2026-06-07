@@ -13,6 +13,16 @@ export type ActorSesion = {
   rol: Rol;
 };
 
+/**
+ * Actor para auditoría (event_log): una sesión real o un proceso automático.
+ * 'sistema' = cron, seeds, materialización — decisión registrada en
+ * architecture.md (addendum 07-06-2026). Fuente ÚNICA del tipo de actor.
+ */
+export type ActorEvento = {
+  id: string;
+  rol: Rol | 'sistema';
+};
+
 export async function getActor(): Promise<ActorSesion | null> {
   // Story 1.2: leer sesión de Better Auth (auth.api.getSession) y mapear rol
   return null;

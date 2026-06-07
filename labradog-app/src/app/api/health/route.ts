@@ -4,6 +4,10 @@
  */
 import { sql } from 'drizzle-orm';
 
+export const dynamic = 'force-dynamic';
+
+const TIMEOUT_BD_MS = 5_000;
+
 export async function GET() {
   const checks: Record<string, 'ok' | 'error'> = { app: 'ok' };
   let healthy = true;
@@ -12,9 +16,15 @@ export async function GET() {
     // Import dinámico: si DATABASE_URL no está definida, el módulo lanza
     // y el healthcheck lo reporta en vez de tumbar la app entera.
     const { db } = await import('@/lib/db');
-    await db.execute(sql`select 1`);
+    await Promise.race([
+      db.execute(sql`select 1`),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout BD')), TIMEOUT_BD_MS),
+      ),
+    ]);
     checks.db = 'ok';
-  } catch {
+  } catch (error) {
+    console.error('[health] BD inaccesible:', error);
     checks.db = 'error';
     healthy = false;
   }

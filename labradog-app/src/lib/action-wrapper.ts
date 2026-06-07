@@ -15,6 +15,7 @@
  *     handler: async (input, actor) => { ... },
  *   });
  */
+import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 import { getActor, type ActorSesion, type Rol } from './actor';
 
@@ -35,6 +36,9 @@ export function crearAction<S extends z.ZodType, T>(opciones: {
       const parseado = schema.safeParse(input);
       if (!parseado.success) {
         const primerError = parseado.error.issues[0];
+        if (!primerError) {
+          return { ok: false, error: 'Datos inválidos' };
+        }
         const campo = primerError.path.join('.');
         return {
           ok: false,
@@ -57,8 +61,9 @@ export function crearAction<S extends z.ZodType, T>(opciones: {
       const data = await handler(parseado.data, actor);
       return { ok: true, data };
     } catch (error) {
-      // Los errores inesperados se loguean (Sentry los captura en runtime),
+      // Los errores inesperados se reportan a Sentry (no-op sin DSN),
       // pero la UI siempre recibe un resultado tipado.
+      Sentry.captureException(error);
       console.error('[action-wrapper] error inesperado:', error);
       return {
         ok: false,

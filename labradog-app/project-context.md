@@ -8,7 +8,7 @@ Plataforma interna de Labradog (paseo profesional de perros, Chile): fichas, cap
 
 ## Stack (no cambiar sin registrar en architecture.md)
 
-Next.js 16 App Router + TypeScript estricto + Tailwind 4 + shadcn/ui · Drizzle ORM + Neon Postgres (driver `neon-http`) · Better Auth · Cloudflare R2 (fotos) · Resend (email) · Railway (deploy) · Sentry (errores) · Vitest (unit) + Playwright (E2E).
+Next.js 16 App Router + TypeScript estricto + Tailwind 4 + shadcn/ui · Drizzle ORM + Neon Postgres (driver `neon-serverless` WebSocket — soporta transacciones; NO usar `neon-http`) · Better Auth · Cloudflare R2 (fotos) · Resend (email) · Railway (deploy) · Sentry (errores) · Vitest (unit) + Playwright (E2E).
 
 ⚠️ **Next.js 16 ≠ tu conocimiento de entrenamiento.** Leer `node_modules/next/dist/docs/` ante cualquier duda (ej: `middleware.ts` ahora se llama `proxy.ts`).
 
@@ -20,7 +20,7 @@ Next.js 16 App Router + TypeScript estricto + Tailwind 4 + shadcn/ui · Drizzle 
 4. **Toda Server Action se crea con `crearAction()`** (`src/lib/action-wrapper.ts`): valida Zod → verifica rol → ejecuta handler → retorna `{ok: true, data} | {ok: false, error}`. Nunca throw hacia la UI.
 5. **Dinero: enteros CLP** (`precio_clp: 10000`). Jamás floats ni decimales.
 6. **Fechas: UTC en BD** (timestamptz); render y cálculo de recurrencia en `America/Santiago` (utilidad central `lib/fechas.ts`, llega en Story 1.4).
-7. **Auditoría:** toda tabla de negocio compone `...columnasAuditoria` (schema.ts). Operaciones sensibles (pagos, evaluaciones, overrides, cancelaciones cobrables, cuentas) escriben además en `event_log` vía `registrarEvento()` (`src/lib/db/eventos.ts`) — única vía permitida; extender su `CatalogoEventos` al agregar eventos.
+7. **Auditoría:** toda tabla de negocio compone `...columnasAuditoria` (schema.ts). Operaciones sensibles (pagos, evaluaciones, overrides, cancelaciones cobrables, cuentas) escriben además en `event_log` vía `registrarEvento()` (`src/lib/db/eventos.ts`) — única vía permitida; extender su `CatalogoEventos` al agregar eventos. **Negocio + auditoría se escriben en la MISMA `db.transaction(...)`** (atómico: o ambas o ninguna). `event_log` es inmutable también en BD (trigger rechaza UPDATE/DELETE). El tipo de actor vive SOLO en `src/lib/actor.ts`: `ActorSesion` (admin|paseador) para sesiones, `ActorEvento` (+'sistema') para auditoría de procesos automáticos.
 8. **Soft-delete vía estado** (`activo`/`inactivo`...) — NUNCA `DELETE` físico de datos de negocio.
 9. **Lock optimista:** entidades editables por multi-admin componen `...columnaVersion`; al guardar sobre `version` obsoleta → error "este registro cambió, recarga".
 10. **Snapshot económico:** la tabla `paseos` (llega en 1.4) congela `precio_clp_snapshot` al materializar y `comision_pct_snapshot` al completar. Cobros y liquidaciones **leen snapshots, jamás recalculan** de tarifas vigentes.

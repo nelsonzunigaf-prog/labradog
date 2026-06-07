@@ -26,12 +26,13 @@ describe('registrarEvento (writer tipado de event_log)', () => {
         entidadId: '0',
         payload: { version: '0.1.0' },
         actorId: 'sistema',
+        actorRol: 'sistema',
         createdAt: new Date('2026-06-06T12:00:00Z'),
       },
     ]);
   });
 
-  it('inserta una fila en event_log con tipo, entidad, payload y actor', async () => {
+  it('inserta una fila en event_log con tipo, entidad, payload y actor (id + rol)', async () => {
     await registrarEvento(
       'sistema_inicializado',
       { tabla: 'sistema', id: '0' },
@@ -46,7 +47,21 @@ describe('registrarEvento (writer tipado de event_log)', () => {
       entidadId: '0',
       payload: { version: '0.1.0' },
       actorId: 'sistema',
+      actorRol: 'sistema',
     });
+  });
+
+  it('lanza si la inserción no retorna fila (fallo silencioso del driver)', async () => {
+    returningMock.mockResolvedValue([]);
+
+    await expect(
+      registrarEvento(
+        'sistema_inicializado',
+        { tabla: 'sistema', id: '0' },
+        { version: '0.1.0' },
+        { id: 'sistema', rol: 'sistema' },
+      ),
+    ).rejects.toThrow('no retornó fila');
   });
 
   it('retorna la fila insertada', async () => {
@@ -62,20 +77,20 @@ describe('registrarEvento (writer tipado de event_log)', () => {
   });
 
   it('rechaza tipos de evento desconocidos y payloads incorrectos a nivel de tipos', async () => {
-    // @ts-expect-error — tipo de evento no registrado en el catálogo
     const llamadaTipoInvalido = () =>
       registrarEvento(
+        // @ts-expect-error — tipo de evento no registrado en el catálogo
         'evento_inventado',
         { tabla: 'sistema', id: '0' },
         {},
         { id: 'sistema', rol: 'sistema' },
       );
 
-    // @ts-expect-error — payload no coincide con el contrato del evento
     const llamadaPayloadInvalido = () =>
       registrarEvento(
         'sistema_inicializado',
         { tabla: 'sistema', id: '0' },
+        // @ts-expect-error — payload no coincide con el contrato del evento
         { campoInexistente: true },
         { id: 'sistema', rol: 'sistema' },
       );

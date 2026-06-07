@@ -11,6 +11,7 @@
  */
 import {
   bigserial,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -35,13 +36,23 @@ export const columnaVersion = {
 
 // ── event_log: registro inmutable de operaciones sensibles ─────
 // Solo INSERT (vía registrarEvento de ./eventos.ts) — jamás UPDATE/DELETE.
+// La inmutabilidad se impone también en BD: trigger que rechaza UPDATE/DELETE
+// (ver migración 0001).
 
-export const eventLog = pgTable('event_log', {
-  id: bigserial('id', { mode: 'number' }).primaryKey(),
-  tipo: text('tipo').notNull(),
-  entidad: text('entidad').notNull(),
-  entidadId: text('entidad_id').notNull(),
-  payload: jsonb('payload').notNull(),
-  actorId: text('actor_id').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+export const eventLog = pgTable(
+  'event_log',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    tipo: text('tipo').notNull(),
+    entidad: text('entidad').notNull(),
+    entidadId: text('entidad_id').notNull(),
+    payload: jsonb('payload').notNull(),
+    actorId: text('actor_id').notNull(),
+    actorRol: text('actor_rol').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (tabla) => [
+    index('event_log_entidad_idx').on(tabla.entidad, tabla.entidadId),
+    index('event_log_created_at_idx').on(tabla.createdAt),
+  ],
+);

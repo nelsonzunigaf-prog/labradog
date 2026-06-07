@@ -8,6 +8,13 @@
       "when": 1780802459613,
       "tag": "0000_auditoria-event-log",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780809953720,
+      "tag": "0001_auditoria-rol-indices",
+      "breakpoints": true
     }
   ]
 }

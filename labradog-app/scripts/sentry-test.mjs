@@ -2,6 +2,11 @@
 import 'dotenv/config';
 import * as Sentry from '@sentry/node';
 
+if (!process.env.SENTRY_DSN) {
+  console.error('SENTRY_DSN no está definida (ver .env.example) — nada que verificar');
+  process.exit(1);
+}
+
 Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const eventId = Sentry.captureException(

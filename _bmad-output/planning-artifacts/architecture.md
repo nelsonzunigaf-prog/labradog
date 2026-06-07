@@ -348,6 +348,12 @@ _Auditoría independiente (subagente revisor) contra el PRD: informe completo en
 
 **Notificaciones por email en v1:** Resend (free tier 3.000/mes) aislado en `lib/email.ts`; cron diario de Railway (7:00 America/Santiago) invoca una ruta protegida que envía el resumen matinal "tus paseos de hoy" a cada paseador; las actions de agenda disparan emails transaccionales (asignación/reasignación/cancelación) y el registro de incidente envía email inmediato a admins. Plantillas en español, texto plano simple. Push/WhatsApp diferidos. Costo: $0 (free tier). Nota: el cron es la única pieza programada del sistema; su ejecución es idempotente (re-envío seguro marcando notificaciones enviadas en BD).
 
+### Addendum post-code-review Story 1.1 (07-06-2026)
+
+1. **Driver de BD: `neon-serverless` (WebSocket, Pool), NO `neon-http`.** El driver HTTP no soporta transacciones; el patrón obligatorio "escribir negocio + auditoría" exige atomicidad (`db.transaction`). Railway es servidor persistente: WebSocket sin contras. Node 22+ trae WebSocket global.
+2. **Tercer rol de auditoría `'sistema'`** (solo en `event_log.actor_rol`, NO en cuentas de usuario): identifica escrituras de procesos automáticos (cron de notificaciones FR-041, seeds, materialización de paseos). Los roles de sesión siguen siendo solo `admin | paseador`. Fuente única del tipo: `src/lib/actor.ts` (`ActorEvento`).
+3. **`event_log` reforzado:** columna `actor_rol` (auditoría completa del actor), índices `(entidad, entidad_id)` y `(created_at)`, e inmutabilidad impuesta en BD vía trigger `event_log_solo_insert` (rechaza UPDATE/DELETE) — migración `0001`.
+
 ### Implementation Handoff
 
 **AI Agent Guidelines:**
