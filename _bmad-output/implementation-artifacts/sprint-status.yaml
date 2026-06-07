@@ -1,0 +1,95 @@
+# generated: 2026-06-06
+# last_updated: 2026-06-06 (story 1.1 ready-for-dev)
+# project: labradog
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-06-06
+last_updated: 2026-06-06
+project: labradog
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Operación registrada — acceso, fundaciones y fichas
+  epic-1: in-progress
+  1-1-scaffold-del-proyecto-y-pipeline: in-progress
+  1-2-login-con-roles: backlog
+  1-3-gestion-de-cuentas-del-equipo: backlog
+  1-4-fundaciones-transversales-almacenamiento-fechas-y-estados-del-paseo: backlog
+  1-5-ficha-del-tutor-con-entrevista-inicial-y-anexos: backlog
+  1-6-ficha-del-perro-con-compatibilidades-e-historial: backlog
+  1-7-ficha-del-paseador: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Paseadores certificados — capacitación
+  epic-2: backlog
+  2-1-seed-del-contenido-de-capacitacion: backlog
+  2-2-navegacion-de-etapas-con-desbloqueo-secuencial: backlog
+  2-3-tests-de-etapa-autocorregibles: backlog
+  2-4-evaluaciones-practicas-registradas-por-admin: backlog
+  2-5-examen-final-desde-el-banco-de-preguntas: backlog
+  2-6-certificacion-y-gate-de-asignacion: backlog
+  2-7-tablero-de-avance-de-capacitacion: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Agenda viva — recurrencias, asignaciones y notificaciones
+  epic-3: backlog
+  3-1-motor-de-recurrencia: backlog
+  3-2-materializacion-idempotente-de-paseos: backlog
+  3-3-paseos-puntuales: backlog
+  3-4-cancelar-reagendar-y-reasignar-con-validaciones: backlog
+  3-5-mi-agenda-paseador: backlog
+  3-6-agenda-global-admin: backlog
+  3-7-notificaciones-por-email: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: El método en la calle — checklist, registro y reportes
+  epic-4: backlog
+  4-1-checklist-pre-paseo-bloqueante: backlog
+  4-2-cola-offline-local-con-feedback-visible: backlog
+  4-3-sincronizacion-con-validacion-de-orden: backlog
+  4-4-registro-post-paseo-de-un-toque-con-fotos: backlog
+  4-5-incidentes-capturar-primero-narrar-despues: backlog
+  4-6-reporte-al-tutor-por-plan: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Cobros claros — modalidades, pagos y liquidaciones
+  epic-5: backlog
+  5-1-motor-de-cobros-sobre-snapshots: backlog
+  5-2-estado-de-cuenta-y-registro-de-pagos: backlog
+  5-3-saldo-prepago: backlog
+  5-4-liquidaciones-de-comisiones: backlog
+  5-5-mis-comisiones-paseador: backlog
+  epic-5-retrospective: optional

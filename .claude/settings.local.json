@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:wearewof.com)",
+      "PowerShell(python3 _bmad/scripts/resolve_customization.py --skill .claude/skills/bmad-sprint-planning --key workflow)",
+      "PowerShell(npx vitest run 2>&1 | Select-Object -Last 15)",
+      "PowerShell(npm install *)"
+    ]
+  }
+}
