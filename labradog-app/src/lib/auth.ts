@@ -46,5 +46,28 @@ export const auth = betterAuth({
       estado: { type: 'string', required: false, input: false, defaultValue: 'activo' },
     },
   },
+  databaseHooks: {
+    session: {
+      create: {
+        // Bloqueo de login para cuentas desactivadas (Story 1.3): antes de crear
+        // la sesión, si el usuario está 'inactivo' abortamos (return false) → el
+        // sign-in falla. Defensa en profundidad junto al chequeo de getActor().
+        //
+        // Fail-open ante errores transitorios del lookup (p.ej. cold-start de
+        // Neon): NO rompemos el login por un fallo del hook — getActor() sigue
+        // siendo el gate real que rechaza inactivos en cada request protegido.
+        before: async (sesion, context) => {
+          try {
+            const usuario = await context?.context?.internalAdapter?.findUserById(sesion.userId);
+            if (usuario && (usuario as { estado?: string }).estado !== 'activo') {
+              return false;
+            }
+          } catch {
+            // intencional: no bloquear el login por un error transitorio del lookup
+          }
+        },
+      },
+    },
+  },
   plugins: [nextCookies()],
 });

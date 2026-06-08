@@ -23,6 +23,19 @@ export type ResultadoAction<T> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
+/**
+ * Error de negocio ESPERADO (regla violada, no un bug): su mensaje SÍ se muestra
+ * al usuario. Lánzalo desde un handler para devolver `{ ok: false, error }` con
+ * un mensaje propio. Los errores que NO son ErrorNegocio se tratan como
+ * inesperados: se reportan a Sentry y la UI recibe un mensaje genérico.
+ */
+export class ErrorNegocio extends Error {
+  constructor(mensaje: string) {
+    super(mensaje);
+    this.name = 'ErrorNegocio';
+  }
+}
+
 export function crearAction<S extends z.ZodType, T>(opciones: {
   schema: S;
   roles: Rol[];
@@ -61,6 +74,10 @@ export function crearAction<S extends z.ZodType, T>(opciones: {
       const data = await handler(parseado.data, actor);
       return { ok: true, data };
     } catch (error) {
+      // Errores de negocio esperados: su mensaje se muestra tal cual (no es bug).
+      if (error instanceof ErrorNegocio) {
+        return { ok: false, error: error.message };
+      }
       // Los errores inesperados se reportan a Sentry (no-op sin DSN),
       // pero la UI siempre recibe un resultado tipado.
       Sentry.captureException(error);

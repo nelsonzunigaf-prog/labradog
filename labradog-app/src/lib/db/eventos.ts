@@ -11,11 +11,15 @@ import { db } from './index';
 import { eventLog } from './schema';
 
 // ── Catálogo de eventos sensibles ──────────────────────────────
-// Extender aquí al implementar cada story (1.3: cuentas, 2.4: evaluaciones,
+// Extender aquí al implementar cada story (2.4: evaluaciones,
 // 3.4: cancelaciones, 5.x: pagos/liquidaciones/overrides...).
 export type CatalogoEventos = {
   /** Evento técnico de arranque/verificación del sistema */
   sistema_inicializado: { version: string };
+  /** Story 1.3 — gestión de cuentas del equipo */
+  cuenta_creada: { email: string; rol: 'admin' | 'paseador' };
+  cuenta_desactivada: { email: string };
+  cuenta_reactivada: { email: string };
 };
 
 export type TipoEvento = keyof CatalogoEventos;
@@ -26,13 +30,22 @@ export type EntidadEvento = {
   id: string;
 };
 
+/**
+ * Ejecutor de la escritura: el `db` global o un `tx` de `db.transaction(...)`.
+ * Permite escribir la auditoría DENTRO de la misma transacción que el negocio
+ * (regla #7: negocio + auditoría atómicos), sin dejar de ser `registrarEvento`
+ * la única vía de escritura de event_log.
+ */
+type Ejecutor = typeof db | Parameters<Parameters<typeof db.transaction>[0]>[0];
+
 export async function registrarEvento<T extends TipoEvento>(
   tipo: T,
   entidad: EntidadEvento,
   payload: CatalogoEventos[T],
   actor: ActorEvento,
+  ejecutor: Ejecutor = db,
 ) {
-  const [fila] = await db
+  const [fila] = await ejecutor
     .insert(eventLog)
     .values({
       tipo,

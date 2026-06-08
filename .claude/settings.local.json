@@ -33,7 +33,12 @@
       "Bash(curl -s -b /tmp/cookies.txt -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/admin)",
       "Bash(curl -s -b /tmp/cookies.txt -o /dev/null -w \"HTTP %{http_code} → %{redirect_url}\\\\n\" http://localhost:3000/paseador)",
       "Bash(node -e \"const http=require\\('http'\\);\")",
-      "Bash(powershell.exe -NoProfile -Command 'Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')"
+      "Bash(powershell.exe -NoProfile -Command 'Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')",
+      "Bash(gh run *)",
+      "Bash(xargs grep -l \"BetterAuthOptions\\\\|databaseHooks\")",
+      "Bash(npx shadcn@latest add select badge table -y)",
+      "Bash(npx playwright *)",
+      "PowerShell(Get-NetTCPConnection *)"
     ]
   }
 }

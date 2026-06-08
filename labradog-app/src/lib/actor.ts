@@ -26,7 +26,12 @@ export type ActorEvento = {
 };
 
 export async function getActor(): Promise<ActorSesion | null> {
-  const sesion = await auth.api.getSession({ headers: await headers() });
+  // disableCookieCache: lee estado/rol frescos de la BD en cada request, para
+  // que una cuenta recién desactivada (Story 1.3) quede fuera al instante.
+  const sesion = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true },
+  });
   if (!sesion) {
     return null;
   }

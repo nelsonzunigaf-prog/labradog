@@ -8,7 +8,7 @@ vi.mock('./actor', () => ({
   getActor: getActorMock,
 }));
 
-import { crearAction } from './action-wrapper';
+import { crearAction, ErrorNegocio } from './action-wrapper';
 
 const schemaPrueba = z.object({ nombre: z.string().min(1) });
 
@@ -71,6 +71,16 @@ describe('crearAction (wrapper estándar de Server Action)', () => {
 
     expect(resultado.ok).toBe(false);
     if (!resultado.ok) expect(resultado.error).toBeTruthy();
+  });
+
+  it('ErrorNegocio del handler → su mensaje se muestra tal cual', async () => {
+    getActorMock.mockResolvedValue({ id: 'u1', rol: 'admin' });
+    const handler = vi.fn().mockRejectedValue(new ErrorNegocio('Regla violada: X'));
+    const action = crearAction({ schema: schemaPrueba, roles: ['admin'], handler });
+
+    const resultado = await action({ nombre: 'Rocky' });
+
+    expect(resultado).toEqual({ ok: false, error: 'Regla violada: X' });
   });
 
   it('acepta múltiples roles permitidos', async () => {

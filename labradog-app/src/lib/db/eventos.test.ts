@@ -76,6 +76,26 @@ describe('registrarEvento (writer tipado de event_log)', () => {
     expect(fila.tipo).toBe('sistema_inicializado');
   });
 
+  it('usa el ejecutor pasado (tx) en vez del db global, para auditoría atómica', async () => {
+    const txReturning = vi.fn().mockResolvedValue([{ id: 9, tipo: 'cuenta_creada' }]);
+    const txValues = vi.fn(() => ({ returning: txReturning }));
+    const txInsert = vi.fn(() => ({ values: txValues }));
+    const tx = { insert: txInsert } as unknown as Parameters<
+      Parameters<typeof import('./index').db.transaction>[0]
+    >[0];
+
+    await registrarEvento(
+      'cuenta_creada',
+      { tabla: 'user', id: 'u1' },
+      { email: 'x@y.cl', rol: 'paseador' },
+      { id: 'admin1', rol: 'admin' },
+      tx,
+    );
+
+    expect(txInsert).toHaveBeenCalledWith(eventLog);
+    expect(insertMock).not.toHaveBeenCalled(); // NO tocó el db global
+  });
+
   it('rechaza tipos de evento desconocidos y payloads incorrectos a nivel de tipos', async () => {
     const llamadaTipoInvalido = () =>
       registrarEvento(

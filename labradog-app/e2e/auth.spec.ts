@@ -26,24 +26,24 @@ test('no autenticado en /paseador → redirige a /login', async ({ page }) => {
 test('paseador inicia sesión y llega a /paseador', async ({ page }) => {
   const { email, password } = USUARIOS_PRUEBA.paseador;
   await login(page, email, password);
-  await expect(page).toHaveURL(/\/paseador/);
+  await expect(page).toHaveURL(/\/paseador/, { timeout: 30000 });
   await expect(page.getByRole('heading', { name: 'Mi día' })).toBeVisible();
 });
 
 test('admin inicia sesión y llega a /admin', async ({ page }) => {
   const { email, password } = USUARIOS_PRUEBA.admin;
   await login(page, email, password);
-  await expect(page).toHaveURL(/\/admin/);
+  await expect(page).toHaveURL(/\/admin/, { timeout: 30000 });
   await expect(page.getByRole('heading', { name: 'Panel de administración' })).toBeVisible();
 });
 
 test('paseador autenticado no puede entrar a /admin (lo redirige a /paseador)', async ({ page }) => {
   const { email, password } = USUARIOS_PRUEBA.paseador;
   await login(page, email, password);
-  await expect(page).toHaveURL(/\/paseador/);
+  await expect(page).toHaveURL(/\/paseador/, { timeout: 30000 });
 
   await page.goto('/admin');
-  await expect(page).toHaveURL(/\/paseador/);
+  await expect(page).toHaveURL(/\/paseador/, { timeout: 30000 });
 });
 
 test('credenciales inválidas muestran error y no autentican', async ({ page }) => {

@@ -2,6 +2,7 @@
  * Tablero admin — placeholder de Story 1.2. El contenido real (paseos de hoy,
  * alertas, incidentes) llega en stories posteriores.
  */
+import Link from 'next/link';
 import { headers } from 'next/headers';
 import { CerrarSesion } from '@/components/auth/cerrar-sesion';
 import { auth } from '@/lib/auth';
@@ -18,6 +19,15 @@ export default async function AdminHome() {
         </div>
         <CerrarSesion />
       </header>
+      <nav className="flex flex-col gap-2">
+        <Link
+          href="/admin/equipo"
+          className="text-sm text-primary underline-offset-4 hover:underline"
+        >
+          Gestionar equipo →
+        </Link>
+      </nav>
+
       <p className="text-sm text-muted-foreground">
         Aquí vivirá el tablero (paseos de hoy, alertas, incidentes).
       </p>

@@ -18,6 +18,14 @@ export const USUARIOS_PRUEBA = {
     nombre: 'Paseador Prueba',
     rol: 'paseador',
   },
+  // Usuario dedicado al test de "desactivado no puede iniciar sesión" (Story 1.3),
+  // separado de los anteriores para no interferir con auth.spec en paralelo.
+  desactivable: {
+    email: 'desactivable@labradog.cl',
+    password: 'Desactivable123',
+    nombre: 'Cuenta Desactivable',
+    rol: 'paseador',
+  },
 } as const;
 
 export default async function globalSetup() {
