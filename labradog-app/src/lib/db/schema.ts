@@ -12,13 +12,18 @@
 import {
   bigserial,
   boolean,
+  date,
   index,
   integer,
   jsonb,
+  pgEnum,
   pgTable,
   text,
   timestamp,
+  unique,
+  uuid,
 } from 'drizzle-orm/pg-core';
+import { ESTADOS_PASEO } from '../engine/paseo-estados';
 
 // ── Helpers transversales ──────────────────────────────────────
 
@@ -122,3 +127,38 @@ export const verification = pgTable('verification', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ── paseos: ciclo de vida del paseo (fundación transversal, Story 1.4) ─────
+// Primera tabla de NEGOCIO del proyecto → fija la convención de PK uuid
+// (gen_random_uuid()) para entidades que aparecen en URLs (paseo/[id]).
+// Tabla mínima a propósito: las FKs a recurrencias (3.1), perros (1.6),
+// tutores (1.5), paseadores (1.7) y campos como programado_para se agregan por
+// ALTER TABLE cuando existan esas tablas. No inventar columnas especulativas.
+
+/** Enum de estados del paseo — la tupla ESTADOS_PASEO (motor puro) es la fuente única. */
+export const estadoPaseoEnum = pgEnum('estado_paseo', ESTADOS_PASEO);
+
+export const paseos = pgTable(
+  'paseos',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    // Nullable: los paseos puntuales (Story 3.3) no tienen recurrencia. La FK a
+    // `recurrencias` se agrega en Story 3.1 cuando exista esa tabla.
+    recurrenciaId: uuid('recurrencia_id'),
+    // Fecha local Santiago 'YYYY-MM-DD' (la calcula lib/fechas.aFechaLocal).
+    fechaLocal: date('fecha_local').notNull(),
+    estado: estadoPaseoEnum('estado').notNull().default('pendiente'),
+    // Snapshot económico — nullable hasta poblarse (precio en 3.2, comisión al
+    // completar en 5.x). Entero CLP (regla #5); porcentaje entero 0-100.
+    precioClpSnapshot: integer('precio_clp_snapshot'),
+    comisionPctSnapshot: integer('comision_pct_snapshot'),
+    ...columnaVersion,
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    // Clave única que habilita la materialización idempotente de Story 3.2.
+    // recurrencia_id NULL (puntuales) coexisten: Postgres trata NULLs como
+    // distintos (NO usar NULLS NOT DISTINCT).
+    unique('paseos_recurrencia_fecha_uq').on(tabla.recurrenciaId, tabla.fechaLocal),
+  ],
+);

@@ -38,7 +38,10 @@
       "Bash(xargs grep -l \"BetterAuthOptions\\\\|databaseHooks\")",
       "Bash(npx shadcn@latest add select badge table -y)",
       "Bash(npx playwright *)",
-      "PowerShell(Get-NetTCPConnection *)"
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(python _bmad/scripts/resolve_customization.py --skill .claude/skills/bmad-create-story --key workflow)",
+      "Bash(npm install *)",
+      "Bash(node *)"
     ]
   }
 }

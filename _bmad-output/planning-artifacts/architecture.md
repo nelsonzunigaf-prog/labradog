@@ -354,6 +354,18 @@ _Auditoría independiente (subagente revisor) contra el PRD: informe completo en
 2. **Tercer rol de auditoría `'sistema'`** (solo en `event_log.actor_rol`, NO en cuentas de usuario): identifica escrituras de procesos automáticos (cron de notificaciones FR-041, seeds, materialización de paseos). Los roles de sesión siguen siendo solo `admin | paseador`. Fuente única del tipo: `src/lib/actor.ts` (`ActorEvento`).
 3. **`event_log` reforzado:** columna `actor_rol` (auditoría completa del actor), índices `(entidad, entidad_id)` y `(created_at)`, e inmutabilidad impuesta en BD vía trigger `event_log_solo_insert` (rechaza UPDATE/DELETE) — migración `0001`.
 
+### Addendum Story 1.4 — fundaciones transversales (09-06-2026)
+
+**Dependencias nuevas (registro obligatorio, enforcement #3):**
+
+1. **`@date-fns/tz` 1.5 + `date-fns` 4.4** — zona horaria `America/Santiago` en `lib/fechas.ts`. `TZDate` interpreta componentes wall-clock en la zona IANA y resuelve el offset correcto por instante (inmune a DST: Chile alterna UTC−3 verano / UTC−4 invierno, 2 cambios/año). Elegido sobre Luxon por ser más liviano y tree-shakeable manteniendo API documentada; sobre `Intl` puro porque la conversión inversa (wall-clock local → instante UTC) con `Intl` es propensa a errores. Feriados de Chile: tabla por año mantenida a mano (sin computus de Pascua) — deuda técnica anotada (extender anualmente).
+2. **`browser-image-compression` 2.0** — compresión en cliente (`lib/comprimir-imagen.ts`): WebP, lado mayor ≤1600px, ≤400KB (concern #6: fotos para redes lentas). Corre en el navegador con Web Worker.
+3. **`@aws-sdk/client-s3` 3.x** — subida a Cloudflare R2 (API S3-compatible) confinada a `lib/storage.ts` (regla #12). Elegido sobre `aws4fetch` por ser el SDK más documentado (NFR-07); el peso extra es server-side, no afecta el bundle del cliente. Endpoint R2 = `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`, `region:'auto'`. Sin credenciales (dev) degrada no-op (patrón `email.ts`).
+
+**Convención de PK para tablas de negocio:** `uuid` con `gen_random_uuid()` (`uuid().defaultRandom()` en Drizzle), establecida con la tabla `paseos` (primera tabla de negocio). Las entidades aparecen en URLs (`paseo/[id]`) y uuid evita filtrar volumen vía ids secuenciales. Excepciones existentes que NO cambian: `user` usa text (id de Better Auth), `event_log` usa bigserial (log append-only).
+
+**Máquina de estados del paseo:** artefacto único y puro en `lib/engine/paseo-estados.ts`. La tupla `ESTADOS_PASEO` es la fuente única de verdad y alimenta el `pgEnum('estado_paseo', ...)` del schema (evita desincronización enum BD ↔ tipo TS). Estados: `pendiente → checklist_completa → en_curso → completado | cancelado` (cancelar desde cualquier estado no terminal; `completado`/`cancelado` terminales). Las guardas de negocio (checklist hecha, hora válida) viven en las stories consumidoras (4.x), no en el motor.
+
 ### Implementation Handoff
 
 **AI Agent Guidelines:**
