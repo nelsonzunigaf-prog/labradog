@@ -4,7 +4,7 @@ baseline_commit: e3a740f
 
 # Story 1.4: Fundaciones transversales — almacenamiento, fechas y estados del paseo
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
