@@ -45,8 +45,8 @@ development_status:
   # Epic 1: Operación registrada — acceso, fundaciones y fichas
   epic-1: in-progress
   1-1-scaffold-del-proyecto-y-pipeline: done
-  1-2-login-con-roles: review
-  1-3-gestion-de-cuentas-del-equipo: review
+  1-2-login-con-roles: done
+  1-3-gestion-de-cuentas-del-equipo: done
   1-4-fundaciones-transversales-almacenamiento-fechas-y-estados-del-paseo: backlog
   1-5-ficha-del-tutor-con-entrevista-inicial-y-anexos: backlog
   1-6-ficha-del-perro-con-compatibilidades-e-historial: backlog
