@@ -4,7 +4,7 @@ baseline_commit: bbff193
 
 # Story 1.6: Ficha del perro con compatibilidades e historial
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
