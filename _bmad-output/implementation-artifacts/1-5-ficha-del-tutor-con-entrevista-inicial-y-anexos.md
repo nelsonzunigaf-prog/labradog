@@ -4,7 +4,7 @@ baseline_commit: 25f0b74
 
 # Story 1.5: Ficha del tutor con entrevista inicial y anexos
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -25,56 +25,56 @@ so that el filtro profesional del método queda documentado desde el primer cont
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Motor puro `lib/engine/fichas.ts` — taxonomía de red flags + regla 2+ (AC: 4)
-  - [ ] Crear `src/lib/engine/fichas.ts`. Exportar la tupla fuente de verdad de la taxonomía (etapa 7 del método): `export const RED_FLAGS_TUTOR = ['minimiza_conductas', 'insiste_soltar_correa', 'presiona_tiempo', 'oculta_informacion', 'desautoriza_criterio', 'rechaza_protocolos'] as const;` y `export type RedFlagTutor = (typeof RED_FLAGS_TUTOR)[number];`. Esta tupla alimenta el `pgEnum` del schema (Task 4) — MISMO patrón que `ESTADOS_PASEO` de 1.4 (evita desincronización enum BD ↔ tipo TS).
-  - [ ] Exportar `ETIQUETAS_RED_FLAG: Record<RedFlagTutor, string>` con el texto humano para la UI (p.ej. `minimiza_conductas: 'Minimiza conductas problemáticas'`, `insiste_soltar_correa: 'Insiste en soltar la correa'`, `presiona_tiempo: 'Presiona por tiempo'`, `oculta_informacion: 'Oculta información'`, `desautoriza_criterio: 'Desautoriza el criterio profesional'`, `rechaza_protocolos: 'Rechaza los protocolos'`).
-  - [ ] `export function evaluarRedFlags(redFlags: RedFlagTutor[]): { cantidad: number; sugerirRechazo: boolean }` — función PURA: deduplica (`new Set`), `cantidad = únicas`, `sugerirRechazo = cantidad >= 2`. Sin I/O (regla #2).
-  - [ ] Test co-ubicado `src/lib/engine/fichas.test.ts`: 0 y 1 red flag → `sugerirRechazo: false`; 2 y 3 → `true`; duplicados cuentan una sola vez (`['presiona_tiempo','presiona_tiempo']` → cantidad 1, false).
+- [x] Task 1: Motor puro `lib/engine/fichas.ts` — taxonomía de red flags + regla 2+ (AC: 4)
+  - [x] Crear `src/lib/engine/fichas.ts`. Exportar la tupla fuente de verdad de la taxonomía (etapa 7 del método): `export const RED_FLAGS_TUTOR = ['minimiza_conductas', 'insiste_soltar_correa', 'presiona_tiempo', 'oculta_informacion', 'desautoriza_criterio', 'rechaza_protocolos'] as const;` y `export type RedFlagTutor = (typeof RED_FLAGS_TUTOR)[number];`. Esta tupla alimenta el `pgEnum` del schema (Task 4) — MISMO patrón que `ESTADOS_PASEO` de 1.4 (evita desincronización enum BD ↔ tipo TS).
+  - [x] Exportar `ETIQUETAS_RED_FLAG: Record<RedFlagTutor, string>` con el texto humano para la UI (p.ej. `minimiza_conductas: 'Minimiza conductas problemáticas'`, `insiste_soltar_correa: 'Insiste en soltar la correa'`, `presiona_tiempo: 'Presiona por tiempo'`, `oculta_informacion: 'Oculta información'`, `desautoriza_criterio: 'Desautoriza el criterio profesional'`, `rechaza_protocolos: 'Rechaza los protocolos'`).
+  - [x] `export function evaluarRedFlags(redFlags: RedFlagTutor[]): { cantidad: number; sugerirRechazo: boolean }` — función PURA: deduplica (`new Set`), `cantidad = únicas`, `sugerirRechazo = cantidad >= 2`. Sin I/O (regla #2).
+  - [x] Test co-ubicado `src/lib/engine/fichas.test.ts`: 0 y 1 red flag → `sugerirRechazo: false`; 2 y 3 → `true`; duplicados cuentan una sola vez (`['presiona_tiempo','presiona_tiempo']` → cantidad 1, false).
 
-- [ ] Task 2: Schema — enums + tablas `tutores` y `anexos_tutor` + migración (AC: 1, 3, 5)
-  - [ ] En `src/lib/db/schema.ts`, definir los `pgEnum` (snake_case, regla de naming): `plan` (`['base','plus','elite']`), `cobroPeriodicidad` = `pgEnum('cobro_periodicidad', ['por_paseo','semanal','mensual'])`, `cobroTiempo` = `pgEnum('cobro_tiempo', ['prepago','postpago'])`, `estadoTutorEnum` = `pgEnum('estado_tutor', ['activo','pausado','cerrado'])`, `redFlagTutorEnum` = `pgEnum('red_flag_tutor', RED_FLAGS_TUTOR)` (importar `RED_FLAGS_TUTOR` de `../engine/fichas`), `tipoAnexoEnum` = `pgEnum('tipo_anexo', ['limites_servicio','compromiso_etico'])`, `medioAnexoEnum` = `pgEnum('medio_anexo', ['papel','pdf'])`.
-  - [ ] Tabla `tutores` (`pgTable('tutores', {...})`): `id: uuid().primaryKey().defaultRandom()` (convención de negocio de 1.4); contacto: `nombre text notNull`, `telefono text notNull`, `email text` (nullable — el tutor no es usuario en v1, FR puede no tener email), `direccionRetiro: text('direccion_retiro').notNull()`; acuerdo comercial: `planDefault: plan('plan_default').notNull()`, `cobroPeriodicidad('cobro_periodicidad').notNull()`, `cobroTiempo('cobro_tiempo').notNull()`; `estado: estadoTutorEnum('estado').notNull().default('activo')`; entrevista (nullable hasta registrarse en AC3): `entrevistaHistorial: text('entrevista_historial')`, `entrevistaReactividad`, `entrevistaEscapes`, `entrevistaEquipamiento`, `entrevistaExpectativas` (todas `text` nullable), `redFlags: redFlagTutorEnum('red_flags').array().notNull().default(sql\`'{}'\`)` (array de enum, default vacío — **verificar el SQL generado**; si `.default([])` no compila, usar `.default(sql\`'{}'\`)` importando `sql` de `drizzle-orm`), `entrevistaRegistradaAt: timestamp('entrevista_registrada_at', { withTimezone: true })` (nullable); `...columnaVersion`; `...columnasAuditoria`.
-  - [ ] Tabla `anexos_tutor` (`pgTable('anexos_tutor', {...}, (t) => [...])`): `id uuid pk defaultRandom`, `tutorId: uuid('tutor_id').notNull().references(() => tutores.id, { onDelete: 'restrict' })` (soft-delete vía estado, nunca borrar tutores con anexos), `tipo: tipoAnexoEnum('tipo').notNull()`, `fechaAceptacion: date('fecha_aceptacion').notNull()`, `medio: medioAnexoEnum('medio').notNull()`, `pdfKey: text('pdf_key')` (nullable — la key de R2 del PDF opcional), `...columnasAuditoria`. Unique `(tutor_id, tipo)`: `unique('anexos_tutor_tutor_tipo_uq').on(t.tutorId, t.tipo)` (un anexo de cada tipo por tutor; re-registrar = upsert).
-  - [ ] `npm run db:generate` → crea `drizzle/0004_*.sql`. **Revisar el SQL**: debe crear los 7 enums, ambas tablas, la FK y el unique. Confirmar que el default del array es `'{}'`. Aplicar con `npm run db:migrate` a Neon. Verificar que 0000-0003 quedan intactas.
+- [x] Task 2: Schema — enums + tablas `tutores` y `anexos_tutor` + migración (AC: 1, 3, 5)
+  - [x] En `src/lib/db/schema.ts`, definir los `pgEnum` (snake_case, regla de naming): `plan` (`['base','plus','elite']`), `cobroPeriodicidad` = `pgEnum('cobro_periodicidad', ['por_paseo','semanal','mensual'])`, `cobroTiempo` = `pgEnum('cobro_tiempo', ['prepago','postpago'])`, `estadoTutorEnum` = `pgEnum('estado_tutor', ['activo','pausado','cerrado'])`, `redFlagTutorEnum` = `pgEnum('red_flag_tutor', RED_FLAGS_TUTOR)` (importar `RED_FLAGS_TUTOR` de `../engine/fichas`), `tipoAnexoEnum` = `pgEnum('tipo_anexo', ['limites_servicio','compromiso_etico'])`, `medioAnexoEnum` = `pgEnum('medio_anexo', ['papel','pdf'])`.
+  - [x] Tabla `tutores` (`pgTable('tutores', {...})`): `id: uuid().primaryKey().defaultRandom()` (convención de negocio de 1.4); contacto: `nombre text notNull`, `telefono text notNull`, `email text` (nullable — el tutor no es usuario en v1, FR puede no tener email), `direccionRetiro: text('direccion_retiro').notNull()`; acuerdo comercial: `planDefault: plan('plan_default').notNull()`, `cobroPeriodicidad('cobro_periodicidad').notNull()`, `cobroTiempo('cobro_tiempo').notNull()`; `estado: estadoTutorEnum('estado').notNull().default('activo')`; entrevista (nullable hasta registrarse en AC3): `entrevistaHistorial: text('entrevista_historial')`, `entrevistaReactividad`, `entrevistaEscapes`, `entrevistaEquipamiento`, `entrevistaExpectativas` (todas `text` nullable), `redFlags: redFlagTutorEnum('red_flags').array().notNull().default(sql\`'{}'\`)` (array de enum, default vacío — **verificar el SQL generado**; si `.default([])` no compila, usar `.default(sql\`'{}'\`)` importando `sql` de `drizzle-orm`), `entrevistaRegistradaAt: timestamp('entrevista_registrada_at', { withTimezone: true })` (nullable); `...columnaVersion`; `...columnasAuditoria`.
+  - [x] Tabla `anexos_tutor` (`pgTable('anexos_tutor', {...}, (t) => [...])`): `id uuid pk defaultRandom`, `tutorId: uuid('tutor_id').notNull().references(() => tutores.id, { onDelete: 'restrict' })` (soft-delete vía estado, nunca borrar tutores con anexos), `tipo: tipoAnexoEnum('tipo').notNull()`, `fechaAceptacion: date('fecha_aceptacion').notNull()`, `medio: medioAnexoEnum('medio').notNull()`, `pdfKey: text('pdf_key')` (nullable — la key de R2 del PDF opcional), `...columnasAuditoria`. Unique `(tutor_id, tipo)`: `unique('anexos_tutor_tutor_tipo_uq').on(t.tutorId, t.tipo)` (un anexo de cada tipo por tutor; re-registrar = upsert).
+  - [x] `npm run db:generate` → crea `drizzle/0004_*.sql`. **Revisar el SQL**: debe crear los 7 enums, ambas tablas, la FK y el unique. Confirmar que el default del array es `'{}'`. Aplicar con `npm run db:migrate` a Neon. Verificar que 0000-0003 quedan intactas.
 
-- [ ] Task 3: Validaciones Zod compartidas `lib/validations/tutores.ts` (AC: 1, 3, 5)
-  - [ ] Crear `src/lib/validations/tutores.ts`. `crearTutorSchema = z.object({ nombre: z.string().min(1), telefono: z.string().min(1), email: z.string().email().optional().or(z.literal('')), direccionRetiro: z.string().min(1), planDefault: z.enum(['base','plus','elite']), cobroPeriodicidad: z.enum(['por_paseo','semanal','mensual']), cobroTiempo: z.enum(['prepago','postpago']), estado: z.enum(['activo','pausado','cerrado']).default('activo') })`.
-  - [ ] `actualizarTutorSchema = crearTutorSchema.extend({ id: z.string().uuid(), version: z.number().int().nonnegative() })` (la `version` viaja para el lock optimista, AC2).
-  - [ ] `entrevistaSchema = z.object({ id: z.string().uuid(), version: z.number().int().nonnegative(), historial: z.string().optional(), reactividad: z.string().optional(), escapes: z.string().optional(), equipamiento: z.string().optional(), expectativas: z.string().optional(), redFlags: z.array(z.enum(RED_FLAGS_TUTOR)).default([]) })` (reusar `RED_FLAGS_TUTOR` del motor para el enum — es una tupla `as const`, válida en `z.enum`).
-  - [ ] `anexoSchema = z.object({ tutorId: z.string().uuid(), tipo: z.enum(['limites_servicio','compromiso_etico']), fechaAceptacion: z.string(), medio: z.enum(['papel','pdf']), pdfKey: z.string().optional() })`.
-  - [ ] Test `src/lib/validations/tutores.test.ts`: plan inválido, red flag fuera de taxonomía, `version` no entera, email mal formado, requeridos vacíos.
+- [x] Task 3: Validaciones Zod compartidas `lib/validations/tutores.ts` (AC: 1, 3, 5)
+  - [x] Crear `src/lib/validations/tutores.ts`. `crearTutorSchema = z.object({ nombre: z.string().min(1), telefono: z.string().min(1), email: z.string().email().optional().or(z.literal('')), direccionRetiro: z.string().min(1), planDefault: z.enum(['base','plus','elite']), cobroPeriodicidad: z.enum(['por_paseo','semanal','mensual']), cobroTiempo: z.enum(['prepago','postpago']), estado: z.enum(['activo','pausado','cerrado']).default('activo') })`.
+  - [x] `actualizarTutorSchema = crearTutorSchema.extend({ id: z.string().uuid(), version: z.number().int().nonnegative() })` (la `version` viaja para el lock optimista, AC2).
+  - [x] `entrevistaSchema = z.object({ id: z.string().uuid(), version: z.number().int().nonnegative(), historial: z.string().optional(), reactividad: z.string().optional(), escapes: z.string().optional(), equipamiento: z.string().optional(), expectativas: z.string().optional(), redFlags: z.array(z.enum(RED_FLAGS_TUTOR)).default([]) })` (reusar `RED_FLAGS_TUTOR` del motor para el enum — es una tupla `as const`, válida en `z.enum`).
+  - [x] `anexoSchema = z.object({ tutorId: z.string().uuid(), tipo: z.enum(['limites_servicio','compromiso_etico']), fechaAceptacion: z.string(), medio: z.enum(['papel','pdf']), pdfKey: z.string().optional() })`.
+  - [x] Test `src/lib/validations/tutores.test.ts`: plan inválido, red flag fuera de taxonomía, `version` no entera, email mal formado, requeridos vacíos.
 
-- [ ] Task 4: Capa de datos `lib/db/queries/tutores.ts` (AC: 1, 2, 3, 5)
-  - [ ] Crear `src/lib/db/queries/tutores.ts` — ÚNICO lugar que ejecuta SQL para tutores (regla #2). Importar `db`, las tablas y `eq`/`and` de `drizzle-orm`. **Auditoría: `created_by`/`updated_by` se setean con `actor.id`** (primer uso real de `columnasAuditoria` en un insert del proyecto). **NO escribir en `event_log`**: el alta/edición de fichas NO está en la lista de operaciones sensibles (pagos, evaluaciones, overrides, cancelaciones, cuentas) — no extender `CatalogoEventos` aquí.
+- [x] Task 4: Capa de datos `lib/db/queries/tutores.ts` (AC: 1, 2, 3, 5)
+  - [x] Crear `src/lib/db/queries/tutores.ts` — ÚNICO lugar que ejecuta SQL para tutores (regla #2). Importar `db`, las tablas y `eq`/`and` de `drizzle-orm`. **Auditoría: `created_by`/`updated_by` se setean con `actor.id`** (primer uso real de `columnasAuditoria` en un insert del proyecto). **NO escribir en `event_log`**: el alta/edición de fichas NO está en la lista de operaciones sensibles (pagos, evaluaciones, overrides, cancelaciones, cuentas) — no extender `CatalogoEventos` aquí.
     - `listarTutores()`: `select` de columnas de listado (`id, nombre, telefono, planDefault, estado`) ordenado por `nombre`.
     - `obtenerTutor(id)`: la ficha completa + sus anexos (`select` de `tutores` por id + `select` de `anexos_tutor` por `tutor_id`). Retorna `null` si no existe.
     - `crearTutor(datos, actor: ActorSesion)`: `insert(tutores).values({ ...datos, email: datos.email || null, createdBy: actor.id, updatedBy: actor.id }).returning({ id })`. Retorna `{ id }`.
     - `actualizarTutor(datos, actor)`: **lock optimista (AC2)** — `update(tutores).set({ ...campos, updatedBy: actor.id, version: sql\`${tutores.version} + 1\` }).where(and(eq(tutores.id, datos.id), eq(tutores.version, datos.version))).returning({ id })`. Si el array vuelve **vacío** → retornar `null` (la action lo traduce a ErrorNegocio "Este registro cambió, recarga"). NO lanzar desde la query.
     - `registrarEntrevista(datos, actor)`: mismo patrón de lock optimista que `actualizarTutor`, seteando `entrevistaHistorial/Reactividad/Escapes/Equipamiento/Expectativas`, `redFlags`, `entrevistaRegistradaAt: new Date()`, `updatedBy`, `version + 1`, `where id AND version`. Retorna `null` si no hubo match.
     - `registrarAnexo(datos, actor)`: `insert(anexosTutor).values({ ...datos, createdBy: actor.id, updatedBy: actor.id }).onConflictDoUpdate({ target: [anexosTutor.tutorId, anexosTutor.tipo], set: { fechaAceptacion, medio, pdfKey, updatedBy: actor.id } })` (upsert: re-registrar el mismo tipo actualiza). Convertir `fechaAceptacion` (string 'YYYY-MM-DD') al tipo `date` (Drizzle `date` en modo string lo acepta directo).
-  - [ ] Tipos exportados para la UI (`TutorListado`, `TutorFicha`, `AnexoTutor`).
+  - [x] Tipos exportados para la UI (`TutorListado`, `TutorFicha`, `AnexoTutor`).
 
-- [ ] Task 5: Server Actions `actions/tutores.ts` (AC: 1, 2, 3, 5)
-  - [ ] Crear `src/actions/tutores.ts` con `'use server'`. Todas vía `crearAction({ schema, roles: ['admin'], handler })`.
+- [x] Task 5: Server Actions `actions/tutores.ts` (AC: 1, 2, 3, 5)
+  - [x] Crear `src/actions/tutores.ts` con `'use server'`. Todas vía `crearAction({ schema, roles: ['admin'], handler })`.
     - `crearTutor`: schema `crearTutorSchema`. handler llama `queries.crearTutor`, `revalidatePath('/admin/tutores')`, retorna `{ id }`.
     - `actualizarTutor`: schema `actualizarTutorSchema`. handler: `const r = await queries.actualizarTutor(input, actor); if (!r) throw new ErrorNegocio('Este registro cambió, recarga.'); revalidatePath(...)`. (AC2)
     - `registrarEntrevista`: schema `entrevistaSchema`. handler igual con ErrorNegocio en conflicto de version. `revalidatePath('/admin/tutores/' + input.id)`.
     - `registrarAnexo`: schema `anexoSchema`. handler llama `queries.registrarAnexo`, revalida la ficha.
-  - [ ] **Subida del PDF (AC5, opcional)** — `crearAction` valida un objeto Zod, no encaja con `File`/binario. Crear una server action aparte `subirAnexoPdf(formData: FormData)` en el mismo archivo (con `'use server'`): verifica rol con `getActor()` manualmente (deviación documentada de la regla #4, justificada por el binario), extrae el `File`, valida que sea `application/pdf` y ≤ 5MB (si no → `{ ok: false }`), lee los bytes (`new Uint8Array(await file.arrayBuffer())`), llama `storage.subirArchivo({ key: \`anexos/${tutorId}/${tipo}.pdf\`, contenido, contentType: 'application/pdf' })` (storage.ts sigue siendo la ÚNICA frontera con R2) y retorna `{ ok: true, key }`. La UI usa la key devuelta como `pdfKey` al llamar `registrarAnexo`. NO comprimir (es PDF, no imagen).
-  - [ ] Test `src/actions/tutores.test.ts` (mockear `getActor` y las queries, patrón de `cuentas.test.ts`): `actualizarTutor` cuando la query devuelve `null` → `{ ok: false, error: 'Este registro cambió, recarga.' }` (AC2); `crearTutor` happy path → `{ ok: true, data: { id } }`.
+  - [x] **Subida del PDF (AC5, opcional)** — `crearAction` valida un objeto Zod, no encaja con `File`/binario. Crear una server action aparte `subirAnexoPdf(formData: FormData)` en el mismo archivo (con `'use server'`): verifica rol con `getActor()` manualmente (deviación documentada de la regla #4, justificada por el binario), extrae el `File`, valida que sea `application/pdf` y ≤ 5MB (si no → `{ ok: false }`), lee los bytes (`new Uint8Array(await file.arrayBuffer())`), llama `storage.subirArchivo({ key: \`anexos/${tutorId}/${tipo}.pdf\`, contenido, contentType: 'application/pdf' })` (storage.ts sigue siendo la ÚNICA frontera con R2) y retorna `{ ok: true, key }`. La UI usa la key devuelta como `pdfKey` al llamar `registrarAnexo`. NO comprimir (es PDF, no imagen).
+  - [x] Test `src/actions/tutores.test.ts` (mockear `getActor` y las queries, patrón de `cuentas.test.ts`): `actualizarTutor` cuando la query devuelve `null` → `{ ok: false, error: 'Este registro cambió, recarga.' }` (AC2); `crearTutor` happy path → `{ ok: true, data: { id } }`.
 
-- [ ] Task 6: UI admin de tutores (AC: 1, 2, 3, 4, 5)
-  - [ ] `src/app/admin/tutores/page.tsx` (Server Component, desktop-first): `listarTutores()` → `Table` (nombre, teléfono, plan, estado con `Badge`), cada fila enlaza a `/admin/tutores/[id]`. Incluir el formulario/enlace de "Nueva ficha". Reutilizar los componentes shadcn ya presentes (`table`, `badge`, `button`, `input`, `label`, `select`); agregar `textarea` y/o `checkbox` con `npx shadcn@latest add <c> -y` si hacen falta (shadcn copia componentes, no es dependencia).
-  - [ ] `src/components/tutores/form-tutor.tsx` (cliente, patrón `form-crear-cuenta.tsx`: `useState` + `safeParse` + llamar la action + mostrar `{ok|error}`): crea o edita la ficha (contacto, dirección, plan/modalidad de cobro con `<select>`, estado). En modo edición incluye un campo oculto/estado con la `version` actual y la envía; si la action devuelve "Este registro cambió, recarga", mostrar el mensaje y sugerir recargar (AC2).
-  - [ ] `src/app/admin/tutores/[id]/page.tsx` (Server Component): `obtenerTutor(id)` (404/estado vacío si no existe); renderiza la ficha editable (`form-tutor` en modo edición), la sección de entrevista y la de anexos.
-  - [ ] `src/components/tutores/seccion-entrevista.tsx` (cliente): textareas (historial, reactividad, escapes, equipamiento, expectativas) + checkboxes de red flags usando `RED_FLAGS_TUTOR` + `ETIQUETAS_RED_FLAG` del motor. **Alerta en vivo (AC4)**: al cambiar la selección, llamar `evaluarRedFlags(seleccionadas)` (función pura, segura en cliente) y si `sugerirRechazo` mostrar el aviso destacado "Evaluar rechazo del servicio (2+ red flags)". Guardar vía `registrarEntrevista` (envía `id` + `version`).
-  - [ ] `src/components/tutores/seccion-anexos.tsx` (cliente): lista los anexos existentes (tipo, fecha, medio, enlace al PDF si hay `pdfKey` → `storage.urlPublica` o el `R2_PUBLIC_URL`); formulario para registrar un anexo (tipo, fecha, medio, input file PDF opcional). Si hay PDF: primero `subirAnexoPdf(formData)` → tomar `key` → luego `registrarAnexo({ ..., pdfKey: key })`. Sin PDF: llamar `registrarAnexo` directo.
-  - [ ] Enlace a `/admin/tutores` desde `src/app/admin/page.tsx` (junto al de equipo).
+- [x] Task 6: UI admin de tutores (AC: 1, 2, 3, 4, 5)
+  - [x] `src/app/admin/tutores/page.tsx` (Server Component, desktop-first): `listarTutores()` → `Table` (nombre, teléfono, plan, estado con `Badge`), cada fila enlaza a `/admin/tutores/[id]`. Incluir el formulario/enlace de "Nueva ficha". Reutilizar los componentes shadcn ya presentes (`table`, `badge`, `button`, `input`, `label`, `select`); agregar `textarea` y/o `checkbox` con `npx shadcn@latest add <c> -y` si hacen falta (shadcn copia componentes, no es dependencia).
+  - [x] `src/components/tutores/form-tutor.tsx` (cliente, patrón `form-crear-cuenta.tsx`: `useState` + `safeParse` + llamar la action + mostrar `{ok|error}`): crea o edita la ficha (contacto, dirección, plan/modalidad de cobro con `<select>`, estado). En modo edición incluye un campo oculto/estado con la `version` actual y la envía; si la action devuelve "Este registro cambió, recarga", mostrar el mensaje y sugerir recargar (AC2).
+  - [x] `src/app/admin/tutores/[id]/page.tsx` (Server Component): `obtenerTutor(id)` (404/estado vacío si no existe); renderiza la ficha editable (`form-tutor` en modo edición), la sección de entrevista y la de anexos.
+  - [x] `src/components/tutores/seccion-entrevista.tsx` (cliente): textareas (historial, reactividad, escapes, equipamiento, expectativas) + checkboxes de red flags usando `RED_FLAGS_TUTOR` + `ETIQUETAS_RED_FLAG` del motor. **Alerta en vivo (AC4)**: al cambiar la selección, llamar `evaluarRedFlags(seleccionadas)` (función pura, segura en cliente) y si `sugerirRechazo` mostrar el aviso destacado "Evaluar rechazo del servicio (2+ red flags)". Guardar vía `registrarEntrevista` (envía `id` + `version`).
+  - [x] `src/components/tutores/seccion-anexos.tsx` (cliente): lista los anexos existentes (tipo, fecha, medio, enlace al PDF si hay `pdfKey` → `storage.urlPublica` o el `R2_PUBLIC_URL`); formulario para registrar un anexo (tipo, fecha, medio, input file PDF opcional). Si hay PDF: primero `subirAnexoPdf(formData)` → tomar `key` → luego `registrarAnexo({ ..., pdfKey: key })`. Sin PDF: llamar `registrarAnexo` directo.
+  - [x] Enlace a `/admin/tutores` desde `src/app/admin/page.tsx` (junto al de equipo).
 
-- [ ] Task 7: Tests y validación final (AC: todos)
-  - [ ] Unit (Vitest): los de Tasks 1, 3, 5 verdes.
-  - [ ] E2E `e2e/tutores.spec.ts` (Playwright, `test.use({ viewport: { width: 1280, height: 900 } })` — admin es desktop-first, igual que `equipo.spec.ts`), reusando `e2e/global-setup.ts` (admin sembrado): login admin → `/admin/tutores` → crear ficha (nombre, teléfono, dirección, plan, modalidad, estado) → aparece en el listado → abrir la ficha → registrar entrevista marcando **2 red flags** → **ver la alerta** de rechazo → registrar un anexo (sin PDF, para no depender de R2 en CI/local). Usar datos únicos por corrida.
-  - [ ] Regresión: `npm run lint && npm run test && npm run build` verdes; `e2e/auth.spec.ts` y `e2e/equipo.spec.ts` siguen pasando (no romper 1.2/1.3).
+- [x] Task 7: Tests y validación final (AC: todos)
+  - [x] Unit (Vitest): los de Tasks 1, 3, 5 verdes.
+  - [x] E2E `e2e/tutores.spec.ts` (Playwright, `test.use({ viewport: { width: 1280, height: 900 } })` — admin es desktop-first, igual que `equipo.spec.ts`), reusando `e2e/global-setup.ts` (admin sembrado): login admin → `/admin/tutores` → crear ficha (nombre, teléfono, dirección, plan, modalidad, estado) → aparece en el listado → abrir la ficha → registrar entrevista marcando **2 red flags** → **ver la alerta** de rechazo → registrar un anexo (sin PDF, para no depender de R2 en CI/local). Usar datos únicos por corrida.
+  - [x] Regresión: `npm run lint && npm run test && npm run build` verdes; `e2e/auth.spec.ts` y `e2e/equipo.spec.ts` siguen pasando (no romper 1.2/1.3).
 
 ## Dev Notes
 
@@ -140,12 +140,46 @@ Primera **ficha de negocio** del proyecto (FR-004/005/006). Es CRUD con dos piez
 
 ### Agent Model Used
 
+claude-opus-4-8 (Claude Code)
+
 ### Debug Log References
+
+- **E2E `getByRole('alert')` chocaba con el announcer de Next.** `__next-route-announcer__` también tiene `role="alert"` → strict mode violation. Resuelto usando `getByText('Evaluar rechazo del servicio')` para la alerta de red flags.
+- **E2E `getByText('Límites del servicio')` ambiguo.** El texto existe en el `<option>` del select y en el `<li>` de la lista de anexos. Resuelto con `getByRole('listitem').filter({ hasText: ... })`.
+- **`{ name }` shorthand inexistente en el spec.** La variable era `nombre`; corregido a `{ name: nombre }`.
 
 ### Completion Notes List
 
+- **Primera ficha de negocio del proyecto.** Primer uso real de `columnasAuditoria` (`created_by`/`updated_by` = `actor.id`) y `columnaVersion` (lock optimista). El tutor NO es usuario (no toca Better Auth).
+- **Lock optimista (AC2) verificado.** `actualizarTutor`/`registrarEntrevista` actualizan con `where id AND version` + `version+1`; si 0 filas la query devuelve `null` y la action lanza `ErrorNegocio('Este registro cambió, recarga.')` (test unitario lo cubre). La ficha [id] usa `key={tutor.version}` para remontar los forms tras un guardado parcial y evitar falsos conflictos.
+- **Regla de red flags pura** en `lib/engine/fichas.ts` (`RED_FLAGS_TUTOR` alimenta el `pgEnum` y el `z.enum`; `evaluarRedFlags`: 2+ → sugerir rechazo). Alerta en vivo en el cliente (función pura). Verificado por E2E (marcar 2 red flags → alerta).
+- **Anexos** con upsert por `(tutor_id, tipo)`; PDF opcional a R2 vía `subirAnexoPdf` (action aparte fuera de `crearAction` por el binario `File`, verifica rol con `getActor()`). `storage.ts` sigue siendo la única frontera R2.
+- **Sin `event_log`** (alta/edición de fichas no es operación sensible) ni dependencias nuevas.
+- **Migración `0004` aplicada a Neon** (7 enums + tablas `tutores`/`anexos_tutor`, FK restrict, unique).
+- **Validación**: lint ✅ · 72/72 unit ✅ (+21) · build ✅ · E2E tutores ✅ (33.8s).
+
+#### Acción requerida de Nelson
+- En **prod (Railway)**: las vars de R2 (ya anotadas) habilitan el PDF de anexos. En dev sin R2 el resto del flujo funciona (subida no-op).
+
 ### File List
+
+- labradog-app/src/lib/engine/fichas.ts (nuevo — taxonomía red flags + evaluarRedFlags)
+- labradog-app/src/lib/engine/fichas.test.ts (nuevo)
+- labradog-app/src/lib/db/schema.ts (modificado — 7 enums + tablas tutores, anexos_tutor)
+- labradog-app/drizzle/0004_smiling_paper_doll.sql (nuevo — migración)
+- labradog-app/drizzle/meta/0004_snapshot.json · _journal.json (generados)
+- labradog-app/src/lib/validations/tutores.ts (nuevo) · tutores.test.ts (nuevo)
+- labradog-app/src/lib/db/queries/tutores.ts (nuevo — CRUD + lock optimista + upsert anexos)
+- labradog-app/src/actions/tutores.ts (nuevo — actions + subirAnexoPdf) · tutores.test.ts (nuevo)
+- labradog-app/src/components/tutores/form-tutor.tsx (nuevo — crear/editar)
+- labradog-app/src/components/tutores/seccion-entrevista.tsx (nuevo — entrevista + alerta red flags)
+- labradog-app/src/components/tutores/seccion-anexos.tsx (nuevo — anexos + PDF)
+- labradog-app/src/app/admin/tutores/page.tsx (nuevo — listado)
+- labradog-app/src/app/admin/tutores/[id]/page.tsx (nuevo — ficha)
+- labradog-app/src/app/admin/page.tsx (modificado — enlace a /admin/tutores)
+- labradog-app/e2e/tutores.spec.ts (nuevo — E2E del flujo completo)
 
 ## Change Log
 
 - 2026-06-09: Story 1.5 (ficha del tutor con entrevista inicial y anexos) creada con context engine BMAD. Status → ready-for-dev.
+- 2026-06-09: Implementación de Story 1.5: motor de red flags (`lib/engine/fichas.ts`), tablas `tutores`/`anexos_tutor` (migración 0004, 7 enums), queries con lock optimista + upsert de anexos, actions (+ `subirAnexoPdf`), UI `/admin/tutores` (listado, ficha editable, entrevista con alerta viva, anexos con PDF opcional). 21 tests nuevos + E2E. lint+test+build+E2E verdes. Status → review.

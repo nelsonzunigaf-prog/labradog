@@ -9,6 +9,7 @@
  * - Soft-delete vía columna de estado — NUNCA DELETE físico
  * - Dinero: enteros CLP · Fechas: UTC (timestamptz)
  */
+import { sql } from 'drizzle-orm';
 import {
   bigserial,
   boolean,
@@ -24,6 +25,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { ESTADOS_PASEO } from '../engine/paseo-estados';
+import { RED_FLAGS_TUTOR } from '../engine/fichas';
 
 // ── Helpers transversales ──────────────────────────────────────
 
@@ -160,5 +162,77 @@ export const paseos = pgTable(
     // recurrencia_id NULL (puntuales) coexisten: Postgres trata NULLs como
     // distintos (NO usar NULLS NOT DISTINCT).
     unique('paseos_recurrencia_fecha_uq').on(tabla.recurrenciaId, tabla.fechaLocal),
+  ],
+);
+
+// ── tutores: ficha del tutor con entrevista inicial (Story 1.5) ────────────
+// Primera ficha de NEGOCIO: primer uso real de columnasAuditoria (created_by/
+// updated_by = actor.id) y columnaVersion (lock optimista multi-admin). El tutor
+// NO es usuario en v1: es una ficha gestionada por admins.
+
+/** Plan comercial — catálogo del método (BASE/PLUS/ELITE). */
+export const planEnum = pgEnum('plan', ['base', 'plus', 'elite']);
+/** Periodicidad de cobro (FR-033): por paseo / semanal / mensual. */
+export const cobroPeriodicidadEnum = pgEnum('cobro_periodicidad', [
+  'por_paseo',
+  'semanal',
+  'mensual',
+]);
+/** Momento de cobro (FR-033): prepago / postpago. */
+export const cobroTiempoEnum = pgEnum('cobro_tiempo', ['prepago', 'postpago']);
+/** Estado de la ficha del tutor (FR-004) — soft-delete vía estado. */
+export const estadoTutorEnum = pgEnum('estado_tutor', ['activo', 'pausado', 'cerrado']);
+/** Red flags del tutor — la tupla RED_FLAGS_TUTOR (motor puro) es la fuente única. */
+export const redFlagTutorEnum = pgEnum('red_flag_tutor', RED_FLAGS_TUTOR);
+/** Tipos de anexo legal (FR-006). */
+export const tipoAnexoEnum = pgEnum('tipo_anexo', ['limites_servicio', 'compromiso_etico']);
+/** Medio de aceptación del anexo. */
+export const medioAnexoEnum = pgEnum('medio_anexo', ['papel', 'pdf']);
+
+export const tutores = pgTable('tutores', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  // Contacto
+  nombre: text('nombre').notNull(),
+  telefono: text('telefono').notNull(),
+  email: text('email'), // nullable: el tutor no es usuario en v1
+  direccionRetiro: text('direccion_retiro').notNull(),
+  // Acuerdo comercial (FR-004)
+  planDefault: planEnum('plan_default').notNull(),
+  cobroPeriodicidad: cobroPeriodicidadEnum('cobro_periodicidad').notNull(),
+  cobroTiempo: cobroTiempoEnum('cobro_tiempo').notNull(),
+  estado: estadoTutorEnum('estado').notNull().default('activo'),
+  // Entrevista inicial (FR-005) — nullable hasta registrarse
+  entrevistaHistorial: text('entrevista_historial'),
+  entrevistaReactividad: text('entrevista_reactividad'),
+  entrevistaEscapes: text('entrevista_escapes'),
+  entrevistaEquipamiento: text('entrevista_equipamiento'),
+  entrevistaExpectativas: text('entrevista_expectativas'),
+  redFlags: redFlagTutorEnum('red_flags')
+    .array()
+    .notNull()
+    .default(sql`'{}'`),
+  entrevistaRegistradaAt: timestamp('entrevista_registrada_at', { withTimezone: true }),
+  ...columnaVersion,
+  ...columnasAuditoria,
+});
+
+// ── anexos_tutor: aceptación de anexos legales (FR-006) ────────────────────
+// Dos tipos legales; re-registrar el mismo tipo es un upsert por (tutor_id, tipo).
+
+export const anexosTutor = pgTable(
+  'anexos_tutor',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tutorId: uuid('tutor_id')
+      .notNull()
+      .references(() => tutores.id, { onDelete: 'restrict' }),
+    tipo: tipoAnexoEnum('tipo').notNull(),
+    fechaAceptacion: date('fecha_aceptacion').notNull(),
+    medio: medioAnexoEnum('medio').notNull(),
+    pdfKey: text('pdf_key'), // key de R2 del PDF opcional
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    unique('anexos_tutor_tutor_tipo_uq').on(tabla.tutorId, tabla.tipo),
   ],
 );

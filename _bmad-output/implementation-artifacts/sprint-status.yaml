@@ -48,7 +48,7 @@ development_status:
   1-2-login-con-roles: done
   1-3-gestion-de-cuentas-del-equipo: done
   1-4-fundaciones-transversales-almacenamiento-fechas-y-estados-del-paseo: done
-  1-5-ficha-del-tutor-con-entrevista-inicial-y-anexos: ready-for-dev
+  1-5-ficha-del-tutor-con-entrevista-inicial-y-anexos: review
   1-6-ficha-del-perro-con-compatibilidades-e-historial: backlog
   1-7-ficha-del-paseador: backlog
   epic-1-retrospective: optional

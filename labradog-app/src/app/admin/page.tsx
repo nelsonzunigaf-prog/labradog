@@ -26,6 +26,12 @@ export default async function AdminHome() {
         >
           Gestionar equipo →
         </Link>
+        <Link
+          href="/admin/tutores"
+          className="text-sm text-primary underline-offset-4 hover:underline"
+        >
+          Fichas de tutores →
+        </Link>
       </nav>
 
       <p className="text-sm text-muted-foreground">
