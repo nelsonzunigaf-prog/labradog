@@ -6,6 +6,7 @@ import { actualizarTutor, crearTutor } from '@/actions/tutores';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { crearTutorSchema } from '@/lib/validations/tutores';
 
 type DatosTutor = {
   nombre: string;
@@ -50,12 +51,25 @@ export function FormTutor({ tutor }: Props) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMensaje(null);
+
+    // Validación Zod en cliente (mensajes en español del schema compartido).
+    // El form lleva noValidate para que la validación nativa del navegador
+    // (cuyo idioma depende del locale del browser) no intercepte antes.
+    const parseado = crearTutorSchema.safeParse(datos);
+    if (!parseado.success) {
+      setMensaje({
+        tipo: 'error',
+        texto: parseado.error.issues[0]?.message ?? 'Datos inválidos',
+      });
+      return;
+    }
+
     setCargando(true);
 
     const r =
       esEdicion && tutor
-        ? await actualizarTutor({ ...datos, id: tutor.id, version: tutor.version })
-        : await crearTutor(datos);
+        ? await actualizarTutor({ ...parseado.data, id: tutor.id, version: tutor.version })
+        : await crearTutor(parseado.data);
 
     setCargando(false);
 
@@ -73,7 +87,11 @@ export function FormTutor({ tutor }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4 rounded-xl border border-border p-4">
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className="flex flex-col gap-4 rounded-xl border border-border p-4"
+    >
       <h2 className="text-lg font-medium">{esEdicion ? 'Datos de la ficha' : 'Nueva ficha'}</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">

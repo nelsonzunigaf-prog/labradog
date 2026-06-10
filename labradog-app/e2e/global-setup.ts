@@ -34,6 +34,17 @@ export default async function globalSetup() {
   }
   const sql = neon(process.env.DATABASE_URL);
 
+  // Limpieza de fichas creadas por corridas anteriores de los E2E (Story 1.5).
+  // Son datos de TEST, no de negocio: la regla de soft-delete no aplica. Primero
+  // los anexos (FK restrict) y luego los tutores. Patrón de nombre acotado para
+  // jamás tocar fichas reales.
+  await sql`
+    DELETE FROM anexos_tutor WHERE tutor_id IN (
+      SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'
+    )
+  `;
+  await sql`DELETE FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'`;
+
   for (const u of Object.values(USUARIOS_PRUEBA)) {
     const userId = randomUUID();
     const accountId = randomUUID();

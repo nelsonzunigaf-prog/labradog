@@ -41,7 +41,9 @@
       "PowerShell(Get-NetTCPConnection *)",
       "Bash(python _bmad/scripts/resolve_customization.py --skill .claude/skills/bmad-create-story --key workflow)",
       "Bash(npm install *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(echo \"PWEXIT=$?\")",
+      "Read(//tmp/**)"
     ]
   }
 }
