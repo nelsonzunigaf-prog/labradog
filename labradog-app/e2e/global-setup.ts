@@ -34,10 +34,26 @@ export default async function globalSetup() {
   }
   const sql = neon(process.env.DATABASE_URL);
 
-  // Limpieza de fichas creadas por corridas anteriores de los E2E (Story 1.5).
-  // Son datos de TEST, no de negocio: la regla de soft-delete no aplica. Primero
-  // los anexos (FK restrict) y luego los tutores. Patrón de nombre acotado para
-  // jamás tocar fichas reales.
+  // Limpieza de fichas creadas por corridas anteriores de los E2E (Stories 1.5/1.6).
+  // Son datos de TEST, no de negocio: la regla de soft-delete no aplica. Orden por
+  // FKs restrict: compatibilidades → perros → anexos → tutores. Patrón de nombre
+  // acotado para jamás tocar fichas reales.
+  await sql`
+    DELETE FROM perro_compatibilidades WHERE perro_menor_id IN (
+      SELECT id FROM perros WHERE tutor_id IN (
+        SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'
+      )
+    ) OR perro_mayor_id IN (
+      SELECT id FROM perros WHERE tutor_id IN (
+        SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'
+      )
+    )
+  `;
+  await sql`
+    DELETE FROM perros WHERE tutor_id IN (
+      SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'
+    )
+  `;
   await sql`
     DELETE FROM anexos_tutor WHERE tutor_id IN (
       SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'

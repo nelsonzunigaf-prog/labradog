@@ -36,6 +36,13 @@
       "when": 1781029784009,
       "tag": "0004_smiling_paper_doll",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1781056761927,
+      "tag": "0005_strange_brood",
+      "breakpoints": true
     }
   ]
 }

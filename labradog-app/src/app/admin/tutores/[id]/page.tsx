@@ -1,12 +1,15 @@
 /**
  * Detalle/edición de una ficha de tutor (Story 1.5): datos, entrevista inicial
- * (con alerta de red flags) y anexos legales. Solo admin.
+ * (con alerta de red flags) y anexos legales. Sección Perros (Story 1.6).
+ * Solo admin.
  */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { SeccionPerros } from '@/components/perros/seccion-perros';
 import { FormTutor } from '@/components/tutores/form-tutor';
 import { SeccionAnexos } from '@/components/tutores/seccion-anexos';
 import { SeccionEntrevista } from '@/components/tutores/seccion-entrevista';
+import { listarPerrosDeTutor } from '@/lib/db/queries/perros';
 import { obtenerTutor } from '@/lib/db/queries/tutores';
 import { urlPublica } from '@/lib/storage';
 
@@ -15,6 +18,8 @@ export default async function TutorFichaPage({ params }: { params: Promise<{ id:
   const tutor = await obtenerTutor(id);
 
   if (!tutor) notFound();
+
+  const perros = await listarPerrosDeTutor(tutor.id);
 
   return (
     <main className="flex flex-1 flex-col gap-6 p-6">
@@ -60,6 +65,20 @@ export default async function TutorFichaPage({ params }: { params: Promise<{ id:
           }}
         />
       </div>
+
+      <SeccionPerros
+        tutorId={tutor.id}
+        perros={perros.map((p) => ({
+          id: p.id,
+          nombre: p.nombre,
+          raza: p.raza,
+          grupoRaza: p.grupoRaza,
+          talla: p.talla,
+          estado: p.estado,
+          notasCriticas: p.notasCriticas,
+          fotoUrl: p.fotoKey ? urlPublica(p.fotoKey) : null,
+        }))}
+      />
 
       <SeccionAnexos
         tutorId={tutor.id}

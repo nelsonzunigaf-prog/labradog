@@ -236,3 +236,61 @@ export const anexosTutor = pgTable(
     unique('anexos_tutor_tutor_tipo_uq').on(tabla.tutorId, tabla.tipo),
   ],
 );
+
+// ── perros: ficha del perro con perfil del método (Story 1.6) ──────────────
+// Hija de `tutores`. Enums solo donde el método fija taxonomía (grupo_raza es
+// la oficial del módulo razas); condición física, temperamento, equipamiento y
+// premios quedan texto libre a propósito (no inventar catálogos).
+
+/** Grupo de raza operativo — taxonomía oficial del método (módulo razas). */
+export const grupoRazaEnum = pgEnum('grupo_raza', ['trabajo_guardia', 'pastora', 'caza', 'otro']);
+/** Talla operativa del perro. */
+export const tallaEnum = pgEnum('talla', ['pequena', 'mediana', 'grande']);
+/** Estado de la ficha del perro — soft-delete vía estado (regla #8). */
+export const estadoPerroEnum = pgEnum('estado_perro', ['activo', 'inactivo']);
+
+export const perros = pgTable('perros', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  tutorId: uuid('tutor_id')
+    .notNull()
+    .references(() => tutores.id, { onDelete: 'restrict' }),
+  nombre: text('nombre').notNull(),
+  fotoKey: text('foto_key'), // key de R2 (perros/{id}/foto.webp), nullable
+  raza: text('raza').notNull(),
+  grupoRaza: grupoRazaEnum('grupo_raza').notNull(),
+  edad: integer('edad'), // años aprox, nullable (no siempre se sabe)
+  talla: tallaEnum('talla').notNull(),
+  condicionFisica: text('condicion_fisica'),
+  temperamento: text('temperamento'),
+  equipamiento: text('equipamiento'),
+  premiosAceptados: text('premios_aceptados'),
+  notasManejo: text('notas_manejo'),
+  // Marca "crítica" sobre las notas de manejo: el paseador las verá sin scroll (4.x).
+  notasCriticas: boolean('notas_criticas').notNull().default(false),
+  estado: estadoPerroEnum('estado').notNull().default('activo'),
+  ...columnaVersion,
+  ...columnasAuditoria,
+});
+
+// ── perro_compatibilidades: pares compatibles del MISMO tutor (FR-008) ─────
+// UNA fila por par canónico (perro_menor_id < perro_mayor_id, orden lexicográfico
+// de uuid impuesto en la capa de queries) — la bidireccionalidad se resuelve en
+// la LECTURA (se busca el id en ambas columnas), nunca duplicando filas.
+// Habilita paseos de hasta 3 perros del mismo tutor (gate real en 3.x, FR-023).
+
+export const perroCompatibilidades = pgTable(
+  'perro_compatibilidades',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perroMenorId: uuid('perro_menor_id')
+      .notNull()
+      .references(() => perros.id, { onDelete: 'restrict' }),
+    perroMayorId: uuid('perro_mayor_id')
+      .notNull()
+      .references(() => perros.id, { onDelete: 'restrict' }),
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    unique('perro_compat_par_uq').on(tabla.perroMenorId, tabla.perroMayorId),
+  ],
+);

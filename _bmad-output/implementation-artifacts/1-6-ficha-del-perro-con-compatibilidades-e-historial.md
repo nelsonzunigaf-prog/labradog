@@ -4,7 +4,7 @@ baseline_commit: bbff193
 
 # Story 1.6: Ficha del perro con compatibilidades e historial
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -25,20 +25,20 @@ so that cada paseo se planifica con la información que el método exige.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Schema — enums + tablas `perros` y `perro_compatibilidades` + migración (AC: 1, 4)
-  - [ ] En `src/lib/db/schema.ts`, definir enums (catálogos del método, concern #4): `grupoRazaEnum = pgEnum('grupo_raza', ['trabajo_guardia', 'pastora', 'caza', 'otro'])` (taxonomía oficial del módulo razas), `tallaEnum = pgEnum('talla', ['pequena', 'mediana', 'grande'])`, `estadoPerroEnum = pgEnum('estado_perro', ['activo', 'inactivo'])` (soft-delete vía estado, regla #8).
-  - [ ] Tabla `perros` (`pgTable('perros', {...})`): `id uuid pk defaultRandom`; `tutorId: uuid('tutor_id').notNull().references(() => tutores.id, { onDelete: 'restrict' })`; `nombre text notNull`; `fotoKey: text('foto_key')` (nullable — key R2); `raza text notNull`; `grupoRaza: grupoRazaEnum('grupo_raza').notNull()`; `edad: integer('edad')` (años aprox, nullable — no siempre se sabe); `talla: tallaEnum('talla').notNull()`; `condicionFisica: text('condicion_fisica')`, `temperamento: text('temperamento')`, `equipamiento: text('equipamiento')`, `premiosAceptados: text('premios_aceptados')` (texto libre: el método no fija taxonomía para estos); `notasManejo: text('notas_manejo')`; `notasCriticas: boolean('notas_criticas').notNull().default(false)` (marca "crítica" — el paseador las verá sin scroll, UX 4.x); `estado: estadoPerroEnum('estado').notNull().default('activo')`; `...columnaVersion`; `...columnasAuditoria`.
-  - [ ] Tabla `perro_compatibilidades` (`pgTable('perro_compatibilidades', {...}, (t) => [...])`): `id uuid pk defaultRandom`; `perroMenorId: uuid('perro_menor_id').notNull().references(() => perros.id, { onDelete: 'restrict' })`; `perroMayorId: uuid('perro_mayor_id').notNull().references(() => perros.id, { onDelete: 'restrict' })`; `...columnasAuditoria`. **Par canónico**: se guarda UNA fila por par con `perro_menor_id < perro_mayor_id` (orden lexicográfico de uuid impuesto en la capa de queries) + `unique('perro_compat_par_uq').on(t.perroMenorId, t.perroMayorId)`. La bidireccionalidad (AC4 "ambos sentidos") se resuelve en la query de lectura (busca el id en ambas columnas), NO duplicando filas.
-  - [ ] `npm run db:generate` → `drizzle/0005_*.sql`; revisar el SQL (3 enums, 2 tablas, FKs restrict, unique); `npm run db:migrate` a Neon. Verificar 0000-0004 intactas.
+- [x] Task 1: Schema — enums + tablas `perros` y `perro_compatibilidades` + migración (AC: 1, 4)
+  - [x] En `src/lib/db/schema.ts`, definir enums (catálogos del método, concern #4): `grupoRazaEnum = pgEnum('grupo_raza', ['trabajo_guardia', 'pastora', 'caza', 'otro'])` (taxonomía oficial del módulo razas), `tallaEnum = pgEnum('talla', ['pequena', 'mediana', 'grande'])`, `estadoPerroEnum = pgEnum('estado_perro', ['activo', 'inactivo'])` (soft-delete vía estado, regla #8).
+  - [x] Tabla `perros` (`pgTable('perros', {...})`): `id uuid pk defaultRandom`; `tutorId: uuid('tutor_id').notNull().references(() => tutores.id, { onDelete: 'restrict' })`; `nombre text notNull`; `fotoKey: text('foto_key')` (nullable — key R2); `raza text notNull`; `grupoRaza: grupoRazaEnum('grupo_raza').notNull()`; `edad: integer('edad')` (años aprox, nullable — no siempre se sabe); `talla: tallaEnum('talla').notNull()`; `condicionFisica: text('condicion_fisica')`, `temperamento: text('temperamento')`, `equipamiento: text('equipamiento')`, `premiosAceptados: text('premios_aceptados')` (texto libre: el método no fija taxonomía para estos); `notasManejo: text('notas_manejo')`; `notasCriticas: boolean('notas_criticas').notNull().default(false)` (marca "crítica" — el paseador las verá sin scroll, UX 4.x); `estado: estadoPerroEnum('estado').notNull().default('activo')`; `...columnaVersion`; `...columnasAuditoria`.
+  - [x] Tabla `perro_compatibilidades` (`pgTable('perro_compatibilidades', {...}, (t) => [...])`): `id uuid pk defaultRandom`; `perroMenorId: uuid('perro_menor_id').notNull().references(() => perros.id, { onDelete: 'restrict' })`; `perroMayorId: uuid('perro_mayor_id').notNull().references(() => perros.id, { onDelete: 'restrict' })`; `...columnasAuditoria`. **Par canónico**: se guarda UNA fila por par con `perro_menor_id < perro_mayor_id` (orden lexicográfico de uuid impuesto en la capa de queries) + `unique('perro_compat_par_uq').on(t.perroMenorId, t.perroMayorId)`. La bidireccionalidad (AC4 "ambos sentidos") se resuelve en la query de lectura (busca el id en ambas columnas), NO duplicando filas.
+  - [x] `npm run db:generate` → `drizzle/0005_*.sql`; revisar el SQL (3 enums, 2 tablas, FKs restrict, unique); `npm run db:migrate` a Neon. Verificar 0000-0004 intactas.
 
-- [ ] Task 2: Validaciones Zod `lib/validations/perros.ts` (AC: 1, 2, 4)
-  - [ ] `crearPerroSchema = z.object({ tutorId: z.string().uuid(), nombre: z.string().min(1), raza: z.string().min(1), grupoRaza: z.enum(['trabajo_guardia','pastora','caza','otro']), edad: z.number().int().min(0).max(30).optional(), talla: z.enum(['pequena','mediana','grande']), condicionFisica: z.string().optional(), temperamento: z.string().optional(), equipamiento: z.string().optional(), premiosAceptados: z.string().optional(), notasManejo: z.string().optional(), notasCriticas: z.boolean().default(false), estado: z.enum(['activo','inactivo']).default('activo') })`.
-  - [ ] `actualizarPerroSchema = crearPerroSchema.omit({ tutorId: true }).extend({ id: z.string().uuid(), version: z.number().int().nonnegative() })` (el perro no cambia de tutor en v1).
-  - [ ] `compatibilidadSchema = z.object({ perroAId: z.string().uuid(), perroBId: z.string().uuid() }).refine((d) => d.perroAId !== d.perroBId, { message: 'Un perro no puede ser compatible consigo mismo' })`.
-  - [ ] Test `perros.test.ts`: grupo de raza fuera de taxonomía, edad negativa/100, talla inválida, compatibilidad consigo mismo, defaults (notasCriticas false, estado activo).
+- [x] Task 2: Validaciones Zod `lib/validations/perros.ts` (AC: 1, 2, 4)
+  - [x] `crearPerroSchema = z.object({ tutorId: z.string().uuid(), nombre: z.string().min(1), raza: z.string().min(1), grupoRaza: z.enum(['trabajo_guardia','pastora','caza','otro']), edad: z.number().int().min(0).max(30).optional(), talla: z.enum(['pequena','mediana','grande']), condicionFisica: z.string().optional(), temperamento: z.string().optional(), equipamiento: z.string().optional(), premiosAceptados: z.string().optional(), notasManejo: z.string().optional(), notasCriticas: z.boolean().default(false), estado: z.enum(['activo','inactivo']).default('activo') })`.
+  - [x] `actualizarPerroSchema = crearPerroSchema.omit({ tutorId: true }).extend({ id: z.string().uuid(), version: z.number().int().nonnegative() })` (el perro no cambia de tutor en v1).
+  - [x] `compatibilidadSchema = z.object({ perroAId: z.string().uuid(), perroBId: z.string().uuid() }).refine((d) => d.perroAId !== d.perroBId, { message: 'Un perro no puede ser compatible consigo mismo' })`.
+  - [x] Test `perros.test.ts`: grupo de raza fuera de taxonomía, edad negativa/100, talla inválida, compatibilidad consigo mismo, defaults (notasCriticas false, estado activo).
 
-- [ ] Task 3: Queries `lib/db/queries/perros.ts` (AC: 1, 2, 4)
-  - [ ] ÚNICO lugar con SQL de perros (regla #2). Sin `event_log` (fichas no son operación sensible). `created_by/updated_by = actor.id`.
+- [x] Task 3: Queries `lib/db/queries/perros.ts` (AC: 1, 2, 4)
+  - [x] ÚNICO lugar con SQL de perros (regla #2). Sin `event_log` (fichas no son operación sensible). `created_by/updated_by = actor.id`.
     - `listarPerrosDeTutor(tutorId)`: perros del tutor ordenados por nombre (columnas de listado: id, nombre, raza, grupoRaza, talla, estado, fotoKey, notasCriticas).
     - `obtenerPerro(id)`: la fila completa + nombre del tutor (join simple o segunda query) + sus compatibilidades resueltas (ver abajo). `null` si no existe.
     - `crearPerro(datos, actor)`: insert con auditoría; retorna `{ id }`.
@@ -46,31 +46,31 @@ so that cada paseo se planifica con la información que el método exige.
     - `marcarCompatibilidad({ perroAId, perroBId }, actor)`: (a) cargar ambos perros y **validar mismo tutor** — si no, `throw new Error('distinto tutor')` que la action traduce (AC4); (b) normalizar el par: `[menor, mayor] = [a, b].sort()` (orden lexicográfico de los uuid); (c) `insert ... .onConflictDoNothing({ target: [perroMenorId, perroMayorId] })` (idempotente: re-marcar no duplica ni falla).
     - `quitarCompatibilidad({ perroAId, perroBId })`: DELETE de la fila del par canónico. (Las compatibilidades son relaciones operativas re-evaluables, NO datos de negocio histórico — el DELETE físico es correcto aquí; documentarlo en el código. Soft-delete aplica a fichas, no a esta relación.)
     - `listarCompatibilidadesDePerro(perroId)`: filas donde `perro_menor_id = id OR perro_mayor_id = id` (bidireccionalidad por lectura, usar `or()` de drizzle), devolviendo el OTRO perro de cada par (id + nombre) — join contra `perros`.
-  - [ ] Tipos exportados (`PerroListado`, `PerroFicha`, `CompatibilidadPerro`).
+  - [x] Tipos exportados (`PerroListado`, `PerroFicha`, `CompatibilidadPerro`).
 
-- [ ] Task 4: Actions `actions/perros.ts` (AC: 1, 2, 3, 4)
-  - [ ] `'use server'`, todas vía `crearAction({ schema, roles: ['admin'], handler })`:
+- [x] Task 4: Actions `actions/perros.ts` (AC: 1, 2, 3, 4)
+  - [x] `'use server'`, todas vía `crearAction({ schema, roles: ['admin'], handler })`:
     - `crearPerro`: valida que el tutor exista (`obtenerTutor` o query propia; si no → ErrorNegocio); llama `qCrearPerro`; `revalidatePath('/admin/tutores/' + input.tutorId)`; retorna `{ id }`.
     - `actualizarPerro`: conflicto de version → `ErrorNegocio('Este registro cambió, recarga.')` (constante compartida — extraerla o repetir literal idéntico al de tutores); revalida `/admin/perros/[id]`.
     - `marcarCompatibilidad`: schema `compatibilidadSchema`; captura el error "distinto tutor" de la query y lanza `ErrorNegocio('Solo se puede marcar compatibilidad entre perros del mismo tutor.')`; revalida la ficha de ambos perros.
     - `quitarCompatibilidad`: schema `compatibilidadSchema` (sin el refine de no-self si molesta — basta el mismo schema); revalida.
-  - [ ] `subirFotoPerro(formData)`: action aparte (binario `File`, fuera de `crearAction` — patrón `subirAnexoPdf` de 1.5): `getActor()` manual + rol admin; valida `image/webp|jpeg|png` y ≤ 2MB (ya viene comprimida del cliente a ≤400KB; el margen tolera fallback sin compresión); `key = \`perros/${perroId}/foto.webp\``; `storage.subirArchivo`; **además persiste `fotoKey`** en la fila del perro (query `actualizarFotoPerro(perroId, fotoKey, actor)` — update simple SIN version, no es edición concurrente de campos de negocio); retorna `{ ok, key }`.
-  - [ ] Test `actions/perros.test.ts` (mocks de getActor + queries, patrón `tutores.test.ts`): crear OK; conflicto de version → mensaje exacto; compatibilidad entre tutores distintos → `{ok:false}` con el mensaje de negocio; rol paseador → 'No autorizado'.
+  - [x] `subirFotoPerro(formData)`: action aparte (binario `File`, fuera de `crearAction` — patrón `subirAnexoPdf` de 1.5): `getActor()` manual + rol admin; valida `image/webp|jpeg|png` y ≤ 2MB (ya viene comprimida del cliente a ≤400KB; el margen tolera fallback sin compresión); `key = \`perros/${perroId}/foto.webp\``; `storage.subirArchivo`; **además persiste `fotoKey`** en la fila del perro (query `actualizarFotoPerro(perroId, fotoKey, actor)` — update simple SIN version, no es edición concurrente de campos de negocio); retorna `{ ok, key }`.
+  - [x] Test `actions/perros.test.ts` (mocks de getActor + queries, patrón `tutores.test.ts`): crear OK; conflicto de version → mensaje exacto; compatibilidad entre tutores distintos → `{ok:false}` con el mensaje de negocio; rol paseador → 'No autorizado'.
 
-- [ ] Task 5: UI (AC: 1, 2, 3, 4, 5)
-  - [ ] **Sección "Perros" en `/admin/tutores/[id]`** (`src/components/perros/seccion-perros.tsx`, cliente o server+cliente): lista los perros del tutor (mini-card: foto si hay — `urlPublica(fotoKey)` resuelta en server —, nombre con link a `/admin/perros/[id]`, raza, talla, badge estado, ⚠️ si `notasCriticas`) + form de alta de perro (campos de FR-007; selects para grupoRaza/talla/estado; checkbox "notas críticas"). Patrón form: `useState` + `noValidate` + `safeParse` + action + mensaje `{ok|error}` (aprendizaje de 1.5: noValidate para mensajes Zod en español).
-  - [ ] **Página `/admin/perros/[id]`** (`src/app/admin/perros/[id]/page.tsx`, Server Component): `obtenerPerro(id)` (notFound si no existe). Header con nombre + link "← {tutor}" a su ficha. Tres bloques:
+- [x] Task 5: UI (AC: 1, 2, 3, 4, 5)
+  - [x] **Sección "Perros" en `/admin/tutores/[id]`** (`src/components/perros/seccion-perros.tsx`, cliente o server+cliente): lista los perros del tutor (mini-card: foto si hay — `urlPublica(fotoKey)` resuelta en server —, nombre con link a `/admin/perros/[id]`, raza, talla, badge estado, ⚠️ si `notasCriticas`) + form de alta de perro (campos de FR-007; selects para grupoRaza/talla/estado; checkbox "notas críticas"). Patrón form: `useState` + `noValidate` + `safeParse` + action + mensaje `{ok|error}` (aprendizaje de 1.5: noValidate para mensajes Zod en español).
+  - [x] **Página `/admin/perros/[id]`** (`src/app/admin/perros/[id]/page.tsx`, Server Component): `obtenerPerro(id)` (notFound si no existe). Header con nombre + link "← {tutor}" a su ficha. Tres bloques:
     1. `form-perro.tsx` (cliente, modo edición con `version`; remontar con `key={perro.version}` — aprendizaje de 1.5) + **foto**: muestra la actual (o placeholder) y un input file que llama `comprimirImagen(file)` (import de `@/lib/comprimir-imagen` — cliente) y luego `subirFotoPerro(formData)`; tras éxito `router.refresh()`. En dev sin R2: la subida no rompe (storage no-op) — la foto no se verá, mostrar el mensaje de éxito igual.
     2. `seccion-compatibilidades.tsx` (cliente): lista las compatibilidades existentes (nombre del otro perro + botón quitar) + select con los demás perros **del mismo tutor** (pasados como prop desde el server: `listarPerrosDeTutor` menos el actual) + botón marcar. Nota visible: "habilita paseos de hasta 3 perros del mismo tutor".
     3. `seccion-historial.tsx` (server o estático): tres sub-bloques (Paseos / Incidentes / Evolución emocional) con **estados vacíos** explícitos ("Aún no hay paseos registrados", etc.) y nota de que se poblarán con la operación (épicas 3/4). NO consultar la tabla `paseos` (no tiene `perro_id` aún).
-  - [ ] La página del tutor (`/admin/tutores/[id]/page.tsx`) agrega la sección Perros (server: `listarPerrosDeTutor` + pasar data).
-  - [ ] Si hace falta un componente shadcn nuevo (p.ej. `card`), agregarlo con `npx shadcn@latest add <c> -y`.
+  - [x] La página del tutor (`/admin/tutores/[id]/page.tsx`) agrega la sección Perros (server: `listarPerrosDeTutor` + pasar data).
+  - [x] Si hace falta un componente shadcn nuevo (p.ej. `card`), agregarlo con `npx shadcn@latest add <c> -y`.
 
-- [ ] Task 6: Tests y validación final (AC: todos)
-  - [ ] Unit verdes (Tasks 2 y 4).
-  - [ ] E2E `e2e/perros.spec.ts` (desktop 1280x900, serial, un login — patrón `tutores.spec.ts`): crear tutor (nombre único) → en su ficha agregar **2 perros** (datos mínimos: nombre/raza/grupo/talla; uno con notas críticas marcadas) → ambos aparecen en la sección Perros → abrir perro 1 → marcar compatibilidad con perro 2 → aparece en la lista → abrir perro 2 → **la compatibilidad también se ve desde el otro lado (AC4 bidireccional)** → quitar compatibilidad desde perro 2 → desaparece → verificar estados vacíos del historial. SIN subir foto (no depender de R2; la compresión de canvas tampoco corre fiable en headless).
-  - [ ] **Actualizar la limpieza de `e2e/global-setup.ts`**: los perros E2E cuelgan de tutores `Tutor E2E %` — borrar ANTES de los tutores: `DELETE FROM perro_compatibilidades WHERE perro_menor_id IN (SELECT id FROM perros WHERE tutor_id IN (SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %')) OR perro_mayor_id IN (...)`; luego `DELETE FROM perros WHERE tutor_id IN (...)`; luego anexos y tutores (orden por FKs restrict). (Aprendizaje de 1.5: sin limpieza la BD acumula basura de test.)
-  - [ ] Regresión: `npm run lint && npm run test && npm run build` + suite E2E completa verdes (auth/equipo/tutores no se rompen).
+- [x] Task 6: Tests y validación final (AC: todos)
+  - [x] Unit verdes (Tasks 2 y 4).
+  - [x] E2E `e2e/perros.spec.ts` (desktop 1280x900, serial, un login — patrón `tutores.spec.ts`): crear tutor (nombre único) → en su ficha agregar **2 perros** (datos mínimos: nombre/raza/grupo/talla; uno con notas críticas marcadas) → ambos aparecen en la sección Perros → abrir perro 1 → marcar compatibilidad con perro 2 → aparece en la lista → abrir perro 2 → **la compatibilidad también se ve desde el otro lado (AC4 bidireccional)** → quitar compatibilidad desde perro 2 → desaparece → verificar estados vacíos del historial. SIN subir foto (no depender de R2; la compresión de canvas tampoco corre fiable en headless).
+  - [x] **Actualizar la limpieza de `e2e/global-setup.ts`**: los perros E2E cuelgan de tutores `Tutor E2E %` — borrar ANTES de los tutores: `DELETE FROM perro_compatibilidades WHERE perro_menor_id IN (SELECT id FROM perros WHERE tutor_id IN (SELECT id FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %')) OR perro_mayor_id IN (...)`; luego `DELETE FROM perros WHERE tutor_id IN (...)`; luego anexos y tutores (orden por FKs restrict). (Aprendizaje de 1.5: sin limpieza la BD acumula basura de test.)
+  - [x] Regresión: `npm run lint && npm run test && npm run build` + suite E2E completa verdes (auth/equipo/tutores no se rompen).
 
 ## Dev Notes
 
@@ -133,12 +133,46 @@ Segunda ficha de negocio (FR-007/008/009), hija de `tutores`. Reutiliza TODO lo 
 
 ### Agent Model Used
 
+claude-opus-4-8 (Claude Code)
+
 ### Debug Log References
+
+- **Selector ambiguo en E2E**: la ficha del tutor tiene dos campos "Nombre" (form del tutor + form de alta de perro) → el spec usa `#perro-nombre` (id del input) en vez de `getByLabel('Nombre')`.
+- **Strict mode por substring**: `getByLabel('Raza')` también matcheaba "Grupo de raza" → `{ exact: true }`. (Tercer caso de strict mode en E2E del proyecto; regla práctica: labels con palabras contenidas en otros labels requieren exact.)
 
 ### Completion Notes List
 
+- **Compatibilidades por par canónico (AC4).** UNA fila por par (`perro_menor_id < perro_mayor_id`, orden lexicográfico impuesto en `parCanonico()`), unique en BD, `onConflictDoNothing` (idempotente). Bidireccionalidad por LECTURA (`or()` en ambas columnas) — verificado por E2E desde ambos perros. Regla "mismo tutor" en la query (`ErrorDistintoTutor`) traducida a `ErrorNegocio` en la action.
+- **Quitar compatibilidad = DELETE físico documentado** (relación operativa re-evaluable, no dato de negocio histórico).
+- **Foto: primer uso real del pipeline 1.4.** `FotoPerro` (cliente) comprime con `comprimirImagen` (WebP ≤1600px ≤400KB) → `subirFotoPerro` (action fuera de `crearAction`, patrón subirAnexoPdf) → R2 con key estable `perros/{id}/foto.webp` → persiste `fotoKey` (update sin version). URL pública resuelta server-side.
+- **Lock optimista en `perros`** — mismo patrón 1.5 (query→null→ErrorNegocio + `key={version}` en la página). Test unitario del conflicto.
+- **Historial (FR-009)**: estados vacíos honestos en `SeccionHistorial` (sin consultar `paseos`). Verificado por E2E.
+- **Limpieza E2E extendida** en `global-setup.ts`: compatibilidades → perros → anexos → tutores (orden por FKs restrict).
+- **Migración `0005` aplicada a Neon** (3 enums + `perros` + `perro_compatibilidades`).
+- **Validación**: lint ✅ · 86/86 unit (+14) ✅ · build ✅ (ruta `/admin/perros/[id]`) · E2E suite completa ✅.
+
+#### Acción requerida de Nelson
+- Ninguna nueva. La foto usa R2 (mismas vars ya anotadas para Railway prod); en dev sin R2 la subida es no-op.
+
 ### File List
+
+- labradog-app/src/lib/db/schema.ts (modificado — 3 enums + tablas perros, perro_compatibilidades)
+- labradog-app/drizzle/0005_strange_brood.sql (nuevo — migración)
+- labradog-app/drizzle/meta/0005_snapshot.json · _journal.json (generados)
+- labradog-app/src/lib/validations/perros.ts (nuevo) · perros.test.ts (nuevo)
+- labradog-app/src/lib/db/queries/perros.ts (nuevo — CRUD + lock optimista + par canónico)
+- labradog-app/src/actions/perros.ts (nuevo — actions + subirFotoPerro) · perros.test.ts (nuevo)
+- labradog-app/src/components/perros/form-perro.tsx (nuevo — crear/editar)
+- labradog-app/src/components/perros/seccion-perros.tsx (nuevo — lista en ficha tutor)
+- labradog-app/src/components/perros/foto-perro.tsx (nuevo — pipeline comprimir+subir)
+- labradog-app/src/components/perros/seccion-compatibilidades.tsx (nuevo)
+- labradog-app/src/components/perros/seccion-historial.tsx (nuevo — estados vacíos FR-009)
+- labradog-app/src/app/admin/perros/[id]/page.tsx (nuevo — perfil del perro)
+- labradog-app/src/app/admin/tutores/[id]/page.tsx (modificado — sección Perros)
+- labradog-app/e2e/perros.spec.ts (nuevo — E2E compatibilidad bidireccional + historial)
+- labradog-app/e2e/global-setup.ts (modificado — limpieza compatibilidades/perros)
 
 ## Change Log
 
 - 2026-06-09: Story 1.6 (ficha del perro con compatibilidades e historial) creada con context engine BMAD. Status → ready-for-dev.
+- 2026-06-09: Implementación de Story 1.6: tablas `perros`/`perro_compatibilidades` (migración 0005, par canónico + unique), queries con lock optimista y bidireccionalidad por lectura, actions (+ `subirFotoPerro` con pipeline comprimir-imagen→R2), UI (sección Perros en ficha tutor, perfil `/admin/perros/[id]` con foto/compatibilidades/historial vacío). 14 tests nuevos + E2E. Limpieza E2E extendida. Status → review.
