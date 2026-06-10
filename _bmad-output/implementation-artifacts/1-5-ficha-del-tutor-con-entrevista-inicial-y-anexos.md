@@ -4,7 +4,7 @@ baseline_commit: 25f0b74
 
 # Story 1.5: Ficha del tutor con entrevista inicial y anexos
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
