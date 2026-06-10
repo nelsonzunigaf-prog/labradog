@@ -41,3 +41,20 @@ export function evaluarRedFlags(redFlags: RedFlagTutor[]): {
   const cantidad = new Set(redFlags).size;
   return { cantidad, sugerirRechazo: cantidad >= 2 };
 }
+
+// ── Especialidades de caminata (Story 1.7) ─────────────────────
+// Catálogo del método y del mercado (FR-039). Informa la asignación de paseos
+// (FR-023) SIN bloquearla — no hay regla de negocio, solo el catálogo. La tupla
+// alimenta el pgEnum `especialidad_caminata` del schema y el z.enum de
+// validaciones (misma fuente única que RED_FLAGS_TUTOR y ESTADOS_PASEO).
+
+export const ESPECIALIDADES_CAMINATA = ['energetica', 'senior', 'olfatoria'] as const;
+
+export type EspecialidadCaminata = (typeof ESPECIALIDADES_CAMINATA)[number];
+
+/** Texto humano de cada especialidad para la UI. */
+export const ETIQUETAS_ESPECIALIDAD: Record<EspecialidadCaminata, string> = {
+  energetica: 'Caminata energética',
+  senior: 'Caminata senior',
+  olfatoria: 'Caminata olfatoria',
+};

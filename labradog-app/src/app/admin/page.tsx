@@ -32,6 +32,12 @@ export default async function AdminHome() {
         >
           Fichas de tutores →
         </Link>
+        <Link
+          href="/admin/paseadores"
+          className="text-sm text-primary underline-offset-4 hover:underline"
+        >
+          Fichas de paseadores →
+        </Link>
       </nav>
 
       <p className="text-sm text-muted-foreground">

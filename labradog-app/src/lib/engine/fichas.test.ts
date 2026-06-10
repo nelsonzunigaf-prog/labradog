@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { RED_FLAGS_TUTOR, ETIQUETAS_RED_FLAG, evaluarRedFlags } from './fichas';
+import {
+  ESPECIALIDADES_CAMINATA,
+  ETIQUETAS_ESPECIALIDAD,
+  ETIQUETAS_RED_FLAG,
+  RED_FLAGS_TUTOR,
+  evaluarRedFlags,
+} from './fichas';
 
 describe('evaluarRedFlags (regla 2+ del método)', () => {
   it('0 red flags → no sugiere rechazo', () => {
@@ -36,6 +42,18 @@ describe('evaluarRedFlags (regla 2+ del método)', () => {
   it('cada red flag de la taxonomía tiene etiqueta humana', () => {
     for (const rf of RED_FLAGS_TUTOR) {
       expect(ETIQUETAS_RED_FLAG[rf]).toBeTruthy();
+    }
+  });
+});
+
+describe('especialidades de caminata (catálogo del método)', () => {
+  it('expone la taxonomía oficial', () => {
+    expect(ESPECIALIDADES_CAMINATA).toEqual(['energetica', 'senior', 'olfatoria']);
+  });
+
+  it('cada especialidad tiene etiqueta humana', () => {
+    for (const e of ESPECIALIDADES_CAMINATA) {
+      expect(ETIQUETAS_ESPECIALIDAD[e]).toBeTruthy();
     }
   });
 });

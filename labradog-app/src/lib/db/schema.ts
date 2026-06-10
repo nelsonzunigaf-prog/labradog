@@ -13,6 +13,7 @@ import { sql } from 'drizzle-orm';
 import {
   bigserial,
   boolean,
+  check,
   date,
   index,
   integer,
@@ -25,7 +26,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { ESTADOS_PASEO } from '../engine/paseo-estados';
-import { RED_FLAGS_TUTOR } from '../engine/fichas';
+import { ESPECIALIDADES_CAMINATA, RED_FLAGS_TUTOR } from '../engine/fichas';
 
 // ── Helpers transversales ──────────────────────────────────────
 
@@ -292,5 +293,45 @@ export const perroCompatibilidades = pgTable(
   },
   (tabla) => [
     unique('perro_compat_par_uq').on(tabla.perroMenorId, tabla.perroMayorId),
+  ],
+);
+
+// ── paseadores: ficha del paseador, 1:1 con su cuenta (Story 1.7) ──────────
+// Extensión de negocio de la cuenta `user` rol paseador (Story 1.3): la cuenta
+// da acceso; la ficha agrega especialidades, % comisión y notas (FR-039).
+// SIN columna de estado (lo gestiona user.estado) ni de certificación (la
+// fuente de verdad llega con Epic 2 — la UI deriva "Sin certificar").
+
+/** Especialidades de caminata — la tupla ESPECIALIDADES_CAMINATA es la fuente única. */
+export const especialidadCaminataEnum = pgEnum('especialidad_caminata', ESPECIALIDADES_CAMINATA);
+
+export const paseadores = pgTable(
+  'paseadores',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    // 1:1 con la cuenta (text: id de Better Auth). `cascade` es una EXCEPCIÓN
+    // justificada al patrón restrict: la ficha no existe sin su cuenta y en
+    // producción las cuentas jamás se borran físicamente (regla #8: se
+    // desactivan) — el delete solo ocurre en seeds de test (global-setup
+    // borra y recrea los usuarios sembrados; con restrict ese seed rompería).
+    userId: text('user_id')
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    telefono: text('telefono').notNull(),
+    especialidades: especialidadCaminataEnum('especialidades')
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    // % de comisión VIGENTE (entero 60-80, FR-036/039). Al completarse un paseo
+    // se congela en paseos.comision_pct_snapshot (5.x): cambiarlo aquí no
+    // reescribe historia.
+    comisionPct: integer('comision_pct').notNull(),
+    notas: text('notas'),
+    ...columnaVersion,
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    check('paseadores_comision_rango', sql`${tabla.comisionPct} >= 60 AND ${tabla.comisionPct} <= 80`),
   ],
 );
