@@ -4,7 +4,7 @@ baseline_commit: 080bcd0
 
 # Story 1.7: Ficha del paseador
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
