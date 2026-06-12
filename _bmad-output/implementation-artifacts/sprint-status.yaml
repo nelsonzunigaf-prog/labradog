@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-06
-last_updated: 2026-06-09
+last_updated: 2026-06-12
 project: labradog
 project_key: NOKEY
 tracking_system: file-system
@@ -54,8 +54,8 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: Paseadores certificados — capacitación
-  epic-2: backlog
-  2-1-seed-del-contenido-de-capacitacion: backlog
+  epic-2: in-progress
+  2-1-seed-del-contenido-de-capacitacion: ready-for-dev
   2-2-navegacion-de-etapas-con-desbloqueo-secuencial: backlog
   2-3-tests-de-etapa-autocorregibles: backlog
   2-4-evaluaciones-practicas-registradas-por-admin: backlog
