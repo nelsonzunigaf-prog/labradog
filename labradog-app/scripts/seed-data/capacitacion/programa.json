@@ -1,0 +1,119 @@
+﻿{
+  "programa": "Paseador de Perros Profesional – Entorno Urbano",
+  "certificacion": "Paseador de Perros Profesional – Entorno Urbano",
+  "duracion_total": "2–3 horas",
+  "modalidad": "Teórico–práctica",
+  "resultado": "Paseador autónomo con criterio profesional",
+  "principios": [
+    "El bienestar del perro y la seguridad colectiva están por sobre el cumplimiento del horario, la comodidad del paseador o las exigencias del tutor.",
+    "Todo lo que impacta en seguridad, control y bienestar no se improvisa: se planifica, se decide con anticipación y se ejecuta con criterio.",
+    "La confianza se construye con verdad, no con silencio: los incidentes se informan siempre, incluso los menores.",
+    "El paseador profesional no busca agradar; busca proteger.",
+    "Un paseo profesional no se mide por lo que salió bien, sino por los riesgos que evitó."
+  ],
+  "etapas": [
+    {
+      "numero": 1,
+      "slug": "fundamentos-del-rol",
+      "titulo": "Fundamentos del rol",
+      "modulo": "Fundamentos",
+      "objetivo": "Comprender que pasear perros es gestión de riesgo, no solo caminar.",
+      "duracion": "15 minutos",
+      "tipo_evaluacion": "test",
+      "archivo_contenido": "etapas/etapa-1-fundamentos-del-rol.md"
+    },
+    {
+      "numero": 2,
+      "slug": "seguridad-y-control-basico",
+      "titulo": "Seguridad y control básico",
+      "modulo": "Control",
+      "objetivo": "Garantizar control físico permanente del perro.",
+      "duracion": "20 minutos",
+      "tipo_evaluacion": "test",
+      "archivo_contenido": "etapas/etapa-2-seguridad-y-control-basico.md"
+    },
+    {
+      "numero": 3,
+      "slug": "lectura-del-perro",
+      "titulo": "Lectura del perro",
+      "modulo": "Lectura",
+      "objetivo": "Leer señales antes del conflicto.",
+      "duracion": "20 minutos",
+      "tipo_evaluacion": "test",
+      "archivo_contenido": "etapas/etapa-3-lectura-del-perro.md"
+    },
+    {
+      "numero": 4,
+      "slug": "decisiones-en-tiempo-real",
+      "titulo": "Decisiones en tiempo real",
+      "modulo": "Decisión",
+      "objetivo": "Entrenar criterio, no memoria.",
+      "duracion": "15 minutos",
+      "tipo_evaluacion": "practica",
+      "archivo_pauta": "pautas/etapa-4-ejercicios-de-decision.md",
+      "archivo_contenido": "etapas/etapa-4-decisiones-en-tiempo-real.md"
+    },
+    {
+      "numero": 5,
+      "slug": "manejo-del-entorno-urbano",
+      "titulo": "Manejo del entorno urbano",
+      "modulo": "Entorno",
+      "objetivo": "Leer el entorno urbano como un sistema de riesgos y ajustar distancia, ritmo y ruta en tiempo real.",
+      "duracion": "15 minutos",
+      "tipo_evaluacion": "test_y_practica",
+      "archivo_contenido": "etapas/etapa-5-manejo-del-entorno-urbano.md"
+    },
+    {
+      "numero": 6,
+      "slug": "manejo-de-riesgo-y-emergencias",
+      "titulo": "Manejo de riesgo y emergencias",
+      "modulo": "Riesgo",
+      "objetivo": "Reconocer situaciones de alto riesgo y actuar con protocolo, no con pánico.",
+      "duracion": "20 minutos",
+      "tipo_evaluacion": "practica",
+      "archivo_pauta": "pautas/etapa-6-casos-de-emergencia.md",
+      "archivo_contenido": "etapas/etapa-6-manejo-de-riesgo-y-emergencias.md"
+    },
+    {
+      "numero": 7,
+      "slug": "relacion-con-el-tutor",
+      "titulo": "Relación con el tutor",
+      "modulo": "Cliente",
+      "objetivo": "Establecer una relación clara, profesional y respetuosa con el tutor, con límites y comunicación honesta.",
+      "duracion": "10 minutos",
+      "tipo_evaluacion": "practica",
+      "archivo_pauta": "pautas/etapa-7-plantilla-entrevista-inicial.md",
+      "archivo_contenido": "etapas/etapa-7-relacion-con-el-tutor.md"
+    },
+    {
+      "numero": 8,
+      "slug": "operacion-y-estandar",
+      "titulo": "Operación y estándar",
+      "modulo": "Operación",
+      "objetivo": "Operar con rutinas claras y repetibles, dejar evidencia objetiva y proyectar imagen profesional.",
+      "duracion": "10 minutos",
+      "tipo_evaluacion": "practica",
+      "archivo_pauta": "pautas/etapa-8-plantilla-registro-de-paseos.md",
+      "archivo_contenido": "etapas/etapa-8-operacion-y-estandar.md"
+    },
+    {
+      "numero": 9,
+      "slug": "evaluacion-final-y-certificacion",
+      "titulo": "Evaluación final y certificación",
+      "modulo": "Evaluación",
+      "objetivo": "Certificar criterio, control, seguridad y autonomía del paseador.",
+      "duracion": "30 minutos",
+      "tipo_evaluacion": "examen_final",
+      "archivo_contenido": "etapas/etapa-9-evaluacion-final-y-certificacion.md"
+    }
+  ],
+  "modulo_razas": {
+    "slug": "razas-temperamento-y-ppaa",
+    "titulo": "Razas, temperamento y PPAA",
+    "objetivo": "Anticipar conductas según genética + entorno, y ajustar el manejo antes de que aparezca el problema.",
+    "duracion": "20 minutos",
+    "desbloqueo": "al aprobar la etapa 9 (FR-011)",
+    "nota_fuente": "El documento original lo ubica entre las etapas 3 y 4; el PRD/épicas decidió desbloquearlo tras la etapa 9. Se mantiene la decisión del PRD.",
+    "archivo_contenido": "etapas/modulo-razas-temperamento-y-ppaa.md"
+  }
+}
