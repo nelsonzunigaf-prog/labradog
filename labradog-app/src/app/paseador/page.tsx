@@ -3,6 +3,7 @@
  * El contenido real (agenda del día, paseos) llega en stories posteriores.
  */
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import { CerrarSesion } from '@/components/auth/cerrar-sesion';
 import { auth } from '@/lib/auth';
 
@@ -21,6 +22,12 @@ export default async function PaseadorHome() {
       <p className="text-sm text-muted-foreground">
         Aquí verás tus paseos de hoy.
       </p>
+      <Link
+        href="/paseador/mi-capacitacion"
+        className="flex min-h-12 items-center rounded-lg border p-3 text-sm font-medium"
+      >
+        Mi capacitación →
+      </Link>
     </main>
   );
 }

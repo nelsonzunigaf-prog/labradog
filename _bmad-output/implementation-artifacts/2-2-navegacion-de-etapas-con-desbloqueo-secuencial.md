@@ -4,7 +4,7 @@ baseline_commit: 829c0e0
 
 # Story 2.2: Navegación de etapas con desbloqueo secuencial
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -25,42 +25,42 @@ so that me capacito a mi ritmo sin saltarme la secuencia del método.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Motor `lib/engine/certificacion.ts` — EL PATRÓN ENGINE (AC: 1, 2)
-  - [ ] Crear `src/lib/engine/certificacion.ts` (funciones PURAS sin I/O, regla #2). Cabecera que lo declare: "Motor de reglas de capacitación/certificación — patrón Engine del Epic 2 (Story 2.2). Las stories 2.3 (scoring), 2.5 (examen) y 2.6 (gate) EXTIENDEN este archivo."
-  - [ ] `export type EstadoEtapa = 'aprobada' | 'actual' | 'bloqueada';`
-  - [ ] `calcularEstadosEtapas(numeros: number[], aprobados: ReadonlySet<number>): Array<{ numero: number; estado: EstadoEtapa }>` — ordena por numero; cada numero aprobado → 'aprobada'; la PRIMERA no aprobada (en orden) → 'actual'; el resto → 'bloqueada'. Con huecos (p.ej. aprobadas {1,3}): la 2 es 'actual', la 3 se muestra 'aprobada', 4+ 'bloqueada' — comportamiento explícito y testeado, no accidental.
-  - [ ] `puedeAbrirEtapa(numero: number, aprobados: ReadonlySet<number>): boolean` — true si su estado es 'aprobada' o 'actual' (derivar DE calcularEstadosEtapas o de la misma regla, sin duplicar lógica).
-  - [ ] `calcularAvance(aprobados: ReadonlySet<number>, totalEtapas: number): { aprobadas: number; total: number }`.
-  - [ ] Tests co-ubicados `certificacion.test.ts` (exhaustivos — este motor es el corazón del epic): sin aprobaciones → 1 actual y 2-10 bloqueadas; {1,2,3} → 4 actual; {1..8} → 9 actual y 10 bloqueada; **{1..9} → 10 (módulo razas) actual — ES el test de FR-011**; {1..10} → todas aprobadas, ninguna actual; huecos {1,3}; set vacío de numeros; numeros desordenados en el input.
+- [x] Task 1: Motor `lib/engine/certificacion.ts` — EL PATRÓN ENGINE (AC: 1, 2)
+  - [x] Crear `src/lib/engine/certificacion.ts` (funciones PURAS sin I/O, regla #2). Cabecera que lo declare: "Motor de reglas de capacitación/certificación — patrón Engine del Epic 2 (Story 2.2). Las stories 2.3 (scoring), 2.5 (examen) y 2.6 (gate) EXTIENDEN este archivo."
+  - [x] `export type EstadoEtapa = 'aprobada' | 'actual' | 'bloqueada';`
+  - [x] `calcularEstadosEtapas(numeros: number[], aprobados: ReadonlySet<number>): Array<{ numero: number; estado: EstadoEtapa }>` — ordena por numero; cada numero aprobado → 'aprobada'; la PRIMERA no aprobada (en orden) → 'actual'; el resto → 'bloqueada'. Con huecos (p.ej. aprobadas {1,3}): la 2 es 'actual', la 3 se muestra 'aprobada', 4+ 'bloqueada' — comportamiento explícito y testeado, no accidental.
+  - [x] `puedeAbrirEtapa(numero: number, aprobados: ReadonlySet<number>): boolean` — true si su estado es 'aprobada' o 'actual' (derivar DE calcularEstadosEtapas o de la misma regla, sin duplicar lógica).
+  - [x] `calcularAvance(aprobados: ReadonlySet<number>, totalEtapas: number): { aprobadas: number; total: number }`.
+  - [x] Tests co-ubicados `certificacion.test.ts` (exhaustivos — este motor es el corazón del epic): sin aprobaciones → 1 actual y 2-10 bloqueadas; {1,2,3} → 4 actual; {1..8} → 9 actual y 10 bloqueada; **{1..9} → 10 (módulo razas) actual — ES el test de FR-011**; {1..10} → todas aprobadas, ninguna actual; huecos {1,3}; set vacío de numeros; numeros desordenados en el input.
 
-- [ ] Task 2: Schema — tabla `aprobaciones_etapa` + migración 0008 (AC: 1)
-  - [ ] En `src/lib/db/schema.ts` (después de las tablas de contenido de 2.1): tabla `aprobaciones_etapa` — el registro de "el paseador X aprobó la etapa Y". MÍNIMA a propósito (precedente `paseos` 1.4: no inventar columnas especulativas — 2.3/2.4/2.5 agregan lo suyo por ALTER si lo necesitan): `id uuid pk defaultRandom`; `paseadorId: uuid('paseador_id').notNull().references(() => paseadores.id, { onDelete: 'restrict' })` (la capacitación pertenece a la FICHA — 2.6 certifica la ficha); `etapaId: uuid('etapa_id').notNull().references(() => etapas.id, { onDelete: 'restrict' })`; `...columnasAuditoria` (created_by = 'sistema' cuando aprueba un test autocorregido en 2.3, o el admin id en 2.4); unique `('aprobaciones_etapa_paseador_etapa_uq').on(paseadorId, etapaId)`.
-  - [ ] Comentario en el schema: quién escribe aquí (2.3 test aprobado, 2.4 veredicto práctico, 2.5 examen) — esta story solo LEE.
-  - [ ] `npm run db:generate` → `drizzle/0008_*.sql`; revisar SQL; `npm run db:migrate` a Neon.
+- [x] Task 2: Schema — tabla `aprobaciones_etapa` + migración 0008 (AC: 1)
+  - [x] En `src/lib/db/schema.ts` (después de las tablas de contenido de 2.1): tabla `aprobaciones_etapa` — el registro de "el paseador X aprobó la etapa Y". MÍNIMA a propósito (precedente `paseos` 1.4: no inventar columnas especulativas — 2.3/2.4/2.5 agregan lo suyo por ALTER si lo necesitan): `id uuid pk defaultRandom`; `paseadorId: uuid('paseador_id').notNull().references(() => paseadores.id, { onDelete: 'restrict' })` (la capacitación pertenece a la FICHA — 2.6 certifica la ficha); `etapaId: uuid('etapa_id').notNull().references(() => etapas.id, { onDelete: 'restrict' })`; `...columnasAuditoria` (created_by = 'sistema' cuando aprueba un test autocorregido en 2.3, o el admin id en 2.4); unique `('aprobaciones_etapa_paseador_etapa_uq').on(paseadorId, etapaId)`.
+  - [x] Comentario en el schema: quién escribe aquí (2.3 test aprobado, 2.4 veredicto práctico, 2.5 examen) — esta story solo LEE.
+  - [x] `npm run db:generate` → `drizzle/0008_*.sql`; revisar SQL; `npm run db:migrate` a Neon.
 
-- [ ] Task 3: Queries `lib/db/queries/capacitacion.ts` (AC: 1, 2, 4, 5)
-  - [ ] ÚNICO lugar con SQL de capacitación (lectura). Tipos exportados.
+- [x] Task 3: Queries `lib/db/queries/capacitacion.ts` (AC: 1, 2, 4, 5)
+  - [x] ÚNICO lugar con SQL de capacitación (lectura). Tipos exportados.
     - `obtenerCapacitacionParaUsuario(userId)`: resuelve la ficha (`paseadores` por `user_id`); si no hay ficha → `null` (la page muestra "Tu ficha aún no está creada — contacta al administrador"). Trae `etapas` (numero, slug, titulo, modulo, duracion, tipoEvaluacion, esModuloRazas — SIN contenido_md, la lista no lo necesita) + numeros aprobados de `aprobaciones_etapa` → **llama al motor** (`calcularEstadosEtapas`, `calcularAvance`) → retorna `{ etapas: [{...etapa, estado}], avance }`.
     - `obtenerEtapaParaUsuario(userId, slug)`: etapa por slug + aprobados del paseador → **llama `puedeAbrirEtapa`** → si puede: `{ etapa con contenido_md y pauta NO incluida, estado }`; si NO puede: `{ bloqueada: true, titulo, numero }` **sin `contenido_md`** (el contenido jamás viaja al cliente si está bloqueado — el gate es de servidor, AC5). Sin ficha o slug inexistente → `null`.
-  - [ ] Test de delegación `capacitacion.test.ts` co-ubicado (AC2): `vi.mock('../index')` (módulo db) con un stub mínimo del chain de drizzle + `vi.spyOn` sobre el motor — verifica que `obtenerEtapaParaUsuario` consulta `puedeAbrirEtapa` con (numero, aprobados) y que con el spy forzado a `false` la respuesta NO incluye `contenido_md`. Si mockear el chain de drizzle resulta frágil, alternativa aceptada: extraer la composición a una función pura exportada `componerEtapaVisible(etapa, aprobados)` en el MOTOR y testear que la query la usa (spy) — la regla nunca duplicada fuera del motor.
+  - [x] Test de delegación `capacitacion.test.ts` co-ubicado (AC2): `vi.mock('../index')` (módulo db) con un stub mínimo del chain de drizzle + `vi.spyOn` sobre el motor — verifica que `obtenerEtapaParaUsuario` consulta `puedeAbrirEtapa` con (numero, aprobados) y que con el spy forzado a `false` la respuesta NO incluye `contenido_md`. Si mockear el chain de drizzle resulta frágil, alternativa aceptada: extraer la composición a una función pura exportada `componerEtapaVisible(etapa, aprobados)` en el MOTOR y testear que la query la usa (spy) — la regla nunca duplicada fuera del motor.
 
-- [ ] Task 4: UI móvil primero (AC: 1, 3, 4, 5)
-  - [ ] **Dependencia nueva: `react-markdown`** (renderiza el `contenido_md` como árbol React — sin `dangerouslySetInnerHTML`, funciona en Server Components). `npm install react-markdown`. **Registrar la decisión en `_bmad-output/planning-artifacts/architecture.md`** (sección de stack/decisiones): motivo — contenido markdown curado de 2.1 necesita render con jerarquía visual; alternativas descartadas: parser propio (reinventar), `marked` (+`dangerouslySetInnerHTML`, smell de seguridad).
-  - [ ] `src/app/paseador/mi-capacitacion/page.tsx` (Server Component): `obtenerCapacitacionParaUsuario(userId de la sesión)`. Header "Mi capacitación" + avance ("X de 10 etapas") con barra de progreso simple (div + width %, sin libs). Lista de etapas como Cards/filas táctiles (≥48px, móvil primero): numero o "Módulo razas" (es_modulo_razas), titulo, duracion, y estado visual — ✅ aprobada (link), ▶ actual (link, destacada), 🔒 bloqueada (sin link, atenuada). Sin ficha → mensaje claro.
-  - [ ] `src/app/paseador/mi-capacitacion/[slug]/page.tsx` (Server Component): `obtenerEtapaParaUsuario`. `null` → `notFound()`. `bloqueada` → mensaje "Aprueba la etapa anterior para desbloquear esta" + link de vuelta (AC5). Visible → título + `<ReactMarkdown>` del `contenido_md` con estilos Tailwind legibles en móvil (headings con jerarquía, listas con aire, tablas con scroll horizontal `overflow-x-auto`, blockquotes destacados — clases manuales vía `components={...}` de react-markdown o un wrapper con selectores; SIN plugin typography). Link "← Mi capacitación".
-  - [ ] Enlace "Mi capacitación →" en `src/app/paseador/page.tsx` (placeholder "Mi día" de 1.2 — agregar la navegación SIN romper lo existente).
-  - [ ] NO mostrar `pauta_md` al paseador (es la guía del evaluador, 2.4). NO botones de "rendir test" (2.3).
+- [x] Task 4: UI móvil primero (AC: 1, 3, 4, 5)
+  - [x] **Dependencia nueva: `react-markdown`** (renderiza el `contenido_md` como árbol React — sin `dangerouslySetInnerHTML`, funciona en Server Components). `npm install react-markdown`. **Registrar la decisión en `_bmad-output/planning-artifacts/architecture.md`** (sección de stack/decisiones): motivo — contenido markdown curado de 2.1 necesita render con jerarquía visual; alternativas descartadas: parser propio (reinventar), `marked` (+`dangerouslySetInnerHTML`, smell de seguridad).
+  - [x] `src/app/paseador/mi-capacitacion/page.tsx` (Server Component): `obtenerCapacitacionParaUsuario(userId de la sesión)`. Header "Mi capacitación" + avance ("X de 10 etapas") con barra de progreso simple (div + width %, sin libs). Lista de etapas como Cards/filas táctiles (≥48px, móvil primero): numero o "Módulo razas" (es_modulo_razas), titulo, duracion, y estado visual — ✅ aprobada (link), ▶ actual (link, destacada), 🔒 bloqueada (sin link, atenuada). Sin ficha → mensaje claro.
+  - [x] `src/app/paseador/mi-capacitacion/[slug]/page.tsx` (Server Component): `obtenerEtapaParaUsuario`. `null` → `notFound()`. `bloqueada` → mensaje "Aprueba la etapa anterior para desbloquear esta" + link de vuelta (AC5). Visible → título + `<ReactMarkdown>` del `contenido_md` con estilos Tailwind legibles en móvil (headings con jerarquía, listas con aire, tablas con scroll horizontal `overflow-x-auto`, blockquotes destacados — clases manuales vía `components={...}` de react-markdown o un wrapper con selectores; SIN plugin typography). Link "← Mi capacitación".
+  - [x] Enlace "Mi capacitación →" en `src/app/paseador/page.tsx` (placeholder "Mi día" de 1.2 — agregar la navegación SIN romper lo existente).
+  - [x] NO mostrar `pauta_md` al paseador (es la guía del evaluador, 2.4). NO botones de "rendir test" (2.3).
 
-- [ ] Task 5: E2E `e2e/capacitacion.spec.ts` (AC: 1, 4, 5)
-  - [ ] Patrón establecido: desktop... NO — esta es vista de paseador: usar el proyecto `mobile-chrome` ya configurado, serial, un login con `paseador.test@labradog.cl`. Preparación de datos vía SQL directo (patrón global-setup): crear ficha de paseador para `paseador.test` si no existe (INSERT a `paseadores`) — NO depender de `paseadores.spec.ts` (corre después alfabéticamente y la limpieza de global-setup borra fichas cada corrida).
-  - [ ] Flujo: login paseador → "Mi capacitación" → ve 10 ítems, etapa 1 "actual" (abrible), etapa 2 y módulo razas bloqueados, avance "0 de 10" → abre etapa 1 → ve título "Fundamentos del rol" y contenido renderizado (un heading del markdown) → navega por URL directa al slug de la etapa 2 → mensaje de bloqueo SIN contenido → (vía SQL) inserta aprobación de etapa 1 → recarga lista → etapa 1 ✅, etapa 2 "actual", avance "1 de 10" → abre etapa 2 OK.
-  - [ ] Selectores con ids/`exact: true` (strict mode — aprendizaje 1.6/1.7). Limpieza: borrar `aprobaciones_etapa` del paseador test al inicio del spec (la ficha cae por cascade del global-setup; las aprobaciones tienen FK restrict a paseadores → verificar orden de limpieza: borrar aprobaciones ANTES de que global-setup borre users/fichas… ATENCIÓN: global-setup borra `user` → cascade `paseadores` → pero `aprobaciones_etapa.paseador_id` es RESTRICT → **el delete de global-setup ROMPERÍA**. SOLUCIÓN obligatoria: agregar `DELETE FROM aprobaciones_etapa` en `e2e/global-setup.ts` ANTES del delete de users (patrón ya previsto en 1.7: "si el run falla por restos, agregar DELETE defensivo").
-  - [ ] Smoke de regresión: los specs existentes siguen verdes.
+- [x] Task 5: E2E `e2e/capacitacion.spec.ts` (AC: 1, 4, 5)
+  - [x] Patrón establecido: desktop... NO — esta es vista de paseador: usar el proyecto `mobile-chrome` ya configurado, serial, un login con `paseador.test@labradog.cl`. Preparación de datos vía SQL directo (patrón global-setup): crear ficha de paseador para `paseador.test` si no existe (INSERT a `paseadores`) — NO depender de `paseadores.spec.ts` (corre después alfabéticamente y la limpieza de global-setup borra fichas cada corrida).
+  - [x] Flujo: login paseador → "Mi capacitación" → ve 10 ítems, etapa 1 "actual" (abrible), etapa 2 y módulo razas bloqueados, avance "0 de 10" → abre etapa 1 → ve título "Fundamentos del rol" y contenido renderizado (un heading del markdown) → navega por URL directa al slug de la etapa 2 → mensaje de bloqueo SIN contenido → (vía SQL) inserta aprobación de etapa 1 → recarga lista → etapa 1 ✅, etapa 2 "actual", avance "1 de 10" → abre etapa 2 OK.
+  - [x] Selectores con ids/`exact: true` (strict mode — aprendizaje 1.6/1.7). Limpieza: borrar `aprobaciones_etapa` del paseador test al inicio del spec (la ficha cae por cascade del global-setup; las aprobaciones tienen FK restrict a paseadores → verificar orden de limpieza: borrar aprobaciones ANTES de que global-setup borre users/fichas… ATENCIÓN: global-setup borra `user` → cascade `paseadores` → pero `aprobaciones_etapa.paseador_id` es RESTRICT → **el delete de global-setup ROMPERÍA**. SOLUCIÓN obligatoria: agregar `DELETE FROM aprobaciones_etapa` en `e2e/global-setup.ts` ANTES del delete de users (patrón ya previsto en 1.7: "si el run falla por restos, agregar DELETE defensivo").
+  - [x] Smoke de regresión: los specs existentes siguen verdes.
 
-- [ ] Task 6: Regresión final (AC: 6)
-  - [ ] `npm run lint && npm run test && npm run build` verdes (111+ unit + los nuevos del motor/queries).
-  - [ ] Suite E2E completa verde (13 existentes + capacitacion.spec).
-  - [ ] Verificar `package.json`: SOLO `react-markdown` agregada; architecture.md actualizado con la decisión.
+- [x] Task 6: Regresión final (AC: 6)
+  - [x] `npm run lint && npm run test && npm run build` verdes (111+ unit + los nuevos del motor/queries).
+  - [x] Suite E2E completa verde (13 existentes + capacitacion.spec).
+  - [x] Verificar `package.json`: SOLO `react-markdown` agregada; architecture.md actualizado con la decisión.
 
 ## Dev Notes
 
@@ -124,12 +124,42 @@ Primera story de cara al paseador del Epic 2 y la que **define el patrón Engine
 
 ### Agent Model Used
 
+claude-fable-5 (Claude Code)
+
 ### Debug Log References
+
+- Único fallo E2E: selector `getByText('Módulo razas', { exact: true })` — el texto real es "Módulo razas · 20 minutos" (etiqueta + duración en el mismo `<p>`). Corregido con regex + aserción sobre el título del módulo. El resto pasó a la primera.
+- El conflicto previsto con `paseadores.spec.ts` (espera la cuenta SIN ficha y corre después alfabéticamente) se resolvió como planeó la story: `beforeAll` crea la ficha vía SQL, `afterAll` borra aprobaciones + ficha. Suite completa 14/14 verde.
 
 ### Completion Notes List
 
+- **Patrón Engine establecido**: `lib/engine/certificacion.ts` con `calcularEstadosEtapas`, `puedeAbrirEtapa` y `calcularAvance` (puras, sobre números de etapa). 12 tests, incluido el de FR-011 explícito ({1..9} → módulo razas actual) y el caso de huecos {1,3} con comportamiento definido.
+- **Tabla `aprobaciones_etapa`** (migración 0008): mínima, cuelga de `paseadores.id` (la ficha), FK restrict + unique (paseador, etapa). Comentario en schema documenta quién escribe (2.3/2.4/2.5) — esta story solo lee.
+- **Test de delegación (AC2)**: `queries/capacitacion.test.ts` (7 tests) con mock del chain de drizzle (cola de resultados vía `vi.hoisted`) + `vi.spyOn` sobre el motor: prueba que `puedeAbrirEtapa` recibe (numero, aprobados) y que su veredicto MANDA sobre la respuesta (forzado a false → sin `contenido_md`; el string "Contenido secreto" no aparece serializado). No hizo falta la alternativa `componerEtapaVisible`.
+- **Gate de servidor (AC5)**: la query retorna `{ bloqueada: true }` sin `contenido_md`; verificado por unit (serialización) y E2E (URL directa a etapa 2 → mensaje, `contenido-etapa` count 0).
+- **UI móvil (AC3/AC4)**: lista con filas táctiles `min-h-12` (48px), iconos de estado (✓/▶/🔒), barra de avance derivada, bloqueadas sin link y atenuadas; detalle con `react-markdown` y estilos Tailwind manuales (tablas con scroll horizontal, blockquotes destacados). `react-markdown@10.1.0` registrada en architecture.md (más la variación `.mjs` de 2.1 que el review había sugerido registrar).
+- **global-setup**: DELETE de `aprobaciones_etapa` (scoped a los emails de prueba) ANTES del delete de users — sin esto, la FK restrict rompía la limpieza (trampa prevista por la story).
+- **Validación**: lint ✅ · **130/130 unit** (+19) ✅ · build ✅ (rutas `/paseador/mi-capacitacion` y `[slug]`) · **E2E 14/14** ✅ (nuevo spec móvil con flujo completo: bloqueo → aprobación SQL → desbloqueo).
+
+#### Acción requerida de Nelson
+
+- Probar en localhost (vista móvil): login `paseador.test@labradog.cl` / `PaseadorTest123` → "Mi capacitación". OJO: ese usuario no tiene ficha fuera de los E2E — para probar a mano, crear la ficha desde `/admin/paseadores` primero (o usar el flujo completo: admin crea ficha → paseador ve su capacitación).
+- Al cutover de prod: nada extra (la tabla 0008 nace vacía).
+
 ### File List
+
+- labradog-app/src/lib/engine/certificacion.ts (nuevo — motor patrón Engine) · certificacion.test.ts (nuevo, 12 tests)
+- labradog-app/src/lib/db/schema.ts (modificado — tabla aprobaciones_etapa)
+- labradog-app/drizzle/0008_massive_arclight.sql (nuevo — migración) · drizzle/meta/0008_snapshot.json · _journal.json (generados)
+- labradog-app/src/lib/db/queries/capacitacion.ts (nuevo — lectura con delegación al motor) · capacitacion.test.ts (nuevo, 7 tests)
+- labradog-app/src/app/paseador/mi-capacitacion/page.tsx (nuevo — lista con estados y avance)
+- labradog-app/src/app/paseador/mi-capacitacion/[slug]/page.tsx (nuevo — contenido markdown / mensaje de bloqueo)
+- labradog-app/src/app/paseador/page.tsx (modificado — link a Mi capacitación)
+- labradog-app/e2e/capacitacion.spec.ts (nuevo — flujo móvil completo) · e2e/global-setup.ts (modificado — delete defensivo de aprobaciones)
+- labradog-app/package.json · package-lock.json (modificados — react-markdown@10.1.0)
+- _bmad-output/planning-artifacts/architecture.md (modificado — decisión react-markdown + .mjs de scripts)
 
 ## Change Log
 
 - 2026-06-12: Story 2.2 (navegación de etapas con desbloqueo secuencial) creada con context engine BMAD. Define el patrón Engine del Epic 2. Status → ready-for-dev.
+- 2026-06-12: Implementación completa: motor certificacion.ts (patrón Engine, 12 tests con FR-011 explícito), tabla aprobaciones_etapa (0008), queries con test de delegación por spy (7 tests), UI móvil con react-markdown (registrada en architecture.md), E2E móvil con ciclo bloqueo→aprobación→desbloqueo. lint+130 unit+build+14 E2E verdes. Status → review.

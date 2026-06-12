@@ -147,6 +147,7 @@ npm install drizzle-orm better-auth
 - **Estado:** RSC + `useActionState` para formularios; sin librería de estado global.
 - **Conectividad intermitente:** cola local (localStorage + reintento al reconectar) SOLO en checklist pre-paseo y registro de paseo. Sin PWA offline completa.
 - **Móvil primero** en las vistas del paseador; desktop primero en admin.
+- **Markdown de contenido (`react-markdown`)** *(decisión Story 2.2, jun-2026)*: el contenido de capacitación (curado en 2.1) se renderiza con `react-markdown` en Server Components — árbol React sin `dangerouslySetInnerHTML`. Descartados: parser propio (reinventar) y `marked` (HTML string + dangerouslySetInnerHTML). Estilos manuales con Tailwind; NO se agrega `@tailwindcss/typography`.
 
 ### Infrastructure & Deployment
 
@@ -236,7 +237,7 @@ labradog-app/
 │   └── liquidacion.spec.ts
 ├── drizzle/                      # migraciones generadas
 ├── scripts/
-│   └── seed-capacitacion.ts      # migración one-shot de los Word (etapas + banco 100 preguntas)
+│   └── seed-capacitacion.mjs     # seed idempotente del contenido curado (etapas + tests + banco 100) — .mjs, no .ts: los scripts standalone usan node + neon() sin runner TS (decisión Story 2.1)
 ├── public/
 └── src/
     ├── middleware.ts             # auth + roles por grupo de ruta

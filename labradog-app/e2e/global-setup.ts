@@ -61,6 +61,18 @@ export default async function globalSetup() {
   `;
   await sql`DELETE FROM tutores WHERE nombre LIKE 'Tutor E2E %' OR nombre LIKE 'Tutor Verif %'`;
 
+  // Aprobaciones de capacitación de los usuarios de prueba (Story 2.2): su FK a
+  // paseadores es RESTRICT (historial de negocio) — sin este DELETE explícito,
+  // el DELETE de "user" de abajo fallaría al intentar cascadear la ficha.
+  const emailsPrueba = Object.values(USUARIOS_PRUEBA).map((u) => u.email);
+  await sql`
+    DELETE FROM aprobaciones_etapa WHERE paseador_id IN (
+      SELECT p.id FROM paseadores p
+      JOIN "user" u ON u.id = p.user_id
+      WHERE u.email = ANY(${emailsPrueba})
+    )
+  `;
+
   for (const u of Object.values(USUARIOS_PRUEBA)) {
     const userId = randomUUID();
     const accountId = randomUUID();

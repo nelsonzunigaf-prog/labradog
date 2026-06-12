@@ -402,3 +402,31 @@ export const preguntasExamen = pgTable(
     check('preguntas_examen_correcta_rango', sql`${tabla.correcta} >= 0 AND ${tabla.correcta} <= 2`),
   ],
 );
+
+// ── aprobaciones_etapa: PROGRESO del paseador en el programa (Story 2.2) ────
+// "El paseador X aprobó la etapa Y" — una fila por par (unique). Cuelga de la
+// FICHA (paseadores.id), no de la cuenta: la certificación es de la ficha
+// (2.6). MÍNIMA a propósito (precedente `paseos` 1.4): 2.3/2.4/2.5 agregan lo
+// suyo por ALTER si lo necesitan. Quién escribe aquí: 2.3 (test aprobado,
+// created_by='sistema'), 2.4 (veredicto práctico, created_by=admin id),
+// 2.5 (examen final). Story 2.2 solo LEE: el motor certificacion.ts deriva
+// estados y avance de estas filas (sin columna etapa_actual — una sola fuente
+// de verdad). FK restrict: historial de negocio, jamás se borra en cascada
+// (e2e/global-setup hace DELETE explícito antes de limpiar usuarios).
+
+export const aprobacionesEtapa = pgTable(
+  'aprobaciones_etapa',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    paseadorId: uuid('paseador_id')
+      .notNull()
+      .references(() => paseadores.id, { onDelete: 'restrict' }),
+    etapaId: uuid('etapa_id')
+      .notNull()
+      .references(() => etapas.id, { onDelete: 'restrict' }),
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    unique('aprobaciones_etapa_paseador_etapa_uq').on(tabla.paseadorId, tabla.etapaId),
+  ],
+);
