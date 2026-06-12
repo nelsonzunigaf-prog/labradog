@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labradog — pantallas clave (Menta &amp; Mar)</title>
+<style>
+/* ============================================================
+   LABRADOG — PANTALLAS CLAVE · TEMA V3 "MENTA & MAR"
+   Hex tomados 1:1 de color-themes-1.html (variación 3):
+
+   primary (menta):     #5FBFA8
+   secondary (mar):     #4E7E9B
+   primary-soft:        #DCF3EC
+   page-bg:             #F2FAF7
+   card-bg:             #FFFFFF
+   text:                #1F3833
+   text-secondary:      #5E7A74
+   border:              #D6EAE2
+   success:             #34A084
+   warning:             #E0B14E
+   danger:              #D16A5E
+
+   Acentos derivados (también de la V3 del selector):
+   badge mar suave:     #E1ECF3  (fondo) + #4E7E9B (texto)
+   titular marca:       #2A4456  (azul petróleo oscuro)
+   ============================================================ */
+
+:root {
+  --primary: #5FBFA8;        /* menta */
+  --secondary: #4E7E9B;      /* mar / azul petróleo */
+  --primary-soft: #DCF3EC;
+  --page: #F2FAF7;
+  --card: #FFFFFF;
+  --text: #1F3833;
+  --text2: #5E7A74;
+  --border: #D6EAE2;
+  --success: #34A084;
+  --warning: #E0B14E;
+  --danger: #D16A5E;
+  --brand-dark: #2A4456;
+  --sea-soft: #E1ECF3;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #ECF2EF;                /* neutro verdoso para destacar las maquetas */
+  color: var(--text);
+  padding: 36px 28px 56px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-head { max-width: 1900px; margin: 0 auto 26px; }
+.page-head h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.4px; color: var(--brand-dark); }
+.page-head p { margin-top: 6px; font-size: 14px; color: var(--text2); }
+
+/* ---- pista horizontal de maquetas ---- */
+.screens {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: 18px;
+}
+.screen { flex: none; }
+.screen .caption {
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
+  color: #7E8C92; margin-bottom: 10px;
+}
+
+/* ---- marco genérico de dispositivo ---- */
+.frame {
+  background: var(--page);                       /* #F2FAF7 */
+  border: 1px solid var(--border);               /* #D6EAE2 */
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(31, 56, 51, 0.10);
+  overflow: hidden;
+  position: relative;
+}
+.mobile { width: 390px; min-height: 700px; }
+.desktop { width: 900px; min-height: 620px; }
+
+/* ============================================================
+   MAQUETA 1 · LOGIN (móvil 390px)
+   ============================================================ */
+.login {
+  background: var(--primary-soft);               /* #DCF3EC menta muy claro */
+  display: flex; flex-direction: column; align-items: center;
+  padding: 84px 24px 48px;
+}
+/* huellas decorativas sutiles (emoji, sin red, sin JS) */
+.paw-deco {
+  position: absolute; font-size: 56px; opacity: 0.07;
+  user-select: none; pointer-events: none; line-height: 1;
+}
+.login .brand { text-align: center; margin-bottom: 40px; position: relative; z-index: 1; }
+.login .brand h2 {
+  font-size: 32px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--brand-dark);                      /* #2A4456 */
+}
+.login .brand p { margin-top: 8px; font-size: 15px; color: var(--text2); } /* #5E7A74 */
+
+.login-card {
+  width: 100%;
+  background: var(--card);                       /* #FFFFFF */
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 22px;
+  box-shadow: 0 4px 18px rgba(31, 56, 51, 0.08);
+  position: relative; z-index: 1;
+}
+.field { margin-bottom: 18px; }
+.field label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text); margin-bottom: 7px;
+}
+.field .input {
+  display: flex; align-items: center;
+  height: 48px;                                   /* táctil */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 14px; color: #9AAEA8;
+  background: #FBFEFD;
+}
+.field .input.focus {
+  border: 2px solid var(--primary);              /* #5FBFA8 */
+  color: var(--text);
+  box-shadow: 0 0 0 3px rgba(95, 191, 168, 0.18);
+}
+.btn-primary {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 50px;
+  background: var(--primary);                    /* #5FBFA8 menta */
+  color: #FFFFFF;
+  font-size: 15px; font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(95, 191, 168, 0.40);
+  margin-top: 4px;
+}
+.login-card .forgot {
+  display: block; text-align: center;
+  margin-top: 18px; font-size: 13.5px; font-weight: 600;
+  color: var(--secondary);                       /* #4E7E9B */
+  text-decoration: none;
+}
+.login .foot {
+  margin-top: auto; font-size: 12px; color: var(--text2);
+  position: relative; z-index: 1; padding-top: 36px;
+}
+
+/* ============================================================
+   MAQUETA 2 · MI CAPACITACIÓN (móvil 390px, paseador)
+   ============================================================ */
+.training {
+  display: flex; flex-direction: column;
+  padding: 18px 16px 86px;                        /* deja aire para la bottom-nav */
+}
+.training .back {
+  font-size: 14px; font-weight: 600; color: var(--secondary);
+  margin-bottom: 10px; text-decoration: none; display: inline-block;
+  padding: 6px 0;
+}
+.training h2 { font-size: 23px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); margin-bottom: 16px; }
+
+.progress-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 5px rgba(31, 56, 51, 0.06);
+}
+.progress-card .label { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 10px; }
+.progress-card .label strong { color: var(--text); font-weight: 600; }
+.progress-card .label span { color: var(--secondary); font-weight: 800; }
+.bar { height: 10px; border-radius: 999px; background: var(--primary-soft); overflow: hidden; }
+.bar .fill { display: block; width: 30%; height: 100%; border-radius: 999px; background: var(--primary); }
+
+.stage {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 60px;                               /* fila táctil ≥48px */
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(31, 56, 51, 0.05);
+}
+.stage .icon {
+  flex: none; width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.stage .body { flex: 1; min-width: 0; }
+.stage .name { display: block; font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.stage .meta { display: block; font-size: 12px; margin-top: 2px; }
+
+.stage.done .icon { background: #DDF1EA; color: var(--success); font-weight: 800; } /* éxito #34A084 */
+.stage.done .meta { color: var(--success); font-weight: 600; }
+
+.stage.current {
+  border: 2px solid var(--primary);
+  box-shadow: 0 4px 14px rgba(31, 56, 51, 0.10);
+  padding: 12px 13px;
+}
+.stage.current .icon { background: var(--primary-soft); color: var(--secondary); }
+.stage.current .meta { color: var(--text2); }
+.stage .pill {
+  flex: none;
+  background: var(--secondary);                  /* dual: la acción usa el mar #4E7E9B */
+  color: #FFFFFF;
+  font-size: 12.5px; font-weight: 700;
+  padding: 9px 16px; border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(42, 68, 86, 0.25);
+}
+
+.stage.locked { opacity: 0.55; box-shadow: none; }
+.stage.locked .icon { background: var(--primary-soft); font-size: 14px; }
+.stage.locked .meta { color: var(--text2); }
+
+/* bottom-nav fija al marco del teléfono */
+.bottom-nav {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -3px 12px rgba(31, 56, 51, 0.06);
+}
+.bottom-nav .tab {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px;
+  min-height: 62px;                               /* táctil */
+  font-size: 12px; font-weight: 600;
+  color: var(--text2);
+  text-decoration: none;
+}
+.bottom-nav .tab .ico { font-size: 19px; line-height: 1; }
+.bottom-nav .tab.active {
+  color: var(--secondary);
+  font-weight: 800;
+  box-shadow: inset 0 3px 0 var(--primary);       /* indicador menta arriba */
+  background: #F4FBF8;
+}
+
+/* ============================================================
+   MAQUETA 3 · ADMIN — FICHAS DE PASEADORES (desktop 900px)
+   ============================================================ */
+.admin-top {
+  display: flex; align-items: center; gap: 26px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 26px;
+}
+.admin-top .logo { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--brand-dark); white-space: nowrap; }
+.admin-top nav { display: flex; gap: 4px; flex: 1; }
+.admin-top nav a {
+  font-size: 13.5px; font-weight: 600; color: var(--text2);
+  text-decoration: none; padding: 8px 13px; border-radius: 10px;
+}
+.admin-top nav a.active {
+  color: var(--secondary);
+  background: var(--sea-soft);                   /* #E1ECF3 */
+  font-weight: 800;
+}
+.admin-top .logout { font-size: 13px; font-weight: 600; color: var(--text2); text-decoration: none; white-space: nowrap; }
+
+.admin-body { padding: 22px 26px 30px; }
+.breadcrumb { font-size: 12.5px; color: var(--text2); margin-bottom: 14px; }
+.breadcrumb b { color: var(--text); font-weight: 600; }
+
+.admin-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.admin-head h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
+.btn-create {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--primary); color: #FFFFFF;
+  font-size: 13.5px; font-weight: 700;
+  padding: 10px 18px; border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(95, 191, 168, 0.35);
+}
+
+/* tabla estilo shadcn */
+.table-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(31, 56, 51, 0.05);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead th {
+  text-align: left; font-size: 12px; font-weight: 700;
+  color: var(--text2); text-transform: none;
+  padding: 12px 16px;
+  background: #F7FCFA;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #F7FCFA; }
+
+.who { display: flex; align-items: center; gap: 11px; }
+.who .ini {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--primary-soft); color: var(--secondary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+.who .nm { font-weight: 600; }
+.who .mail { display: block; font-size: 12px; color: var(--text2); font-weight: 400; margin-top: 2px; }
+
+.badge {
+  display: inline-block; border-radius: 999px;
+  padding: 4px 12px; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.badge.ok { background: #DDF1EA; color: var(--success); }       /* verde: Activo */
+.badge.neutral { background: #EDF1F0; color: var(--text2); }    /* neutro: Sin certificar */
+.badge.mint { background: var(--primary-soft); color: #2E8A74; }/* menta: Certificada */
+
+.pct { display: flex; align-items: center; gap: 9px; color: var(--text2); font-weight: 700; font-size: 12.5px; }
+.mini-bar { width: 76px; height: 7px; border-radius: 999px; background: var(--primary-soft); overflow: hidden; }
+.mini-bar i { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>🐾 Labradog — pantallas clave · Menta &amp; Mar</h1>
+  <p>Tres maquetas 1:1 con la variación 3 del selector de temas. Menta #5FBFA8 para lo primario, azul petróleo #4E7E9B para acciones y navegación.</p>
+</div>
+
+<div class="screens">
+
+  <!-- ================= 1 · LOGIN (móvil 390px) ================= -->
+  <div class="screen">
+    <div class="caption">1 · Login — móvil 390px</div>
+    <div class="frame mobile login">
+      <!-- huellas decorativas sutiles -->
+      <span class="paw-deco" style="top: 26px;  left: 18px;  transform: rotate(-18deg);">🐾</span>
+      <span class="paw-deco" style="top: 120px; right: 24px; transform: rotate(14deg); font-size: 42px;">🐾</span>
+      <span class="paw-deco" style="bottom: 150px; left: 30px; transform: rotate(9deg); font-size: 48px;">🐾</span>
+      <span class="paw-deco" style="bottom: 48px; right: 36px; transform: rotate(-12deg);">🐾</span>
+      <span class="paw-deco" style="top: 300px; left: -14px; transform: rotate(22deg); font-size: 64px;">🐾</span>
+
+      <div class="brand">
+        <h2>Labradog 🐾</h2>
+        <p>Cuidamos a quienes cuidan</p>
+      </div>
+
+      <div class="login-card">
+        <div class="field">
+          <label>Email</label>
+          <div class="input focus">paseador.test@labradog.cl</div>
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <div class="input">••••••••</div>
+        </div>
+        <div class="btn-primary">Ingresar</div>
+        <a class="forgot" href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <div class="foot">© 2026 Labradog · Santiago de Chile</div>
+    </div>
+  </div>
+
+  <!-- ============ 2 · MI CAPACITACIÓN (móvil 390px) ============ -->
+  <div class="screen">
+    <div class="caption">2 · Mi capacitación — móvil 390px (paseador)</div>
+    <div class="frame mobile training">
+      <a class="back" href="#">← Mi día</a>
+      <h2>Mi capacitación</h2>
+
+      <div class="progress-card">
+        <div class="label"><strong>3 de 10 etapas aprobadas</strong><span>30%</span></div>
+        <div class="bar"><span class="fill"></span></div>
+      </div>
+
+      <div class="stage done">
+        <span class="icon">✓</span>
+        <span class="body">
+          <span class="name">Etapa 1 · Fundamentos del rol</span>
+          <span class="meta">Aprobada</span>
+        </span>
+      </div>
+
+      <div class="stage done">
+        <span class="icon">✓</span>
+        <span class="body">
+          <span class="name">Etapa 2 · Bienestar y señales del perro</span>
+          <span class="meta">Aprobada</span>
+        </span>
+      </div>
+
+      <div class="stage current">
+        <span class="icon">▶</span>
+        <span class="body">
+          <span class="name">Etapa 4 · Decisiones en tiempo real</span>
+          <span class="meta">En curso</span>
+        </span>
+        <span class="pill">Continuar</span>
+      </div>
+
+      <div class="stage locked">
+        <span class="icon">🔒</span>
+        <span class="body">
+          <span class="name">Etapa 5 · Manejo del entorno urbano</span>
+          <span class="meta">Se desbloquea al aprobar la etapa 4</span>
+        </span>
+      </div>
+
+      <div class="bottom-nav">
+        <a class="tab" href="#"><span class="ico">🐾</span>Mi día</a>
+        <a class="tab active" href="#"><span class="ico">🎓</span>Mi capacitación</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 3 · ADMIN — FICHAS DE PASEADORES (desktop 900px) ===== -->
+  <div class="screen">
+    <div class="caption">3 · Admin — fichas de paseadores — desktop 900px</div>
+    <div class="frame desktop">
+      <div class="admin-top">
+        <span class="logo">Labradog 🐾</span>
+        <nav>
+          <a href="#">Equipo</a>
+          <a href="#">Tutores</a>
+          <a href="#">Perros</a>
+          <a class="active" href="#">Paseadores</a>
+          <a href="#">Capacitación</a>
+        </nav>
+        <a class="logout" href="#">Cerrar sesión</a>
+      </div>
+
+      <div class="admin-body">
+        <div class="breadcrumb">Inicio / <b>Paseadores</b></div>
+
+        <div class="admin-head">
+          <h2>Fichas de paseadores</h2>
+          <span class="btn-create">＋ Crear ficha</span>
+        </div>
+
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Paseador</th>
+                <th>Estado</th>
+                <th>Especialidades</th>
+                <th>Capacitación</th>
+                <th>Certificación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="who">
+                    <span class="ini">PP</span>
+                    <span>
+                      <span class="nm">Paseador Prueba</span>
+                      <span class="mail">paseador.test@labradog.cl</span>
+                    </span>
+                  </span>
+                </td>
+                <td><span class="badge ok">Activo</span></td>
+                <td>Caminata energética, senior</td>
+                <td><span class="pct"><span class="mini-bar"><i style="width:70%"></i></span> 70%</span></td>
+                <td><span class="badge neutral">Sin certificar</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="who">
+                    <span class="ini">CM</span>
+                    <span>
+                      <span class="nm">Caro Muñoz</span>
+                      <span class="mail">caro.munoz@labradog.cl</span>
+                    </span>
+                  </span>
+                </td>
+                <td><span class="badge ok">Activo</span></td>
+                <td>Caminata olfatoria</td>
+                <td><span class="pct"><span class="mini-bar"><i style="width:65%"></i></span> 65%</span></td>
+                <td><span class="badge mint">Certificada 🎓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

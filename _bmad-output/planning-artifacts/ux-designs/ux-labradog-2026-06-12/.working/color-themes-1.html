@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labradog — elige tu tema</title>
+<style>
+/* ============================================================
+   LABRADOG — PÁGINA DE SELECCIÓN DE TEMA
+   4 variaciones. Cada una documenta sus hex aquí abajo y los
+   expone como CSS custom properties para mapear a shadcn/ui.
+   ============================================================
+
+   V1 · SALVIA — calma natural-clínica (cuidado profesional)
+   primary:        #5E9C7B
+   primary-soft:   #DCEEE3
+   page-bg:        #F4F8F5
+   card-bg:        #FFFFFF
+   text:           #25342C
+   text-secondary: #6B7F75
+   border:         #DCE7E0
+   success:        #3E8E62
+   warning:        #D9A441   (ámbar suave)
+   danger:         #C0604F
+
+   V2 · CIELO — confianza serena (seguridad / protocolo)
+   primary:        #4A86B8
+   primary-soft:   #DCEAF6
+   page-bg:        #F2F7FB
+   card-bg:        #FFFFFF
+   text:           #233241
+   text-secondary: #65798B
+   border:         #DAE5EE
+   success:        #3F9D74
+   warning:        #E0935F   (coral suave)
+   danger:         #C95C5C
+
+   V3 · MENTA & MAR — fresco y moderno (la marca joven)
+   primary (menta):    #5FBFA8
+   secondary (mar):    #4E7E9B
+   primary-soft:       #DCF3EC
+   page-bg:            #F2FAF7
+   card-bg:            #FFFFFF
+   text:               #1F3833
+   text-secondary:     #5E7A74
+   border:             #D6EAE2
+   success:            #34A084
+   warning:            #E0B14E
+   danger:             #D16A5E
+
+   V4 · BOSQUE AMABLE — orgánico y premium (planes ELITE)
+   primary:        #4E8A6A
+   primary-soft:   #E2EFE6
+   page-bg:        #FAF7F0   (crema cálida)
+   card-bg:        #FFFEFA
+   text:           #2D3A31
+   text-secondary: #74806F
+   border:         #E5DFD0
+   success:        #5B9A72
+   warning:        #C99A4B
+   danger:         #B96150
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #F0F1F3;            /* fondo neutro claro de la página selectora */
+  color: #2B3038;
+  padding: 40px 24px 64px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-head { max-width: 1240px; margin: 0 auto 32px; text-align: center; }
+.page-head h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.4px; }
+.page-head h1 .paw { font-size: 24px; vertical-align: 2px; }
+.page-head p { margin-top: 8px; font-size: 15px; color: #6A7280; max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+/* ---- grid 2x2 responsive ---- */
+.themes-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+@media (max-width: 980px) { .themes-grid { grid-template-columns: 1fr; } }
+
+/* ---- tarjeta de variación ---- */
+.variation {
+  background: #FFFFFF;
+  border: 1px solid #E3E5E9;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(20, 30, 25, 0.05);
+}
+.variation > header { margin-bottom: 16px; }
+.variation > header h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.2px; color: var(--text); }
+.variation > header h2 .dot {
+  display: inline-block; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--primary); margin-right: 8px;
+}
+.variation > header p { margin-top: 4px; font-size: 13.5px; color: #6A7280; }
+
+/* ---- chips de tokens ---- */
+.tokens { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #E3E5E9; border-radius: 999px;
+  padding: 4px 10px 4px 5px; background: #FAFBFC;
+  font-size: 11px; color: #4A515C;
+}
+.chip .sw {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+.chip code {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: 10.5px; color: #818996;
+}
+
+/* ---- mock móvil del paseador ---- */
+.mock-zone { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+
+.phone {
+  width: 360px; max-width: 100%;
+  background: var(--page);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  padding: 20px 16px 22px;
+  box-shadow: 0 8px 24px rgba(25, 40, 32, 0.10), inset 0 0 0 4px rgba(255,255,255,0.45);
+}
+.phone .app-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.phone .app-header h3 { font-size: 19px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+.phone .app-header .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary-soft); color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; align-self: center;
+}
+
+.progress-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(25, 40, 32, 0.06);
+}
+.progress-card .label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 9px; }
+.progress-card .label strong { color: var(--text); font-weight: 600; }
+.progress-card .label span { color: var(--text2); font-weight: 700; }
+.bar { height: 9px; border-radius: 999px; background: var(--primary-soft); overflow: hidden; }
+.bar .fill { width: 30%; height: 100%; border-radius: 999px; background: var(--primary); }
+
+.stage {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(25, 40, 32, 0.05);
+}
+.stage .icon {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.stage .body { flex: 1; min-width: 0; }
+.stage .body .name { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.stage .body .meta { font-size: 11.5px; margin-top: 2px; }
+
+.stage.done .icon { background: color-mix(in srgb, var(--success) 16%, white); color: var(--success); font-weight: 800; }
+.stage.done .meta { color: var(--success); font-weight: 600; }
+
+.stage.current {
+  border: 2px solid var(--primary);
+  box-shadow: 0 4px 14px rgba(25, 40, 32, 0.10);
+  padding: 12px 13px;
+}
+.stage.current .icon { background: var(--primary-soft); color: var(--primary); }
+.stage.current .meta { color: var(--text2); }
+.stage .pill {
+  flex: none;
+  background: var(--primary); color: #fff;
+  font-size: 12px; font-weight: 700;
+  padding: 7px 14px; border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(25, 40, 32, 0.18);
+}
+
+.stage.locked { opacity: 0.55; box-shadow: none; }
+.stage.locked .icon { background: var(--primary-soft); font-size: 13px; }
+.stage.locked .meta { color: var(--text2); }
+
+/* fallback si color-mix no existe: el aro de éxito hereda primary-soft */
+@supports not (background: color-mix(in srgb, red 50%, white)) {
+  .stage.done .icon { background: var(--primary-soft); }
+}
+
+/* ---- mini fila admin desktop ---- */
+.admin-row-wrap { width: 100%; }
+.admin-row-wrap .caption { font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px; color: #8B919C; margin-bottom: 6px; font-weight: 700; }
+.admin-row {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 13.5px; color: var(--text);
+}
+.admin-row .who { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.admin-row .who .ini {
+  width: 30px; height: 30px; border-radius: 50%; flex: none;
+  background: var(--primary-soft); color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+}
+.admin-row .badge {
+  background: var(--primary-soft); color: var(--primary);
+  border-radius: 999px; padding: 4px 11px;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.admin-row .pct { display: flex; align-items: center; gap: 8px; color: var(--text2); font-weight: 700; font-size: 12.5px; }
+.admin-row .mini-bar { width: 70px; height: 6px; border-radius: 999px; background: var(--primary-soft); overflow: hidden; }
+.admin-row .mini-bar i { display: block; width: 70%; height: 100%; background: var(--primary); border-radius: 999px; }
+
+/* ============ paletas por variación ============ */
+.v1 { --primary:#5E9C7B; --primary-soft:#DCEEE3; --page:#F4F8F5; --card:#FFFFFF;
+      --text:#25342C; --text2:#6B7F75; --border:#DCE7E0;
+      --success:#3E8E62; --warn:#D9A441; --danger:#C0604F; }
+
+.v2 { --primary:#4A86B8; --primary-soft:#DCEAF6; --page:#F2F7FB; --card:#FFFFFF;
+      --text:#233241; --text2:#65798B; --border:#DAE5EE;
+      --success:#3F9D74; --warn:#E0935F; --danger:#C95C5C; }
+
+.v3 { --primary:#5FBFA8; --secondary:#4E7E9B; --primary-soft:#DCF3EC; --page:#F2FAF7; --card:#FFFFFF;
+      --text:#1F3833; --text2:#5E7A74; --border:#D6EAE2;
+      --success:#34A084; --warn:#E0B14E; --danger:#D16A5E; }
+/* Menta & Mar: la pill y los elementos de acción usan el azul petróleo
+   para el contraste dual menta+mar */
+.v3 .stage .pill { background: var(--secondary); }
+.v3 .admin-row .badge { background: #E1ECF3; color: var(--secondary); }
+.v3 .phone .app-header h3 { color: #2A4456; }
+
+.v4 { --primary:#4E8A6A; --primary-soft:#E2EFE6; --page:#FAF7F0; --card:#FFFEFA;
+      --text:#2D3A31; --text2:#74806F; --border:#E5DFD0;
+      --success:#5B9A72; --warn:#C99A4B; --danger:#B96150; }
+.v4 .phone { box-shadow: 0 8px 24px rgba(60, 50, 30, 0.10), inset 0 0 0 4px rgba(255,253,247,0.5); }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1><span class="paw">🐾</span> Labradog — elige tu tema</h1>
+  <p>Cuatro registros emocionales sobre verdes y azules pastel. Se pueden mezclar: por ejemplo,
+     la paleta de <strong>Salvia</strong> con el acento coral de <strong>Cielo</strong>,
+     o los fondos cremas de <strong>Bosque amable</strong> bajo el dual de <strong>Menta &amp; Mar</strong>.
+     Los hex están documentados en el CSS para mapearlos a las variables de shadcn/ui.</p>
+</div>
+
+<div class="themes-grid">
+
+  <!-- ============ V1 · SALVIA ============ -->
+  <section class="variation v1">
+    <header>
+      <h2><span class="dot"></span>1 · Salvia</h2>
+      <p>Calma natural-clínica: el verde del cuidado profesional, sereno y confiable.</p>
+    </header>
+    <div class="tokens">
+      <span class="chip"><span class="sw" style="background:#5E9C7B"></span>primario <code>#5E9C7B</code></span>
+      <span class="chip"><span class="sw" style="background:#DCEEE3"></span>primario-suave <code>#DCEEE3</code></span>
+      <span class="chip"><span class="sw" style="background:#F4F8F5"></span>fondo página <code>#F4F8F5</code></span>
+      <span class="chip"><span class="sw" style="background:#FFFFFF"></span>fondo card <code>#FFFFFF</code></span>
+      <span class="chip"><span class="sw" style="background:#25342C"></span>texto <code>#25342C</code></span>
+      <span class="chip"><span class="sw" style="background:#6B7F75"></span>texto sec. <code>#6B7F75</code></span>
+      <span class="chip"><span class="sw" style="background:#DCE7E0"></span>borde <code>#DCE7E0</code></span>
+      <span class="chip"><span class="sw" style="background:#3E8E62"></span>éxito <code>#3E8E62</code></span>
+      <span class="chip"><span class="sw" style="background:#D9A441"></span>alerta <code>#D9A441</code></span>
+      <span class="chip"><span class="sw" style="background:#C0604F"></span>peligro <code>#C0604F</code></span>
+    </div>
+    <div class="mock-zone">
+      <div class="phone">
+        <div class="app-header">
+          <h3>Mi capacitación 🐾</h3>
+          <span class="avatar">PP</span>
+        </div>
+        <div class="progress-card">
+          <div class="label"><strong>3 de 10 etapas aprobadas</strong><span>30%</span></div>
+          <div class="bar"><span class="fill"></span></div>
+        </div>
+        <div class="stage done">
+          <span class="icon">✓</span>
+          <span class="body">
+            <span class="name">Etapa 1 · Fundamentos del rol</span>
+            <span class="meta" style="display:block">Aprobada</span>
+          </span>
+        </div>
+        <div class="stage current">
+          <span class="icon">▶</span>
+          <span class="body">
+            <span class="name">Etapa 4 · Decisiones en tiempo real</span>
+            <span class="meta" style="display:block">En curso</span>
+          </span>
+          <span class="pill">Continuar</span>
+        </div>
+        <div class="stage locked">
+          <span class="icon">🔒</span>
+          <span class="body">
+            <span class="name">Etapa 5 · Manejo del entorno urbano</span>
+            <span class="meta" style="display:block">Se desbloquea al aprobar la etapa 4</span>
+          </span>
+        </div>
+      </div>
+      <div class="admin-row-wrap">
+        <div class="caption">Admin · desktop</div>
+        <div class="admin-row">
+          <span class="who"><span class="ini">PP</span> Paseador Prueba</span>
+          <span class="badge">✅ Certificado</span>
+          <span class="pct"><span class="mini-bar"><i></i></span> 70%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2 · CIELO ============ -->
+  <section class="variation v2">
+    <header>
+      <h2><span class="dot"></span>2 · Cielo</h2>
+      <p>Confianza serena: azul de seguridad y protocolo, la plataforma que cumple.</p>
+    </header>
+    <div class="tokens">
+      <span class="chip"><span class="sw" style="background:#4A86B8"></span>primario <code>#4A86B8</code></span>
+      <span class="chip"><span class="sw" style="background:#DCEAF6"></span>primario-suave <code>#DCEAF6</code></span>
+      <span class="chip"><span class="sw" style="background:#F2F7FB"></span>fondo página <code>#F2F7FB</code></span>
+      <span class="chip"><span class="sw" style="background:#FFFFFF"></span>fondo card <code>#FFFFFF</code></span>
+      <span class="chip"><span class="sw" style="background:#233241"></span>texto <code>#233241</code></span>
+      <span class="chip"><span class="sw" style="background:#65798B"></span>texto sec. <code>#65798B</code></span>
+      <span class="chip"><span class="sw" style="background:#DAE5EE"></span>borde <code>#DAE5EE</code></span>
+      <span class="chip"><span class="sw" style="background:#3F9D74"></span>éxito <code>#3F9D74</code></span>
+      <span class="chip"><span class="sw" style="background:#E0935F"></span>alerta coral <code>#E0935F</code></span>
+      <span class="chip"><span class="sw" style="background:#C95C5C"></span>peligro <code>#C95C5C</code></span>
+    </div>
+    <div class="mock-zone">
+      <div class="phone">
+        <div class="app-header">
+          <h3>Mi capacitación 🐾</h3>
+          <span class="avatar">PP</span>
+        </div>
+        <div class="progress-card">
+          <div class="label"><strong>3 de 10 etapas aprobadas</strong><span>30%</span></div>
+          <div class="bar"><span class="fill"></span></div>
+        </div>
+        <div class="stage done">
+          <span class="icon">✓</span>
+          <span class="body">
+            <span class="name">Etapa 1 · Fundamentos del rol</span>
+            <span class="meta" style="display:block">Aprobada</span>
+          </span>
+        </div>
+        <div class="stage current">
+          <span class="icon">▶</span>
+          <span class="body">
+            <span class="name">Etapa 4 · Decisiones en tiempo real</span>
+            <span class="meta" style="display:block">En curso</span>
+          </span>
+          <span class="pill">Continuar</span>
+        </div>
+        <div class="stage locked">
+          <span class="icon">🔒</span>
+          <span class="body">
+            <span class="name">Etapa 5 · Manejo del entorno urbano</span>
+            <span class="meta" style="display:block">Se desbloquea al aprobar la etapa 4</span>
+          </span>
+        </div>
+      </div>
+      <div class="admin-row-wrap">
+        <div class="caption">Admin · desktop</div>
+        <div class="admin-row">
+          <span class="who"><span class="ini">PP</span> Paseador Prueba</span>
+          <span class="badge">✅ Certificado</span>
+          <span class="pct"><span class="mini-bar"><i></i></span> 70%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V3 · MENTA & MAR ============ -->
+  <section class="variation v3">
+    <header>
+      <h2><span class="dot"></span>3 · Menta &amp; Mar</h2>
+      <p>Fresco y moderno: dual menta + azul petróleo, la energía de la marca joven.</p>
+    </header>
+    <div class="tokens">
+      <span class="chip"><span class="sw" style="background:#5FBFA8"></span>primario menta <code>#5FBFA8</code></span>
+      <span class="chip"><span class="sw" style="background:#4E7E9B"></span>secundario mar <code>#4E7E9B</code></span>
+      <span class="chip"><span class="sw" style="background:#DCF3EC"></span>primario-suave <code>#DCF3EC</code></span>
+      <span class="chip"><span class="sw" style="background:#F2FAF7"></span>fondo página <code>#F2FAF7</code></span>
+      <span class="chip"><span class="sw" style="background:#FFFFFF"></span>fondo card <code>#FFFFFF</code></span>
+      <span class="chip"><span class="sw" style="background:#1F3833"></span>texto <code>#1F3833</code></span>
+      <span class="chip"><span class="sw" style="background:#5E7A74"></span>texto sec. <code>#5E7A74</code></span>
+      <span class="chip"><span class="sw" style="background:#D6EAE2"></span>borde <code>#D6EAE2</code></span>
+      <span class="chip"><span class="sw" style="background:#34A084"></span>éxito <code>#34A084</code></span>
+      <span class="chip"><span class="sw" style="background:#E0B14E"></span>alerta <code>#E0B14E</code></span>
+      <span class="chip"><span class="sw" style="background:#D16A5E"></span>peligro <code>#D16A5E</code></span>
+    </div>
+    <div class="mock-zone">
+      <div class="phone">
+        <div class="app-header">
+          <h3>Mi capacitación 🐾</h3>
+          <span class="avatar">PP</span>
+        </div>
+        <div class="progress-card">
+          <div class="label"><strong>3 de 10 etapas aprobadas</strong><span>30%</span></div>
+          <div class="bar"><span class="fill"></span></div>
+        </div>
+        <div class="stage done">
+          <span class="icon">✓</span>
+          <span class="body">
+            <span class="name">Etapa 1 · Fundamentos del rol</span>
+            <span class="meta" style="display:block">Aprobada</span>
+          </span>
+        </div>
+        <div class="stage current">
+          <span class="icon">▶</span>
+          <span class="body">
+            <span class="name">Etapa 4 · Decisiones en tiempo real</span>
+            <span class="meta" style="display:block">En curso</span>
+          </span>
+          <span class="pill">Continuar</span>
+        </div>
+        <div class="stage locked">
+          <span class="icon">🔒</span>
+          <span class="body">
+            <span class="name">Etapa 5 · Manejo del entorno urbano</span>
+            <span class="meta" style="display:block">Se desbloquea al aprobar la etapa 4</span>
+          </span>
+        </div>
+      </div>
+      <div class="admin-row-wrap">
+        <div class="caption">Admin · desktop</div>
+        <div class="admin-row">
+          <span class="who"><span class="ini">PP</span> Paseador Prueba</span>
+          <span class="badge">✅ Certificado</span>
+          <span class="pct"><span class="mini-bar"><i></i></span> 70%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V4 · BOSQUE AMABLE ============ -->
+  <section class="variation v4">
+    <header>
+      <h2><span class="dot"></span>4 · Bosque amable</h2>
+      <p>Orgánico y premium: verde profundo sobre cremas cálidas, el tono de los planes ELITE.</p>
+    </header>
+    <div class="tokens">
+      <span class="chip"><span class="sw" style="background:#4E8A6A"></span>primario <code>#4E8A6A</code></span>
+      <span class="chip"><span class="sw" style="background:#E2EFE6"></span>primario-suave <code>#E2EFE6</code></span>
+      <span class="chip"><span class="sw" style="background:#FAF7F0"></span>fondo página <code>#FAF7F0</code></span>
+      <span class="chip"><span class="sw" style="background:#FFFEFA"></span>fondo card <code>#FFFEFA</code></span>
+      <span class="chip"><span class="sw" style="background:#2D3A31"></span>texto <code>#2D3A31</code></span>
+      <span class="chip"><span class="sw" style="background:#74806F"></span>texto sec. <code>#74806F</code></span>
+      <span class="chip"><span class="sw" style="background:#E5DFD0"></span>borde <code>#E5DFD0</code></span>
+      <span class="chip"><span class="sw" style="background:#5B9A72"></span>éxito <code>#5B9A72</code></span>
+      <span class="chip"><span class="sw" style="background:#C99A4B"></span>alerta <code>#C99A4B</code></span>
+      <span class="chip"><span class="sw" style="background:#B96150"></span>peligro <code>#B96150</code></span>
+    </div>
+    <div class="mock-zone">
+      <div class="phone">
+        <div class="app-header">
+          <h3>Mi capacitación 🐾</h3>
+          <span class="avatar">PP</span>
+        </div>
+        <div class="progress-card">
+          <div class="label"><strong>3 de 10 etapas aprobadas</strong><span>30%</span></div>
+          <div class="bar"><span class="fill"></span></div>
+        </div>
+        <div class="stage done">
+          <span class="icon">✓</span>
+          <span class="body">
+            <span class="name">Etapa 1 · Fundamentos del rol</span>
+            <span class="meta" style="display:block">Aprobada</span>
+          </span>
+        </div>
+        <div class="stage current">
+          <span class="icon">▶</span>
+          <span class="body">
+            <span class="name">Etapa 4 · Decisiones en tiempo real</span>
+            <span class="meta" style="display:block">En curso</span>
+          </span>
+          <span class="pill">Continuar</span>
+        </div>
+        <div class="stage locked">
+          <span class="icon">🔒</span>
+          <span class="body">
+            <span class="name">Etapa 5 · Manejo del entorno urbano</span>
+            <span class="meta" style="display:block">Se desbloquea al aprobar la etapa 4</span>
+          </span>
+        </div>
+      </div>
+      <div class="admin-row-wrap">
+        <div class="caption">Admin · desktop</div>
+        <div class="admin-row">
+          <span class="who"><span class="ini">PP</span> Paseador Prueba</span>
+          <span class="badge">✅ Certificado</span>
+          <span class="pct"><span class="mini-bar"><i></i></span> 70%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

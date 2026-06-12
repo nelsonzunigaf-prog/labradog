@@ -1,0 +1,8 @@
+# Override de equipo — mandato de Nelson (2026-06-12): el code review evalúa
+# UX/visual como una dimensión más, no opcional.
+[workflow]
+persistent_facts = [
+  "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/DESIGN.md",
+  "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/EXPERIENCE.md",
+  "REGLA DE EQUIPO: si el diff toca UI, el review DEBE auditar contra DESIGN.md y EXPERIENCE.md (tokens vs colores ad-hoc, volver consistente, estados, contraste AA, táctil ≥48px) — los hallazgos de UX se triagean igual que los de código.",
+]

@@ -1,0 +1,9 @@
+# Override de equipo — mandato de Nelson (2026-06-12): toda story DEBE evaluar
+# UX y cuidar los aspectos visuales. Los spines de UX son contratos al mismo
+# nivel que architecture.md.
+[workflow]
+persistent_facts = [
+  "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/DESIGN.md",
+  "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/EXPERIENCE.md",
+  "REGLA DE EQUIPO: toda story con pantallas o cambios visibles DEBE incluir en sus tasks y ACs el cumplimiento de DESIGN.md (tokens, componentes, contraste AA) y EXPERIENCE.md (app shell, volver consistente, bottom-nav paseador, estados vacío/carga/error, táctil ≥48px). Si la story toca UI y no referencia estos contratos, está incompleta.",
+]
