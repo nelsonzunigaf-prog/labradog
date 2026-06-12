@@ -11,3 +11,6 @@ _bmad/custom/*.user.toml
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Dependencias (npx en la raíz puede crear node_modules accidental)
+node_modules/
