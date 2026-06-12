@@ -13,6 +13,10 @@ import { eventLog } from './schema';
 // ── Catálogo de eventos sensibles ──────────────────────────────
 // Extender aquí al implementar cada story (2.4: evaluaciones,
 // 3.4: cancelaciones, 5.x: pagos/liquidaciones/overrides...).
+
+/** Conteo por tabla del seed de capacitación. */
+type ConteoSeed = { insertadas: number; actualizadas: number; sinCambios: number };
+
 export type CatalogoEventos = {
   /** Evento técnico de arranque/verificación del sistema */
   sistema_inicializado: { version: string };
@@ -20,6 +24,17 @@ export type CatalogoEventos = {
   cuenta_creada: { email: string; rol: 'admin' | 'paseador' };
   cuenta_desactivada: { email: string };
   cuenta_reactivada: { email: string };
+  /**
+   * Story 2.1 — seed del contenido de capacitación. Lo escribe
+   * scripts/seed-capacitacion.mjs vía SQL crudo (un .mjs no puede importar este
+   * módulo TS — mismo precedente que crear-admin.mjs); se cataloga aquí para que
+   * el catálogo tipado refleje TODOS los tipos reales presentes en event_log.
+   */
+  capacitacion_seed_ejecutado: {
+    etapas: ConteoSeed;
+    preguntas_etapa: ConteoSeed;
+    preguntas_examen: ConteoSeed;
+  };
 };
 
 export type TipoEvento = keyof CatalogoEventos;

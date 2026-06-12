@@ -1,10 +1,10 @@
-﻿---
+---
 baseline_commit: 554fd0c
 ---
 
 # Story 2.1: Seed del contenido de capacitación
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -59,6 +59,20 @@ so that el programa completo vive en la plataforma sin transcripción manual.
 - [x] Task 6: Regresión final (AC: 5)
   - [x] `npm run lint && npm run test && npm run build` verdes (101+ unit existentes + los nuevos).
   - [x] Suite E2E completa verde (no hay E2E nuevo: esta story no tiene UI — la navegación llega en 2.2).
+
+### Review Findings
+
+- [x] [Review][Decision] Integridad del examen final: distribución de respuestas del banco — 89 de 100 preguntas tienen `correcta: 1` (la del medio) y ninguna `correcta: 0` (fiel al Word original, donde la ✔ casi siempre era la alternativa B). Si 2.5 presenta las alternativas en el orden almacenado, marcar siempre la del medio aprueba con ~89%. Relacionado: #22/#81 son casi duplicadas ("Decir NO") y las categorías están desbalanceadas (30 vs 10). Opciones: (a) re-barajar las alternativas en los datos ahora, (b) barajar la presentación en 2.5 con el PRNG sembrado (datos canónicos intactos, reproducible por seed), (c) ambas. **RESUELTO (decisión de Nelson): opción (b)** — datos canónicos intactos; el barajado de presentación con PRNG sembrado queda como contrato diferido OBLIGATORIO de la Story 2.5, registrado en project-context.md.
+- [x] [Review][Patch] Fail-fast incompleto: JSON malformado, `.md` faltante (ENOENT en `filasEtapas` ANTES del bloque de errores) y `DATABASE_URL` malformada revientan con stack crudo en vez del reporte "Contenido curado inválido" [scripts/seed-capacitacion.mjs:27-32,135-149]
+- [x] [Review][Patch] Validaciones de datos ausentes: numeros de etapa duplicados/fuera de 1-9, slugs duplicados, campos obligatorios vacíos (→ error NOT NULL críptico), `preguntas`/`alternativas` no-array, alternativas con elementos vacíos, banco `numero` fuera de 1-100, `texto`/`categoria` vacíos, umbral de contenido (seed acepta no-vacío, CI exige >100 chars) [scripts/seed-capacitacion.mjs:79-112]
+- [x] [Review][Patch] Atomicidad (regla #7): negocio en 2 transacciones separadas + evento suelto — si Fase 3 falla quedan etapas sin preguntas; si el INSERT a event_log falla tras éxito, el script reporta "❌ Falló el seed" siendo falso. Unificar TODO el negocio en una transacción (etapa_id vía subselect por numero) y evento con try/catch que advierte sin abortar [scripts/seed-capacitacion.mjs:216-291]
+- [x] [Review][Patch] `.sort()` sin comparador sobre números (lexicográfico): rompe si una etapa ≥10 lleva test [scripts/seed-capacitacion.mjs:163; src/lib/engine/capacitacion-contenido.test.ts:865]
+- [x] [Review][Patch] `ETAPAS_CON_TEST` hardcodeado en el seed sin cruzar contra `tipo_evaluacion` del manifest — derivarlo de programa.json para una sola fuente de verdad [scripts/seed-capacitacion.mjs:114,163]
+- [x] [Review][Patch] El catch global imprime solo `error.message`: se pierde stack y detalle SQL para diagnosticar [scripts/seed-capacitacion.mjs:305-308]
+- [x] [Review][Patch] `CatalogoEventos` (src/lib/db/eventos.ts) no incluye `'capacitacion_seed_ejecutado'` — el catálogo tipado ya no refleja los tipos reales de event_log (regla #7)
+- [x] [Review][Defer] El seed solo upserta: nunca elimina filas obsoletas (renumeración/eliminación de etapas o slug-swap entre corridas requiere intervención manual) — deferred, el contenido es estable; documentado en README del seed-data si se vuelve dinámico
+- [x] [Review][Defer] `'admin_creado'` (crear-admin.mjs, Story 1.2) tampoco está en CatalogoEventos — deferred, pre-existing
+- [x] [Review][Defer] CHECK de cardinalidad de `alternativas` (=3) en BD — deferred, requeriría migración extra; cubierto por validación del seed + test de CI
 
 ## Dev Notes
 
@@ -140,6 +154,17 @@ claude-fable-5 (Claude Code)
 - **Test de integridad de contenido en CI** (`capacitacion-contenido.test.ts`, 7 tests): manifest 9 etapas + razas, tipos del catálogo, tests exactos de 1/2/3/5 × 30, banco 100 con `correcta` 0-2, los 14 archivos md existen con contenido real.
 - **Validación final**: lint ✅ · **111/111 unit** (+10) ✅ · build ✅ · **E2E 13/13** ✅. Migraciones 0000-0006 intactas; cero dependencias nuevas.
 
+#### Fixes del code review (2026-06-12, 7 patches aplicados)
+
+- ✅ Fail-fast completo: JSON malformado → mensaje + exit 1; `.md` faltante se acumula en el reporte de validación (verificado con test negativo: archivo escondido → "❌ Contenido curado inválido", exit 1, BD intacta); `neon()` envuelto.
+- ✅ Validaciones ampliadas: etapas exactamente 1-9 únicas, slugs únicos, campos obligatorios, arrays reales, alternativas 3 strings no vacíos, banco `numero` 1-100, umbral de contenido alineado con CI (100 chars).
+- ✅ Atomicidad: TODO el negocio en UNA transacción (etapa_id por subselect sobre numero — eliminada la fase intermedia); evento de auditoría fuera de la tx con try/catch que advierte sin abortar (desviación de regla #7 documentada en la cabecera del script: el evento es condicional a conteos, imposible en batch HTTP).
+- ✅ `sort()` con comparador numérico (seed y test).
+- ✅ Etapas-con-test derivadas del manifest (`tipo_evaluacion`) y cruzadas contra tests.json — fuente única, sin hardcode.
+- ✅ Catch global imprime el error completo (stack incluido).
+- ✅ `CatalogoEventos` extendido con `capacitacion_seed_ejecutado` (documentado por qué el .mjs escribe SQL crudo).
+- Verificación post-patches: lint ✅ · 111/111 unit ✅ · seed re-ejecutado → 0 insertadas/0 actualizadas/230 sin cambios (idempotencia preservada con la transacción única) ✅ · test negativo de fail-fast ✅.
+
 #### Acción requerida de Nelson
 
 - Ninguna en local. **Pendiente para prod (Railway)**: cuando el deploy corra la migración 0007, ejecutar una vez `npm run db:seed-capacitacion` con la `DATABASE_URL` de prod (o lo dejamos documentado para el cutover).
@@ -156,8 +181,12 @@ claude-fable-5 (Claude Code)
 - labradog-app/scripts/seed-capacitacion.mjs (nuevo — seed idempotente con reporte)
 - labradog-app/package.json (modificado — script db:seed-capacitacion)
 - labradog-app/scripts/seed-data/capacitacion/programa.json (modificado — BOM UTF-8 eliminado)
+- labradog-app/src/lib/db/eventos.ts (modificado — CatalogoEventos + capacitacion_seed_ejecutado, fix review)
+- labradog-app/project-context.md (modificado — contrato diferido: barajado de alternativas en 2.5)
+- _bmad-output/implementation-artifacts/deferred-work.md (nuevo — 3 defers del review)
 
 ## Change Log
 
 - 2026-06-12: Story 2.1 (seed del contenido de capacitación) creada con context engine BMAD. Contenido ya curado en scripts/seed-data/capacitacion/ (sesión 2026-06-11). Status → ready-for-dev.
 - 2026-06-12: Implementación completa: catálogo en motor, migración 0007 (3 tablas de contenido), seed idempotente .mjs con upsert por clave natural + reporte + evento condicional, test de integridad en CI. Seed ejecutado 2× contra Neon (230 filas → 0 nuevas). lint+111 unit+build+13 E2E verdes. Status → review.
+- 2026-06-12: Code review adversarial (Blind Hunter + Edge Case Hunter + Acceptance Auditor): 1 decisión + 7 patches resueltos, 3 deferred, 8 descartados. Decisión de Nelson: barajado de alternativas del examen → contrato diferido de 2.5 (project-context.md). Patches de robustez aplicados y verificados (fail-fast, validaciones, transacción única, sort numérico, fuente única, error completo, catálogo de eventos). Status → done.

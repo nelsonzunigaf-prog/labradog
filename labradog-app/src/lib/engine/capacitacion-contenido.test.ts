@@ -74,7 +74,9 @@ describe('programa.json (manifest del programa)', () => {
 
 describe('tests.json (tests V/F de etapas)', () => {
   it('trae exactamente los tests de las etapas 1, 2, 3 y 5', () => {
-    expect(testsData.tests.map((t: { etapa: number }) => t.etapa).sort()).toEqual([1, 2, 3, 5]);
+    expect(
+      testsData.tests.map((t: { etapa: number }) => t.etapa).sort((a: number, b: number) => a - b),
+    ).toEqual([1, 2, 3, 5]);
   });
 
   it('cada test tiene 30 preguntas con texto, unidad y respuesta booleana', () => {

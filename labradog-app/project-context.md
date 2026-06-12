@@ -60,6 +60,7 @@ Interacciones de un toque, zonas táctiles ≥48px, teclado solo si el usuario l
 ## Contratos diferidos (los define su story — no improvisar antes)
 
 - **Selección aleatoria con seed persistida** (tests/examen): lo define Story 2.3
+- **Barajado de alternativas del examen**: lo define Story 2.5 con el PRNG sembrado — OBLIGATORIO: las `correcta` del banco están sesgadas a la posición 2 (89/100, herencia del Word); presentar en orden almacenado regala el examen (decisión code review 2.1: datos canónicos intactos, se baraja al presentar)
 - **Máquina de estados del paseo** (`lib/engine/paseo-estados.ts`): Story 1.4 — estados `pendiente → checklist_completa → en_curso → completado | cancelado`
 - **Cola offline** (`lib/offline-queue.ts`): Story 4.2 — eventos con timestamp de origen del dispositivo
 - **Materialización idempotente**: Story 3.2 — unique `(recurrencia_id, fecha_local)`, horizonte 14 días
