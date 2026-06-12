@@ -27,6 +27,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { ESTADOS_PASEO } from '../engine/paseo-estados';
 import { ESPECIALIDADES_CAMINATA, RED_FLAGS_TUTOR } from '../engine/fichas';
+import { TIPOS_EVALUACION } from '../engine/capacitacion';
 
 // ── Helpers transversales ──────────────────────────────────────
 
@@ -333,5 +334,71 @@ export const paseadores = pgTable(
   },
   (tabla) => [
     check('paseadores_comision_rango', sql`${tabla.comisionPct} >= 60 AND ${tabla.comisionPct} <= 80`),
+  ],
+);
+
+// ── Capacitación: CONTENIDO del programa (Story 2.1) ────────────────────────
+// Catálogo estático cargado por scripts/seed-capacitacion.mjs desde
+// scripts/seed-data/capacitacion/ (contenido curado de los Word). Estas tablas
+// son SOLO contenido; el progreso del paseador (avance, intentos, veredictos,
+// certificación) lo modelan las stories 2.2/2.3/2.6 — no anticiparlo.
+// SIN columnaVersion: el contenido se administra re-ejecutando el seed (único
+// escritor: 'sistema'), no por edición multi-admin. Las claves naturales únicas
+// (etapas.numero, (etapa_id, orden), preguntas_examen.numero) garantizan la
+// idempotencia del seed (upsert ON CONFLICT).
+
+/** Tipo de evaluación por etapa — la tupla TIPOS_EVALUACION (motor puro) es la fuente única. */
+export const tipoEvaluacionEnum = pgEnum('tipo_evaluacion', TIPOS_EVALUACION);
+
+export const etapas = pgTable('etapas', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 1-10: las 9 etapas del programa + el módulo de razas como numero 10 (FR-011:
+  // se desbloquea al aprobar la 9 → la regla secuencial de 2.2 queda uniforme).
+  numero: integer('numero').notNull().unique(),
+  slug: text('slug').notNull().unique(),
+  titulo: text('titulo').notNull(),
+  modulo: text('modulo').notNull(), // Fundamentos / Control / ... / Razas
+  objetivo: text('objetivo').notNull(),
+  duracion: text('duracion').notNull(), // texto legible: "15 minutos"
+  tipoEvaluacion: tipoEvaluacionEnum('tipo_evaluacion').notNull(),
+  // Presentación: el numero 10 se muestra como "Módulo razas", no "Etapa 10".
+  esModuloRazas: boolean('es_modulo_razas').notNull().default(false),
+  contenidoMd: text('contenido_md').notNull(), // markdown navegable (2.2)
+  // Pauta del evaluador (solo etapas prácticas 4/6/7/8) — la ve el admin en 2.4.
+  pautaMd: text('pauta_md'),
+  ...columnasAuditoria,
+});
+
+// Preguntas V/F de los tests autocorregibles de etapas 1/2/3/5 (FR-012, 2.3).
+export const preguntasEtapa = pgTable(
+  'preguntas_etapa',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    etapaId: uuid('etapa_id')
+      .notNull()
+      .references(() => etapas.id, { onDelete: 'restrict' }),
+    orden: integer('orden').notNull(), // 1-30, posición en el test
+    unidad: text('unidad').notNull(), // sección temática (feedback por pregunta)
+    texto: text('texto').notNull(),
+    respuesta: boolean('respuesta').notNull(), // true = Verdadero
+    ...columnasAuditoria,
+  },
+  (tabla) => [unique('preguntas_etapa_etapa_orden_uq').on(tabla.etapaId, tabla.orden)],
+);
+
+// Banco de 100 preguntas de alternativas del examen final (FR-013, 2.5).
+export const preguntasExamen = pgTable(
+  'preguntas_examen',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    numero: integer('numero').notNull().unique(), // 1-100
+    categoria: text('categoria').notNull(),
+    texto: text('texto').notNull(),
+    alternativas: text('alternativas').array().notNull(), // 3 textos
+    correcta: integer('correcta').notNull(), // índice 0-based en alternativas
+    ...columnasAuditoria,
+  },
+  (tabla) => [
+    check('preguntas_examen_correcta_rango', sql`${tabla.correcta} >= 0 AND ${tabla.correcta} <= 2`),
   ],
 );

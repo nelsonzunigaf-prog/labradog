@@ -55,7 +55,7 @@ development_status:
 
   # Epic 2: Paseadores certificados — capacitación
   epic-2: in-progress
-  2-1-seed-del-contenido-de-capacitacion: ready-for-dev
+  2-1-seed-del-contenido-de-capacitacion: review
   2-2-navegacion-de-etapas-con-desbloqueo-secuencial: backlog
   2-3-tests-de-etapa-autocorregibles: backlog
   2-4-evaluaciones-practicas-registradas-por-admin: backlog

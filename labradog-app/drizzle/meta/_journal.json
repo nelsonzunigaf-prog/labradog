@@ -50,6 +50,13 @@
       "when": 1781061301870,
       "tag": "0006_fancy_steve_rogers",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1781238487035,
+      "tag": "0007_daffy_anita_blake",
+      "breakpoints": true
     }
   ]
 }

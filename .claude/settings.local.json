@@ -43,7 +43,12 @@
       "Bash(npm install *)",
       "Bash(node *)",
       "Bash(echo \"PWEXIT=$?\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "PowerShell($p = Get-Command pandoc -ErrorAction SilentlyContinue; $py = Get-Command python -ErrorAction SilentlyContinue; \"pandoc: $\\($p.Source\\)\"; \"python: $\\($py.Source\\)\")",
+      "PowerShell(python -c \"import docx; print\\('python-docx ok'\\)\")",
+      "PowerShell(Set-Content *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Story 2.1: seed del contenido de capacitación *)"
     ]
   }
 }
