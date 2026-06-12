@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -9,9 +11,12 @@ export default function Home() {
           Plataforma de gestión interna: fichas, capacitación, agenda, paseos y
           cobros.
         </p>
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">
-          El acceso con tu cuenta estará disponible próximamente.
-        </p>
+        <Link
+          href="/login"
+          className="flex min-h-12 items-center rounded-lg bg-zinc-900 px-6 text-sm font-medium text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+        >
+          Iniciar sesión
+        </Link>
       </main>
     </div>
   );
