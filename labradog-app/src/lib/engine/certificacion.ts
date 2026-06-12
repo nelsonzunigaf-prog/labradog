@@ -35,16 +35,31 @@ export function calcularEstadosEtapas(
 }
 
 /**
- * Gate de acceso al contenido: una etapa se puede abrir si está aprobada o si
- * es la actual (la primera no aprobada). Misma regla que calcularEstadosEtapas,
- * sin duplicarla: aprobada, o ninguna etapa anterior pendiente.
+ * Estado de UNA etapa, derivado de la MISMA regla de calcularEstadosEtapas
+ * (única implementación — jamás una segunda codificación). Un numero que no
+ * pertenece al catálogo retorna 'bloqueada' (fail-closed).
  */
-export function puedeAbrirEtapa(numero: number, aprobados: ReadonlySet<number>): boolean {
-  if (aprobados.has(numero)) return true;
-  for (let n = 1; n < numero; n++) {
-    if (!aprobados.has(n)) return false;
-  }
-  return true;
+export function estadoDeEtapa(
+  numero: number,
+  numeros: number[],
+  aprobados: ReadonlySet<number>,
+): EstadoEtapa {
+  return (
+    calcularEstadosEtapas(numeros, aprobados).find((e) => e.numero === numero)?.estado ??
+    'bloqueada'
+  );
+}
+
+/**
+ * Gate de acceso al contenido: una etapa se puede abrir si está aprobada o si
+ * es la actual. Derivado de estadoDeEtapa (la regla vive una sola vez).
+ */
+export function puedeAbrirEtapa(
+  numero: number,
+  numeros: number[],
+  aprobados: ReadonlySet<number>,
+): boolean {
+  return estadoDeEtapa(numero, numeros, aprobados) !== 'bloqueada';
 }
 
 /** Avance del programa: etapas aprobadas sobre el total. */

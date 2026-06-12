@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { calcularAvance, calcularEstadosEtapas, puedeAbrirEtapa } from './certificacion';
+import {
+  calcularAvance,
+  calcularEstadosEtapas,
+  estadoDeEtapa,
+  puedeAbrirEtapa,
+} from './certificacion';
 
 const NUMEROS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -64,20 +69,39 @@ describe('calcularEstadosEtapas (regla de desbloqueo secuencial, FR-011)', () =>
 describe('puedeAbrirEtapa', () => {
   it('la actual y las aprobadas se pueden abrir; las bloqueadas no', () => {
     const aprobados = new Set([1, 2]);
-    expect(puedeAbrirEtapa(1, aprobados)).toBe(true); // aprobada
-    expect(puedeAbrirEtapa(3, aprobados)).toBe(true); // actual
-    expect(puedeAbrirEtapa(4, aprobados)).toBe(false); // bloqueada
-    expect(puedeAbrirEtapa(10, aprobados)).toBe(false);
+    expect(puedeAbrirEtapa(1, NUMEROS, aprobados)).toBe(true); // aprobada
+    expect(puedeAbrirEtapa(3, NUMEROS, aprobados)).toBe(true); // actual
+    expect(puedeAbrirEtapa(4, NUMEROS, aprobados)).toBe(false); // bloqueada
+    expect(puedeAbrirEtapa(10, NUMEROS, aprobados)).toBe(false);
   });
 
   it('sin aprobaciones solo se abre la 1', () => {
-    expect(puedeAbrirEtapa(1, new Set())).toBe(true);
-    expect(puedeAbrirEtapa(2, new Set())).toBe(false);
+    expect(puedeAbrirEtapa(1, NUMEROS, new Set())).toBe(true);
+    expect(puedeAbrirEtapa(2, NUMEROS, new Set())).toBe(false);
   });
 
   it('el módulo razas (10) se abre solo con 1-9 aprobadas', () => {
-    expect(puedeAbrirEtapa(10, new Set([1, 2, 3, 4, 5, 6, 7, 8]))).toBe(false);
-    expect(puedeAbrirEtapa(10, new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]))).toBe(true);
+    expect(puedeAbrirEtapa(10, NUMEROS, new Set([1, 2, 3, 4, 5, 6, 7, 8]))).toBe(false);
+    expect(puedeAbrirEtapa(10, NUMEROS, new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]))).toBe(true);
+  });
+
+  it('coincide con calcularEstadosEtapas en catálogos con huecos (única regla)', () => {
+    // Catálogo {1,2,4}: con 1-2 aprobadas, la 4 es la actual → abrible
+    expect(puedeAbrirEtapa(4, [1, 2, 4], new Set([1, 2]))).toBe(true);
+  });
+
+  it('fail-closed: un numero fuera del catálogo nunca se abre', () => {
+    expect(puedeAbrirEtapa(0, NUMEROS, new Set())).toBe(false);
+    expect(puedeAbrirEtapa(99, NUMEROS, new Set(NUMEROS))).toBe(false);
+  });
+});
+
+describe('estadoDeEtapa', () => {
+  it('deriva el estado de la misma regla', () => {
+    expect(estadoDeEtapa(1, NUMEROS, new Set([1]))).toBe('aprobada');
+    expect(estadoDeEtapa(2, NUMEROS, new Set([1]))).toBe('actual');
+    expect(estadoDeEtapa(3, NUMEROS, new Set([1]))).toBe('bloqueada');
+    expect(estadoDeEtapa(0, NUMEROS, new Set())).toBe('bloqueada'); // fuera de catálogo
   });
 });
 

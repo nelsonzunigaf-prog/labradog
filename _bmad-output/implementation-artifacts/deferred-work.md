@@ -1,5 +1,9 @@
 # Deferred Work
 
+## Deferred from: code review of 2-2-navegacion-de-etapas-con-desbloqueo-secuencial (2026-06-12)
+
+- Los tests unitarios de `queries/capacitacion.ts` usan mock posicional del chain de drizzle: prueban la delegación al motor pero NO la corrección del SQL (un `.where(paseadorId)` eliminado pasaría en verde y filtraría aprobaciones entre paseadores). Cubrir con un test de integración contra BD real cuando el proyecto adopte ese patrón.
+
 ## Deferred from: code review of 2-1-seed-del-contenido-de-capacitacion (2026-06-12)
 
 - El seed de capacitación solo upserta: nunca elimina filas obsoletas. Si en el futuro se renumeran/eliminan etapas o se intercambian slugs entre corridas, hará falta intervención manual o una limpieza en el script. Hoy el contenido es estable.

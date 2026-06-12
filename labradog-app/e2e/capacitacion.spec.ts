@@ -19,6 +19,9 @@ test.beforeAll(async () => {
   const [cuenta] = await sql`
     SELECT id FROM "user" WHERE email = ${USUARIOS_PRUEBA.paseador.email}
   `;
+  if (!cuenta) {
+    throw new Error('paseador.test no está sembrado — el global-setup no corrió contra esta BD');
+  }
   const filas = await sql`
     INSERT INTO paseadores (user_id, telefono, comision_pct, created_by, updated_by)
     VALUES (${cuenta.id}, '+56900000000', 70, 'sistema', 'sistema')
@@ -31,7 +34,9 @@ test.beforeAll(async () => {
 
 test.afterAll(async () => {
   // Limpieza total: aprobaciones (FK restrict) y la ficha — paseadores.spec
-  // espera la cuenta sin ficha.
+  // espera la cuenta sin ficha. Si beforeAll falló antes de crear la ficha,
+  // no hay nada que limpiar.
+  if (!fichaId) return;
   await sql`DELETE FROM aprobaciones_etapa WHERE paseador_id = ${fichaId}`;
   await sql`DELETE FROM paseadores WHERE id = ${fichaId}`;
 });
@@ -74,10 +79,12 @@ test('paseador navega su capacitación con desbloqueo secuencial (FR-011)', asyn
   await expect(page.getByTestId('contenido-etapa')).toHaveCount(0);
 
   // Aprobar la etapa 1 vía SQL (las aprobaciones reales llegan en 2.3/2.4)
-  await sql`
+  const aprobacion = await sql`
     INSERT INTO aprobaciones_etapa (paseador_id, etapa_id, created_by, updated_by)
     SELECT ${fichaId}, id, 'sistema', 'sistema' FROM etapas WHERE numero = 1
+    RETURNING id
   `;
+  expect(aprobacion, 'la etapa 1 debe existir en BD (seed de 2.1)').toHaveLength(1);
 
   // La lista refleja el avance y desbloquea la etapa 2
   await page.goto('/paseador/mi-capacitacion');

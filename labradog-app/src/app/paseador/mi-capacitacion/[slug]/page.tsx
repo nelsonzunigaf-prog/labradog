@@ -9,6 +9,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Lock } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { obtenerEtapaParaUsuario } from '@/lib/db/queries/capacitacion';
@@ -55,6 +56,7 @@ export default async function EtapaCapacitacion({
 
       <article data-testid="contenido-etapa" className="pb-8 text-[15px] leading-relaxed">
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
             h1: (props) => (
               <h1 className="mt-2 mb-4 text-2xl font-semibold tracking-tight" {...props} />

@@ -147,7 +147,7 @@ npm install drizzle-orm better-auth
 - **Estado:** RSC + `useActionState` para formularios; sin librería de estado global.
 - **Conectividad intermitente:** cola local (localStorage + reintento al reconectar) SOLO en checklist pre-paseo y registro de paseo. Sin PWA offline completa.
 - **Móvil primero** en las vistas del paseador; desktop primero en admin.
-- **Markdown de contenido (`react-markdown`)** *(decisión Story 2.2, jun-2026)*: el contenido de capacitación (curado en 2.1) se renderiza con `react-markdown` en Server Components — árbol React sin `dangerouslySetInnerHTML`. Descartados: parser propio (reinventar) y `marked` (HTML string + dangerouslySetInnerHTML). Estilos manuales con Tailwind; NO se agrega `@tailwindcss/typography`.
+- **Markdown de contenido (`react-markdown` + `remark-gfm`)** *(decisión Story 2.2, jun-2026)*: el contenido de capacitación (curado en 2.1) se renderiza con `react-markdown` en Server Components — árbol React sin `dangerouslySetInnerHTML`. `remark-gfm` habilita las tablas (extensión GFM, no CommonMark) que el contenido curado usa (comparativas, matriz de razas) — hallazgo del code review de 2.2. Descartados: parser propio (reinventar) y `marked` (HTML string + dangerouslySetInnerHTML). Estilos manuales con Tailwind; NO se agrega `@tailwindcss/typography`.
 
 ### Infrastructure & Deployment
 

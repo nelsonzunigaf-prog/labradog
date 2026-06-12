@@ -12,7 +12,7 @@ import { eq } from 'drizzle-orm';
 import {
   calcularAvance,
   calcularEstadosEtapas,
-  puedeAbrirEtapa,
+  estadoDeEtapa,
   type EstadoEtapa,
 } from '../../engine/certificacion';
 import { db } from '../index';
@@ -133,14 +133,18 @@ export async function obtenerEtapaParaUsuario(
   const etapa = filas[0];
   if (!etapa) return null;
 
+  // Catálogo real de números: el estado se deriva con la MISMA regla del motor
+  // sobre el catálogo completo (fail-closed si el numero no pertenece).
+  const catalogo = await db.select({ numero: etapas.numero }).from(etapas);
   const aprobados = await obtenerNumerosAprobados(fichaId);
-  if (!puedeAbrirEtapa(etapa.numero, aprobados)) {
+  const estado = estadoDeEtapa(
+    etapa.numero,
+    catalogo.map((c) => c.numero),
+    aprobados,
+  );
+  if (estado === 'bloqueada') {
     return { bloqueada: true, numero: etapa.numero, titulo: etapa.titulo };
   }
 
-  return {
-    bloqueada: false,
-    ...etapa,
-    estado: aprobados.has(etapa.numero) ? 'aprobada' : 'actual',
-  };
+  return { bloqueada: false, ...etapa, estado };
 }

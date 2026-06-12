@@ -4,7 +4,7 @@ baseline_commit: 829c0e0
 
 # Story 2.2: Navegación de etapas con desbloqueo secuencial
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -61,6 +61,15 @@ so that me capacito a mi ritmo sin saltarme la secuencia del método.
   - [x] `npm run lint && npm run test && npm run build` verdes (111+ unit + los nuevos del motor/queries).
   - [x] Suite E2E completa verde (13 existentes + capacitacion.spec).
   - [x] Verificar `package.json`: SOLO `react-markdown` agregada; architecture.md actualizado con la decisión.
+
+### Review Findings
+
+- [x] [Review][Decision] Las tablas markdown NO se renderizan: `react-markdown` es CommonMark puro y las tablas son extensión GFM — las comparativas de la etapa 1 y la matriz de razas se ven como texto plano con pipes; los estilos `table/th/td` de la página son código muerto. Fix: agregar `remark-gfm` (mismo ecosistema, plugin oficial) — requiere aprobar una dependencia más allá de lo autorizado por el spec.
+- [x] [Review][Patch] `puedeAbrirEtapa` reimplementa la regla (asume numeración contigua desde 1): con catálogo con huecos diverge de `calcularEstadosEtapas` (lista abrible / detalle bloqueado); numero ≤ 0 o fuera de catálogo queda abrible (loop no itera). Además la query deriva `estado` con un ternario propio. Unificar: derivar de `calcularEstadosEtapas` sobre el catálogo real, fail-closed para números desconocidos, y la query toma el estado del motor [src/lib/engine/certificacion.ts:43-48; src/lib/db/queries/capacitacion.ts]
+- [x] [Review][Patch] División por cero en la barra de avance: BD sin seed → `total = 0` → `width: NaN%` [src/app/paseador/mi-capacitacion/page.tsx:91]
+- [x] [Review][Patch] E2E frágil: `cuenta.id` revienta con TypeError si el usuario no está sembrado; `afterAll` corre con `fichaId undefined` si `beforeAll` falló; el INSERT de aprobación no asegura haber insertado [e2e/capacitacion.spec.ts:18-24,32-37,77-80]
+- [x] [Review][Defer] Los tests de queries (mock posicional) no detectarían un `.where()` eliminado — un leak de aprobaciones entre paseadores pasaría en verde; cubrir con test de integración contra BD cuando exista ese patrón — deferred
+- (10 hallazgos descartados como ruido: workers:1 ya garantiza el orden E2E, el rol lo valida el layout existente, delete físico de cuentas no existe en la app (regla #8), contenido curado sin links/imágenes/código, fallback 'bloqueada' es fail-closed intencional, escala ~10 usuarios, h1 viene del markdown, EOF de archivos generados.)
 
 ## Dev Notes
 
@@ -141,6 +150,14 @@ claude-fable-5 (Claude Code)
 - **global-setup**: DELETE de `aprobaciones_etapa` (scoped a los emails de prueba) ANTES del delete de users — sin esto, la FK restrict rompía la limpieza (trampa prevista por la story).
 - **Validación**: lint ✅ · **130/130 unit** (+19) ✅ · build ✅ (rutas `/paseador/mi-capacitacion` y `[slug]`) · **E2E 14/14** ✅ (nuevo spec móvil con flujo completo: bloqueo → aprobación SQL → desbloqueo).
 
+#### Fixes del code review (2026-06-12: 1 decisión + 3 patches aplicados)
+
+- ✅ **`remark-gfm@4.0.1` agregado** (decisión de Nelson): las tablas del contenido (comparativas, matriz de razas) ahora se renderizan como tablas reales — react-markdown solo trae CommonMark y las tablas son extensión GFM. Registrado en architecture.md.
+- ✅ **Regla unificada en el motor**: nuevo `estadoDeEtapa(numero, numeros, aprobados)` derivado de `calcularEstadosEtapas` (única implementación, fail-closed para números fuera de catálogo); `puedeAbrirEtapa` ahora es un wrapper y la query toma el `estado` del motor (eliminado el ternario propio). Tests nuevos: catálogo con huecos {1,2,4} y fail-closed (0, 99).
+- ✅ **Guard de división por cero** en la barra de avance (BD sin seed → 0%, no NaN%).
+- ✅ **E2E robusto**: error claro si paseador.test no está sembrado, `afterAll` tolera `beforeAll` fallido, el INSERT de aprobación asegura 1 fila.
+- Verificación post-patches: lint ✅ · 133/133 unit (+3) ✅ · build ✅ · E2E 14/14 ✅.
+
 #### Acción requerida de Nelson
 
 - Probar en localhost (vista móvil): login `paseador.test@labradog.cl` / `PaseadorTest123` → "Mi capacitación". OJO: ese usuario no tiene ficha fuera de los E2E — para probar a mano, crear la ficha desde `/admin/paseadores` primero (o usar el flujo completo: admin crea ficha → paseador ve su capacitación).
@@ -163,3 +180,4 @@ claude-fable-5 (Claude Code)
 
 - 2026-06-12: Story 2.2 (navegación de etapas con desbloqueo secuencial) creada con context engine BMAD. Define el patrón Engine del Epic 2. Status → ready-for-dev.
 - 2026-06-12: Implementación completa: motor certificacion.ts (patrón Engine, 12 tests con FR-011 explícito), tabla aprobaciones_etapa (0008), queries con test de delegación por spy (7 tests), UI móvil con react-markdown (registrada en architecture.md), E2E móvil con ciclo bloqueo→aprobación→desbloqueo. lint+130 unit+build+14 E2E verdes. Status → review.
+- 2026-06-12: Code review adversarial (3 capas): 1 decisión (remark-gfm para tablas GFM — aprobada por Nelson) + 3 patches (estadoDeEtapa unifica la regla con fail-closed, guard NaN%, E2E robusto), 1 deferred, 10 descartados. lint+133 unit+build+14 E2E verdes. Status → done.

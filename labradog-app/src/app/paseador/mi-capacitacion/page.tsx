@@ -87,7 +87,10 @@ export default async function MiCapacitacion() {
               <div
                 className="h-full rounded-full bg-primary transition-all"
                 style={{
-                  width: `${(capacitacion.avance.aprobadas / capacitacion.avance.total) * 100}%`,
+                  width:
+                    capacitacion.avance.total > 0
+                      ? `${(capacitacion.avance.aprobadas / capacitacion.avance.total) * 100}%`
+                      : '0%',
                 }}
               />
             </div>

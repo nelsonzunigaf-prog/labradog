@@ -46,19 +46,22 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+const CATALOGO = [{ numero: 1 }, { numero: 2 }, { numero: 3 }];
+
 describe('obtenerEtapaParaUsuario delega el gate al motor (AC2/AC5)', () => {
-  it('consulta puedeAbrirEtapa con el numero y los aprobados', async () => {
-    const spy = vi.spyOn(certificacion, 'puedeAbrirEtapa');
-    cola.push([{ id: 'ficha-1' }], [ETAPA_2], [{ numero: 1 }]); // ficha, etapa, aprobados
+  it('consulta estadoDeEtapa con el numero, el catálogo real y los aprobados', async () => {
+    const spy = vi.spyOn(certificacion, 'estadoDeEtapa');
+    // orden de consultas: ficha, etapa, catálogo, aprobados
+    cola.push([{ id: 'ficha-1' }], [ETAPA_2], CATALOGO, [{ numero: 1 }]);
 
     await obtenerEtapaParaUsuario('user-1', ETAPA_2.slug);
 
-    expect(spy).toHaveBeenCalledWith(2, new Set([1]));
+    expect(spy).toHaveBeenCalledWith(2, [1, 2, 3], new Set([1]));
   });
 
-  it('si el motor dice NO, la respuesta queda bloqueada y SIN contenido', async () => {
-    vi.spyOn(certificacion, 'puedeAbrirEtapa').mockReturnValue(false);
-    cola.push([{ id: 'ficha-1' }], [ETAPA_2], []);
+  it('si el motor dice bloqueada, la respuesta queda bloqueada y SIN contenido', async () => {
+    vi.spyOn(certificacion, 'estadoDeEtapa').mockReturnValue('bloqueada');
+    cola.push([{ id: 'ficha-1' }], [ETAPA_2], CATALOGO, []);
 
     const resultado = await obtenerEtapaParaUsuario('user-1', ETAPA_2.slug);
 
@@ -66,13 +69,17 @@ describe('obtenerEtapaParaUsuario delega el gate al motor (AC2/AC5)', () => {
     expect(JSON.stringify(resultado)).not.toContain('Contenido secreto');
   });
 
-  it('si el motor dice SÍ, la respuesta incluye el contenido', async () => {
-    vi.spyOn(certificacion, 'puedeAbrirEtapa').mockReturnValue(true);
-    cola.push([{ id: 'ficha-1' }], [ETAPA_2], []);
+  it('si el motor dice actual/aprobada, la respuesta incluye el contenido con ese estado', async () => {
+    vi.spyOn(certificacion, 'estadoDeEtapa').mockReturnValue('actual');
+    cola.push([{ id: 'ficha-1' }], [ETAPA_2], CATALOGO, []);
 
     const resultado = await obtenerEtapaParaUsuario('user-1', ETAPA_2.slug);
 
-    expect(resultado).toMatchObject({ bloqueada: false, contenidoMd: ETAPA_2.contenidoMd });
+    expect(resultado).toMatchObject({
+      bloqueada: false,
+      estado: 'actual',
+      contenidoMd: ETAPA_2.contenidoMd,
+    });
   });
 
   it('sin ficha de paseador retorna null sin consultar la etapa', async () => {
