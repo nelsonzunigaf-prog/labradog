@@ -6,6 +6,7 @@ import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Eyebrow } from '@/components/marca/primitivas';
 import { authClient } from '@/lib/auth-client';
 
 function LoginForm() {
@@ -42,16 +43,17 @@ function LoginForm() {
 
   return (
       <div className="flex w-full max-w-sm flex-col gap-8">
-        <div className="flex flex-col gap-2 text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-secondary-ink">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-3xl font-semibold tracking-tight text-secondary-ink">
             Labradog 🐾
           </h1>
+          <Eyebrow>Acceso al equipo</Eyebrow>
           <p className="text-sm text-muted-foreground">Inicia sesión para continuar</p>
         </div>
 
         <form
           onSubmit={onSubmit}
-          className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm"
+          className="flex w-full flex-col gap-4 rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
         >
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
@@ -81,13 +83,17 @@ function LoginForm() {
 
           {error && <p className="text-sm text-destructive-text">{error}</p>}
 
-          <Button type="submit" disabled={cargando} className="min-h-12">
+          <Button
+            type="submit"
+            disabled={cargando}
+            className="min-h-12 rounded-full shadow-[0_10px_15px_-3px_rgba(6,78,59,0.4)] hover:bg-primary-hover"
+          >
             {cargando ? 'Ingresando…' : 'Ingresar'}
           </Button>
 
           <Link
             href="/forgot-password"
-            className="text-center text-sm font-medium text-primary-deep underline-offset-4 hover:underline"
+            className="text-center text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
             Olvidé mi contraseña
           </Link>

@@ -11,6 +11,7 @@ import { notFound, redirect } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Lock } from 'lucide-react';
+import { Eyebrow } from '@/components/marca/primitivas';
 import { auth } from '@/lib/auth';
 import { obtenerEtapaParaUsuario } from '@/lib/db/queries/capacitacion';
 
@@ -49,9 +50,10 @@ export default async function EtapaCapacitacion({
         <Link href="/paseador/mi-capacitacion" className="text-sm text-muted-foreground">
           ← Mi capacitación
         </Link>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {etapa.esModuloRazas ? 'Módulo razas' : `Etapa ${etapa.numero}`} · {etapa.duracion}
-        </p>
+        <div className="mt-2">
+          <Eyebrow>{etapa.esModuloRazas ? 'Módulo razas' : `Etapa ${etapa.numero}`}</Eyebrow>
+          <p className="mt-1 text-xs text-muted-foreground">{etapa.duracion}</p>
+        </div>
       </header>
 
       <article data-testid="contenido-etapa" className="pb-8 text-[15px] leading-relaxed">

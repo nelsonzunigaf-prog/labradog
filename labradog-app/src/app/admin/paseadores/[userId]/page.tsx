@@ -3,6 +3,7 @@
  * Certificación "Sin certificar" derivada hasta Epic 2. Solo admin.
  */
 import { notFound } from 'next/navigation';
+import { Eyebrow } from '@/components/marca/primitivas';
 import { FormFichaPaseador } from '@/components/paseadores/form-ficha-paseador';
 import { Breadcrumb, Volver } from '@/components/shell/volver';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +23,7 @@ export default async function FichaPaseadorPage({
   const { cuenta, ficha } = datos;
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
+    <main className="flex flex-1 flex-col gap-8">
       <header className="flex flex-col gap-2">
         <Volver href="/admin/paseadores" etiqueta="Paseadores" />
         <Breadcrumb
@@ -31,8 +32,9 @@ export default async function FichaPaseadorPage({
             { etiqueta: cuenta.nombre },
           ]}
         />
+        <Eyebrow>Ficha del paseador</Eyebrow>
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold tracking-tight">{cuenta.nombre}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{cuenta.nombre}</h1>
           {/* Vocabulario DESIGN.md: activo = info, inactivo y sin certificar = neutro */}
           <Badge
             className={

@@ -4,6 +4,7 @@
  * Solo admin.
  */
 import { notFound } from 'next/navigation';
+import { EncabezadoPagina } from '@/components/marca/primitivas';
 import { SeccionPerros } from '@/components/perros/seccion-perros';
 import { Breadcrumb, Volver } from '@/components/shell/volver';
 import { FormTutor } from '@/components/tutores/form-tutor';
@@ -22,14 +23,14 @@ export default async function TutorFichaPage({ params }: { params: Promise<{ id:
   const perros = await listarPerrosDeTutor(tutor.id);
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
-      <header className="flex flex-col gap-1">
+    <main className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-col gap-1">
         <Volver href="/admin/tutores" etiqueta="Tutores" />
         <Breadcrumb
           tramos={[{ etiqueta: 'Tutores', href: '/admin/tutores' }, { etiqueta: tutor.nombre }]}
         />
-        <h1 className="text-xl font-bold tracking-tight">{tutor.nombre}</h1>
-      </header>
+        <EncabezadoPagina eyebrow="Ficha del tutor" titulo={tutor.nombre} />
+      </div>
 
       {/* key por version: tras guardar (datos o entrevista) la version sube y el
           router.refresh remonta ambos forms con la version vigente, evitando un

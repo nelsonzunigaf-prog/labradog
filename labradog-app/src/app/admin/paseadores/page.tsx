@@ -3,6 +3,7 @@
  * ficha (o invitación a crearla). Solo admin.
  */
 import Link from 'next/link';
+import { EncabezadoPagina, Tarjeta } from '@/components/marca/primitivas';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -22,16 +23,13 @@ export default async function PaseadoresPage() {
   const paseadores = await listarPaseadores();
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
-      <header>
-        <h1 className="text-xl font-bold tracking-tight">Paseadores</h1>
-        <p className="text-sm text-muted-foreground">
-          Especialidades y % de comisión por paseador. La certificación llega con el módulo de
-          capacitación.
-        </p>
-      </header>
+    <main className="flex flex-1 flex-col gap-8">
+      <EncabezadoPagina eyebrow="Paseadores certificados" titulo="Paseadores">
+        Especialidades y % de comisión por paseador. La certificación llega con el módulo de
+        capacitación.
+      </EncabezadoPagina>
 
-      <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+      <Tarjeta className="overflow-hidden !p-0">
         <Table>
           <TableHeader>
             <TableRow>
@@ -96,7 +94,7 @@ export default async function PaseadoresPage() {
             )}
           </TableBody>
         </Table>
-      </section>
+      </Tarjeta>
     </main>
   );
 }

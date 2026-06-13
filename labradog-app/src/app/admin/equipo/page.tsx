@@ -4,6 +4,7 @@
  */
 import { AccionesCuenta } from '@/components/equipo/acciones-cuenta';
 import { FormCrearCuenta } from '@/components/equipo/form-crear-cuenta';
+import { EncabezadoPagina, Tarjeta } from '@/components/marca/primitivas';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -23,16 +24,13 @@ export default async function EquipoPage() {
   const [equipo, actor] = await Promise.all([listarEquipo(), getActor()]);
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
-      <header>
-        <h1 className="text-xl font-bold tracking-tight">Equipo</h1>
-        <p className="text-sm text-muted-foreground">
-          Crea cuentas de admins y paseadores, y activa o desactiva el acceso.
-        </p>
-      </header>
+    <main className="flex flex-1 flex-col gap-8">
+      <EncabezadoPagina eyebrow="Equipo del estudio" titulo="Equipo">
+        Crea cuentas de admins y paseadores, y activa o desactiva el acceso.
+      </EncabezadoPagina>
 
       <div className="grid gap-6 md:grid-cols-[1fr_320px]">
-        <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+        <Tarjeta className="overflow-hidden !p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -72,7 +70,7 @@ export default async function EquipoPage() {
               ))}
             </TableBody>
           </Table>
-        </section>
+        </Tarjeta>
 
         <FormCrearCuenta />
       </div>

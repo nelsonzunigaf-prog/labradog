@@ -3,6 +3,7 @@
  * /admin ya verifica el rol).
  */
 import Link from 'next/link';
+import { EncabezadoPagina, Tarjeta } from '@/components/marca/primitivas';
 import { FormTutor } from '@/components/tutores/form-tutor';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -24,16 +25,13 @@ export default async function TutoresPage() {
   const tutores = await listarTutores();
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
-      <header>
-        <h1 className="text-xl font-bold tracking-tight">Tutores</h1>
-        <p className="text-sm text-muted-foreground">
-          Registra tutores con su entrevista inicial, red flags y anexos legales.
-        </p>
-      </header>
+    <main className="flex flex-1 flex-col gap-8">
+      <EncabezadoPagina eyebrow="Tutores y sus perros" titulo="Tutores">
+        Registra tutores con su entrevista inicial, red flags y anexos legales.
+      </EncabezadoPagina>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+        <Tarjeta className="overflow-hidden !p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -80,7 +78,7 @@ export default async function TutoresPage() {
               )}
             </TableBody>
           </Table>
-        </section>
+        </Tarjeta>
 
         <FormTutor />
       </div>

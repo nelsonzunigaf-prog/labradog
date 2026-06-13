@@ -8,6 +8,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { CheckCircle2, Lock, PlayCircle } from 'lucide-react';
+import { BandaCita, Eyebrow, Tarjeta } from '@/components/marca/primitivas';
 import { auth } from '@/lib/auth';
 import { obtenerCapacitacionParaUsuario, type EtapaListada } from '@/lib/db/queries/capacitacion';
 
@@ -20,11 +21,12 @@ function FilaEtapa({ etapa }: { etapa: EtapaListada }) {
   // aprobada ✓ éxito · EN CURSO borde 2px primary + sombra destacada + pill de
   // avance (mar profundo, AA) · bloqueada atenuada 0.55 sin link.
   const contenido = (
-    <div
-      className={`flex min-h-12 items-center gap-3 rounded-2xl border bg-card p-3 ${
+    <Tarjeta
+      destacada={etapa.estado === 'actual'}
+      className={`flex min-h-12 items-center gap-3 !p-3 ${
         etapa.estado === 'actual'
-          ? 'border-2 border-primary shadow-[0_4px_14px_rgba(25,40,32,0.10)]'
-          : 'shadow-[0_1px_4px_rgba(25,40,32,0.06)]'
+          ? 'shadow-[0_4px_14px_rgba(25,40,32,0.10)]'
+          : ''
       }`}
     >
       {etapa.estado === 'aprobada' && (
@@ -40,14 +42,14 @@ function FilaEtapa({ etapa }: { etapa: EtapaListada }) {
         <p className="text-xs text-muted-foreground">
           <EtiquetaEtapa etapa={etapa} /> · {etapa.duracion}
         </p>
-        <p className="truncate text-sm font-semibold">{etapa.titulo}</p>
+        <p className="truncate text-sm font-semibold tracking-tight">{etapa.titulo}</p>
       </div>
       {etapa.estado === 'actual' && (
-        <span className="shrink-0 rounded-full bg-secondary-deep px-3 py-1 text-xs font-semibold text-white">
+        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">
           Continuar
         </span>
       )}
-    </div>
+    </Tarjeta>
   );
 
   if (etapa.estado === 'bloqueada') {
@@ -76,7 +78,8 @@ export default async function MiCapacitacion() {
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
       {/* Superficie RAÍZ de la bottom-nav (EXPERIENCE.md#IA): sin "← volver". */}
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <Eyebrow>Tu formación</Eyebrow>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
           Mi capacitación 🎓
         </h1>
       </header>
@@ -88,22 +91,28 @@ export default async function MiCapacitacion() {
         </p>
       ) : (
         <>
-          <section aria-label="Avance" className="rounded-2xl border bg-card p-4 shadow-[0_1px_4px_rgba(25,40,32,0.06)]">
-            <p className="text-sm font-medium" data-testid="avance">
-              {capacitacion.avance.aprobadas} de {capacitacion.avance.total} etapas aprobadas
-            </p>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary transition-all"
-                style={{
-                  width:
-                    capacitacion.avance.total > 0
-                      ? `${(capacitacion.avance.aprobadas / capacitacion.avance.total) * 100}%`
-                      : '0%',
-                }}
-              />
-            </div>
+          <section aria-label="Avance">
+            <Tarjeta>
+              <p className="text-sm font-medium" data-testid="avance">
+                {capacitacion.avance.aprobadas} de {capacitacion.avance.total} etapas aprobadas
+              </p>
+              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{
+                    width:
+                      capacitacion.avance.total > 0
+                        ? `${(capacitacion.avance.aprobadas / capacitacion.avance.total) * 100}%`
+                        : '0%',
+                  }}
+                />
+              </div>
+            </Tarjeta>
           </section>
+
+          <BandaCita fuente="El método Labradog">
+            El bienestar del perro y la seguridad están por sobre el horario.
+          </BandaCita>
 
           <ul className="flex flex-col gap-2">
             {capacitacion.etapas.map((etapa) => (

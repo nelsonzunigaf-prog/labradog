@@ -188,6 +188,8 @@ Sombras del demo: cards `0 1px 2px rgba(0,0,0,0.05)` (sutilísima); el botón pr
 
 ## Components
 
+**Aplicación demo-full (decisión Nelson 2026-06-12):** TODA la app habla el lenguaje rico de la landing, no solo los colores. Primitivas reutilizables en `src/components/marca/primitivas.tsx` — usarlas en vez de reinventar: `Eyebrow` (rótulo mayúsculas tracking 0.3em emerald), `EncabezadoPagina` (eyebrow + título semibold, para listas/fichas), `EncabezadoSeccion` (centrado, superficies tipo landing), `ListaCheck`/`ListaBullet` (✓/● emerald), `BandaCita` (degradado emerald para principios del método), `Tarjeta` (rounded-3xl, destacada con ring emerald). Toda página interna abre con `EncabezadoPagina`; las superficies públicas (portada) usan hero oscuro con degradado + `EncabezadoSeccion`.
+
 Todos extienden shadcn — `src/components/ui/` no se edita a mano.
 
 - **Button** — primario = `{components.button-primary}` (pill emerald-700, blanco, sombra emerald, hover emerald-600). Acciones de avance ("Continuar") = el mismo pill primario (sistema de UN acento — ya no existe el azul mar). `destructive` pill red-600. Ghost sobre oscuro (portada): `rgba(255,255,255,0.05)` + borde blanco 30% + blur (patrón del demo).

@@ -6,6 +6,7 @@
 import { Dog, PawPrint, Users } from 'lucide-react';
 import Link from 'next/link';
 import { headers } from 'next/headers';
+import { EncabezadoPagina } from '@/components/marca/primitivas';
 import { auth } from '@/lib/auth';
 
 const ACCESOS = [
@@ -18,23 +19,22 @@ export default async function AdminHome() {
   const sesion = await auth.api.getSession({ headers: await headers() });
 
   return (
-    <main className="flex flex-1 flex-col gap-6">
-      <header>
-        <h1 className="text-xl font-bold tracking-tight">Panel de administración</h1>
-        <p className="text-sm text-muted-foreground">Hola, {sesion?.user.name}</p>
-      </header>
+    <main className="flex flex-1 flex-col gap-8">
+      <EncabezadoPagina eyebrow="Estudio Labradog" titulo="Panel de administración">
+        Hola, {sesion?.user.name}
+      </EncabezadoPagina>
 
-      <nav aria-label="Accesos" className="grid gap-4 sm:grid-cols-3">
+      <nav aria-label="Accesos" className="grid gap-6 sm:grid-cols-3">
         {ACCESOS.map(({ href, etiqueta, Icono }) => (
           <Link
             key={href}
             href={href}
-            className="flex items-center gap-3 rounded-2xl border bg-card p-4 shadow-sm transition-colors hover:border-primary"
+            className="flex items-center gap-3 rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-colors hover:border-primary"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-deep">
               <Icono className="size-5" aria-hidden="true" />
             </span>
-            <span className="text-sm font-semibold">{etiqueta}</span>
+            <span className="text-sm font-semibold tracking-tight">{etiqueta}</span>
           </Link>
         ))}
       </nav>
