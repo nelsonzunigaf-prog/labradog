@@ -22,7 +22,7 @@ export function NavAdmin() {
   return (
     <header className="sticky top-0 z-10 border-b bg-card">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-6">
-        <Link href="/admin" className="flex min-h-12 shrink-0 items-center text-base font-bold tracking-tight text-secondary-ink">
+        <Link href="/admin" className="flex min-h-12 shrink-0 items-center text-base font-semibold tracking-tight text-primary">
           Labradog 🐾
         </Link>
         <nav aria-label="Secciones" className="flex-1 overflow-x-auto">

@@ -55,9 +55,9 @@ e2e/              Playwright
 
 ## UX y diseño visual (contratos obligatorios)
 
-**Los contratos de UX viven en `_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/`** — `DESIGN.md` (identidad "Menta & Mar": tokens shadcn, tipografía, formas, componentes) y `EXPERIENCE.md` (app shell, navegación, estados, accesibilidad, flujos). Toda UI nueva o modificada los cumple; ante conflicto con cualquier mock o costumbre, los contratos mandan.
+**Los contratos de UX viven en `_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/`** — `DESIGN.md` (identidad de la landing real: sistema EMERALD #047857 + neutros, botones pill, cards rounded-3xl, eyebrows; fuente `docs/estilo-demo.html`) y `EXPERIENCE.md` (app shell, navegación, estados, accesibilidad, flujos). Toda UI nueva o modificada los cumple; ante conflicto con cualquier mock o costumbre, los contratos mandan.
 
-Reglas mínimas (el detalle está en los contratos): botón "← volver" en toda pantalla no-raíz (misma posición), bottom-nav del paseador, tokens de DESIGN.md (jamás colores ad-hoc), contraste AA (texto blanco sobre menta #5FBFA8 FALLA — usar tinta #1F3833), interacciones de un toque, zonas táctiles ≥48px, teclado solo si el usuario lo invoca, notas críticas del perro sin scroll, direcciones con tap a Maps, feedback de sincronización siempre visible, estados vacío/carga/error con microcopy es-CL.
+Reglas mínimas (el detalle está en los contratos): botón "← volver" en toda pantalla no-raíz (misma posición), bottom-nav del paseador, tokens de DESIGN.md (emerald única familia de acento — jamás colores ad-hoc ni segundos acentos), contraste AA (botón primario emerald-700 #047857 con blanco; emerald-600 solo como hover), títulos semibold tracking -0.025em (nunca bold), cuerpo en neutral-700 (nunca negro puro), interacciones de un toque, zonas táctiles ≥48px, teclado solo si el usuario lo invoca, notas críticas del perro sin scroll, direcciones con tap a Maps, feedback de sincronización siempre visible, estados vacío/carga/error con microcopy es-CL.
 
 ## Contratos diferidos (los define su story — no improvisar antes)
 

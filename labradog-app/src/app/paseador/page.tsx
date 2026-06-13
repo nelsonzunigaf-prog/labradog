@@ -14,7 +14,7 @@ export default async function PaseadorHome() {
     <main className="flex flex-1 flex-col gap-4 p-4">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-secondary-ink">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Mi día 🐾
           </h1>
           <p className="text-sm text-muted-foreground">Hola, {sesion?.user.name}</p>

@@ -12,7 +12,7 @@ export default function Home() {
       </div>
 
       <main className="relative flex w-full max-w-md flex-col items-center gap-4 px-8 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight text-secondary-ink">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground">
           Labradog 🐾
         </h1>
         <p className="text-base font-medium text-muted-foreground">
@@ -24,7 +24,7 @@ export default function Home() {
         </p>
         <Link
           href="/login"
-          className="flex min-h-12 items-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/80"
+          className="flex min-h-12 items-center rounded-full bg-primary px-8 text-base font-medium text-primary-foreground shadow-[0_10px_15px_-3px_rgba(6,78,59,0.4)] transition-colors hover:bg-primary-hover"
         >
           Iniciar sesión
         </Link>

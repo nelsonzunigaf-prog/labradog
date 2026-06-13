@@ -4,5 +4,5 @@
 persistent_facts = [
   "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/DESIGN.md",
   "file:{project-root}/_bmad-output/planning-artifacts/ux-designs/ux-labradog-2026-06-12/EXPERIENCE.md",
-  "REGLA DE EQUIPO: al implementar UI, usar los tokens de DESIGN.md (jamás colores/radios ad-hoc) y los patrones de EXPERIENCE.md (volver arriba-izquierda en toda pantalla no-raíz, bottom-nav del paseador, estados vacío/carga/error con microcopy es-CL, táctil ≥48px, contraste AA — OJO: texto blanco sobre menta #5FBFA8 FALLA AA, usar tinta #1F3833).",
+  "REGLA DE EQUIPO: al implementar UI, usar los tokens de DESIGN.md (sistema EMERALD de la landing: primario #047857 pill con blanco, neutros para el resto — jamás colores/radios ad-hoc ni segundos acentos) y los patrones de EXPERIENCE.md (volver arriba-izquierda en toda pantalla no-raíz, bottom-nav del paseador, estados vacío/carga/error con microcopy es-CL, táctil ≥48px, AA: botón emerald-700 base, no emerald-600).",
 ]

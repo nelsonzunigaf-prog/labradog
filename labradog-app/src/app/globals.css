@@ -46,7 +46,8 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* Tokens propios Menta & Mar (DESIGN.md) → clases Tailwind (text-primary-deep, bg-success-soft...) */
+  /* Tokens propios Labradog (DESIGN.md) → clases Tailwind (text-primary-deep, bg-success-soft...) */
+  --color-primary-hover: var(--primary-hover);
   --color-primary-deep: var(--primary-deep);
   --color-primary-soft: var(--primary-soft);
   --color-secondary-deep: var(--secondary-deep);
@@ -60,48 +61,51 @@
 }
 
 /*
- * Tema "Menta & Mar" — contrato: ux-designs/ux-labradog-2026-06-12/DESIGN.md
- * (Story 2.8). Hex directos del contrato. REGLA AA: jamás texto blanco sobre
- * --primary (2.2:1) — la tinta es --primary-foreground; texto menta sobre
- * blanco usa --primary-deep. Dark mode fuera de alcance v1 (bloque .dark
- * queda con los defaults de shadcn, sin uso).
+ * Tema Labradog (sistema de la landing: emerald + neutros) — contrato:
+ * ux-designs/ux-labradog-2026-06-12/DESIGN.md, fuente docs/estilo-demo.html
+ * (Story 2.8). AA: el botón primario es emerald-700 (#047857, blanco 4.54:1 ✓)
+ * con hover emerald-600 — el demo usa 600 de base pero falla AA texto normal.
+ * Los aliases del producto (--secondary-deep, --secondary-ink...) conservan su
+ * NOMBRE y re-apuntan al sistema emerald/neutral (compatibilidad del código).
+ * Dark mode fuera de alcance v1 (bloque .dark queda default, sin uso).
  */
 :root {
-  --background: #f2faf7;
-  --foreground: #1f3833;
+  --background: #fafafa;
+  --foreground: #171717;
   --card: #ffffff;
-  --card-foreground: #1f3833;
+  --card-foreground: #171717;
   --popover: #ffffff;
-  --popover-foreground: #1f3833;
-  --primary: #5fbfa8;
-  --primary-foreground: #1f3833;
-  --secondary: #4e7e9b;
-  --secondary-foreground: #ffffff;
-  --muted: #dcf3ec;
-  --muted-foreground: #5e7a74;
-  --accent: #e1ecf3;
-  --accent-foreground: #2a4456;
-  --destructive: #d16a5e;
-  --border: #d6eae2;
-  --input: #d6eae2;
-  --ring: #5fbfa8;
+  --popover-foreground: #171717;
+  --primary: #047857;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #525252;
+  --accent: #d1fae5;
+  --accent-foreground: #064e3b;
+  --destructive: #dc2626;
+  --border: #e5e5e5;
+  --input: #d4d4d4;
+  --ring: #10b981;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.875rem;
+  --radius: 0.75rem;
   /* Tokens propios del producto (DESIGN.md) */
-  --primary-deep: #2e7d6b;
-  --primary-soft: #dcf3ec;
-  --secondary-deep: #3e6981;
-  --secondary-soft: #e1ecf3;
-  --secondary-ink: #2a4456;
-  --success: #34a084;
-  --success-soft: #dff2ed;
+  --primary-hover: #059669;
+  --primary-deep: #065f46;
+  --primary-soft: #d1fae5;
+  --secondary-deep: #047857;
+  --secondary-soft: #d1fae5;
+  --secondary-ink: #171717;
+  --success: #047857;
+  --success-soft: #d1fae5;
   --warning: #e0b14e;
-  --warning-foreground: #1f3833;
-  --destructive-text: #a8483c;
+  --warning-foreground: #171717;
+  --destructive-text: #b91c1c;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);

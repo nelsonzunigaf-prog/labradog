@@ -76,7 +76,7 @@ export default async function MiCapacitacion() {
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
       {/* Superficie RAÍZ de la bottom-nav (EXPERIENCE.md#IA): sin "← volver". */}
       <header>
-        <h1 className="text-2xl font-extrabold tracking-tight text-secondary-ink">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Mi capacitación 🎓
         </h1>
       </header>

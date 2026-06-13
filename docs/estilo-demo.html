@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Labradog — Demo de estilo</title>
+<!--
+  ============================================================
+  DEMO DE ESTILO — basado en la landing de Labradog
+  ============================================================
+  Archivo autónomo (sin Tailwind ni build). Copiá las variables
+  CSS y las clases que necesites a tu otro proyecto.
+
+  Resumen del sistema:
+  - Tipografía: Geist (fallback: system sans). Títulos semibold
+    con tracking apretado; eyebrows uppercase con tracking 0.3em.
+  - Color de marca: emerald (#047857 como theme color).
+  - Neutros: escala neutral (50 fondo, 900 texto/footer).
+  - Botones: pill (border-radius full), 48px de alto.
+  - Tarjetas: border-radius 1.5rem (rounded-3xl), borde sutil,
+    la destacada lleva ring emerald.
+  - Inputs: 44px, focus con borde emerald + halo 3px al 25%.
+  - Secciones alternan bg neutral-50 / white; bloques oscuros
+    con gradiente sobre imagen.
+-->
+<style>
+  /* ============ 1. Design tokens ============ */
+  :root {
+    /* Marca (escala emerald de Tailwind) */
+    --emerald-100: #d1fae5;
+    --emerald-200: #a7f3d0;
+    --emerald-300: #6ee7b7;
+    --emerald-400: #34d399;
+    --emerald-500: #10b981;
+    --emerald-600: #059669;
+    --emerald-700: #047857; /* color principal de marca / themeColor */
+    --emerald-900: #064e3b;
+
+    /* Neutros (escala neutral de Tailwind) */
+    --neutral-50:  #fafafa;
+    --neutral-200: #e5e5e5;
+    --neutral-300: #d4d4d4;
+    --neutral-400: #a3a3a3;
+    --neutral-500: #737373;
+    --neutral-600: #525252;
+    --neutral-700: #404040;
+    --neutral-900: #171717;
+
+    /* Tipografía */
+    --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system,
+                 "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+
+    /* Radios */
+    --radius-card: 1.5rem;   /* rounded-3xl */
+    --radius-input: 0.5rem;  /* rounded-lg  */
+    --radius-pill: 9999px;   /* rounded-full */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--neutral-50);
+    color: var(--neutral-900);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  /* ============ 2. Tipografía ============ */
+  .eyebrow {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--emerald-700);
+  }
+  .eyebrow--light { color: var(--emerald-200); }
+
+  .h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0;
+  }
+  .h2 {
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+  .lead { font-size: 1.125rem; color: var(--neutral-700); }
+  .muted { color: var(--neutral-600); }
+  .small-muted { font-size: 0.75rem; color: var(--neutral-500); }
+
+  /* ============ 3. Botones ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;               /* h-12 */
+    padding: 0 2rem;            /* px-8 */
+    border-radius: var(--radius-pill);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--emerald-600);
+    color: #fff;
+    box-shadow: 0 10px 15px -3px rgba(6, 78, 59, 0.4);
+  }
+  .btn-primary:hover { background: var(--emerald-500); }
+
+  /* Botón "ghost" sobre fondo oscuro */
+  .btn-ghost-dark {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+  .btn-ghost-dark:hover { background: rgba(255, 255, 255, 0.15); }
+
+  /* ============ 4. Inputs (form-input del proyecto) ============ */
+  .form-input {
+    width: 100%;
+    height: 2.75rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--radius-input);
+    border: 1px solid var(--neutral-300);
+    outline: none;
+    background: #fff;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  .form-input:focus {
+    border-color: var(--emerald-500);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  }
+  textarea.form-input { height: auto; padding-block: 0.75rem; resize: vertical; }
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.375rem;
+  }
+
+  /* ============ 5. Tarjetas ============ */
+  .card {
+    background: #fff;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .card--featured {
+    border-color: var(--emerald-300);
+    box-shadow: 0 0 0 2px var(--emerald-100), 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .card-media {
+    position: relative;
+    height: 12rem;
+    background: linear-gradient(135deg, var(--emerald-200), var(--emerald-700));
+  }
+  .card-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: var(--emerald-700);
+    color: #fff;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  .card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+
+  .check-list { list-style: none; padding: 0; margin: 0.5rem 0 0; font-size: 0.875rem; color: var(--neutral-700); }
+  .check-list li { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .check-list li::before { content: "✓"; color: var(--emerald-700); flex-shrink: 0; }
+
+  .bullet-list { list-style: none; padding: 0; margin: 0; color: var(--neutral-700); }
+  .bullet-list li { display: flex; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .bullet-list li::before { content: "●"; color: var(--emerald-700); font-size: 0.75rem; margin-top: 0.3rem; }
+
+  /* ============ 6. Secciones ============ */
+  .section { padding: 5rem 1.5rem; }
+  .section--white { background: #fff; border-top: 1px solid var(--neutral-200); border-bottom: 1px solid var(--neutral-200); }
+  .container { max-width: 72rem; margin: 0 auto; }
+  .container--narrow { max-width: 42rem; margin: 0 auto; }
+  .section-head { text-align: center; max-width: 42rem; margin: 0 auto 3rem; }
+  .section-head > * + * { margin-top: 0.75rem; }
+
+  /* Hero oscuro con gradiente (en el proyecto va sobre una foto) */
+  .hero {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 8rem 1.5rem 7rem;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.4), rgba(0,0,0,0.7)),
+      linear-gradient(135deg, #1a3d2e, #0c5c45 55%, #14352a);
+    /* Con foto real: background-image sobre la capa inferior + object-cover */
+  }
+  .hero > .container--narrowish { max-width: 64rem; margin: 0 auto; }
+  .hero p.sub { font-size: 1.125rem; color: rgba(255,255,255,0.9); max-width: 42rem; margin: 1.5rem auto 0; }
+
+  /* Bloque cita / trust con gradiente emerald */
+  .quote-band {
+    color: #fff;
+    padding: 6rem 1.5rem;
+    background:
+      linear-gradient(to right, rgba(6,78,59,0.85), rgba(6,78,59,0.7), rgba(6,78,59,0.3)),
+      linear-gradient(135deg, #0a4334, #116649);
+  }
+  .quote-band blockquote { margin: 0; max-width: 42rem; }
+  .quote-band p { font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; line-height: 1.375; margin: 0 0 1rem; }
+
+  /* ============ 7. Footer ============ */
+  .footer {
+    background: var(--neutral-900);
+    color: var(--neutral-400);
+    font-size: 0.875rem;
+    padding: 2.5rem 1.5rem;
+  }
+  .footer .brand { color: var(--emerald-400); font-weight: 600; }
+  .footer a { color: inherit; text-decoration: none; transition: color 0.15s; }
+  .footer a:hover { color: var(--emerald-300); }
+  .footer-inner { max-width: 72rem; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; }
+  .footer nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.75rem; align-items: center; }
+
+  /* ============ Utilidades del demo ============ */
+  .grid-3 { display: grid; gap: 1.5rem; }
+  @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+  .grid-2 { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 1024px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 1.75rem; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .swatch { width: 7rem; }
+  .swatch .chip { height: 3.5rem; border-radius: 0.5rem; border: 1px solid var(--neutral-200); }
+  .swatch .meta { font-size: 0.7rem; color: var(--neutral-600); margin-top: 0.35rem; font-family: ui-monospace, monospace; }
+  .demo-note {
+    background: #fff;
+    border: 1px dashed var(--neutral-300);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    color: var(--neutral-600);
+    margin-bottom: 2rem;
+  }
+  .stack > * + * { margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="container--narrowish">
+      <div class="eyebrow eyebrow--light">Labradog · Demo de estilo</div>
+      <h1 class="h1" style="margin-top: 1.5rem;">Tu perro merece manos profesionales.</h1>
+      <p class="sub">
+        Hero con overlay degradado negro sobre imagen de fondo, eyebrow en emerald claro,
+        título semibold con tracking apretado y CTAs en formato pill.
+      </p>
+      <div class="btn-row">
+        <a href="#tokens" class="btn btn-primary">Botón primario</a>
+        <a href="#tokens" class="btn btn-ghost-dark">Botón ghost oscuro</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TOKENS ===================== -->
+  <section class="section" id="tokens">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Design tokens</div>
+        <h2 class="h2">Paleta y tipografía</h2>
+        <p class="muted">Emerald como única familia de acento; neutral para todo lo demás.</p>
+      </div>
+
+      <div class="demo-note">
+        Tipografía: <strong>Geist</strong> (Google Fonts / @vercel/font). Fallback: system sans.
+        Eyebrows: 12px · uppercase · letter-spacing 0.3em. Títulos: font-weight 600 · letter-spacing -0.025em.
+      </div>
+
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background: var(--emerald-700)"></div><div class="meta">emerald-700<br>#047857 · marca</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--emerald-600)"></div><div class="meta">emerald-600<br>#059669 · botón</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--emerald-500)"></div><div class="meta">emerald-500<br>#10b981 · hover/focus</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--emerald-200)"></div><div class="meta">emerald-200<br>#a7f3d0 · sobre oscuro</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--emerald-100)"></div><div class="meta">emerald-100<br>#d1fae5 · ring</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--neutral-50)"></div><div class="meta">neutral-50<br>#fafafa · fondo</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--neutral-200)"></div><div class="meta">neutral-200<br>#e5e5e5 · bordes</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--neutral-600)"></div><div class="meta">neutral-600<br>#525252 · texto sec.</div></div>
+        <div class="swatch"><div class="chip" style="background: var(--neutral-900)"></div><div class="meta">neutral-900<br>#171717 · texto/footer</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECCIÓN 2 COLUMNAS ===================== -->
+  <section class="section section--white">
+    <div class="container grid-2">
+      <div style="aspect-ratio: 4/3; border-radius: var(--radius-card); background: linear-gradient(135deg, var(--emerald-100), var(--emerald-600)); box-shadow: 0 20px 25px -5px rgba(229,229,229,0.8); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600;">
+        Imagen 4:3 · rounded-3xl · shadow-xl
+      </div>
+      <div class="stack">
+        <div class="eyebrow">Sección de dos columnas</div>
+        <h2 class="h2">Cuidamos como cuidaríamos al nuestro.</h2>
+        <p class="lead">
+          Patrón imagen + texto: grid de 2 columnas en desktop, apilado en mobile.
+          La imagen va con esquinas muy redondeadas y sombra suave.
+        </p>
+        <ul class="bullet-list">
+          <li><span><strong>Bullets con punto emerald.</strong> Primera frase en negrita, resto normal.</span></li>
+          <li><span><strong>Texto en neutral-700.</strong> Nunca negro puro en cuerpo de texto.</span></li>
+          <li><span><strong>Espaciado generoso.</strong> Secciones de 5rem de padding vertical.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TARJETAS DE PLAN ===================== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Tarjetas</div>
+        <h2 class="h2">Tarjetas de plan / pricing</h2>
+        <p class="muted">Grid de 3, la destacada lleva ring emerald y badge "Recomendado".</p>
+      </div>
+      <div class="grid-3">
+
+        <article class="card">
+          <div class="card-media" style="background: linear-gradient(135deg, #d4d4d4, #737373);"></div>
+          <div class="card-body">
+            <div class="eyebrow" style="margin-bottom: 0.5rem;">Base</div>
+            <h3 style="font-size:1.5rem; font-weight:600; margin:0;">Plan Base</h3>
+            <p class="muted" style="font-size:0.875rem; min-height:3rem;">Descripción corta del plan en dos líneas como máximo.</p>
+            <div style="margin-top:1.25rem;">
+              <span style="font-size:1.875rem; font-weight:600;">$89.990</span>
+              <span class="small-muted"> / mes</span>
+            </div>
+            <div class="small-muted" style="margin-bottom:1rem;">8 paseos · 45 min</div>
+            <ul class="check-list">
+              <li>Paseador certificado</li>
+              <li>Reporte por paseo</li>
+              <li>Soporte por WhatsApp</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-media" style="background: linear-gradient(135deg, var(--emerald-300), var(--emerald-600));"></div>
+          <div class="card-body">
+            <div class="eyebrow" style="margin-bottom: 0.5rem;">Plus</div>
+            <h3 style="font-size:1.5rem; font-weight:600; margin:0;">Plan Plus</h3>
+            <p class="muted" style="font-size:0.875rem; min-height:3rem;">Descripción corta del plan en dos líneas como máximo.</p>
+            <div style="margin-top:1.25rem;">
+              <span style="font-size:1.875rem; font-weight:600;">$129.990</span>
+              <span class="small-muted"> / mes</span>
+            </div>
+            <div class="small-muted" style="margin-bottom:1rem;">12 paseos · 60 min</div>
+            <ul class="check-list">
+              <li>Todo lo del plan Base</li>
+              <li>Fotos del paseo</li>
+              <li>Paseador fijo asignado</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card card--featured">
+          <div class="card-media" style="background: linear-gradient(135deg, var(--emerald-500), var(--emerald-900));">
+            <div class="card-badge">Recomendado</div>
+          </div>
+          <div class="card-body">
+            <div class="eyebrow" style="margin-bottom: 0.5rem;">Elite</div>
+            <h3 style="font-size:1.5rem; font-weight:600; margin:0;">Plan Elite</h3>
+            <p class="muted" style="font-size:0.875rem; min-height:3rem;">Descripción corta del plan en dos líneas como máximo.</p>
+            <div style="margin-top:1.25rem;">
+              <span style="font-size:1.875rem; font-weight:600;">$189.990</span>
+              <span class="small-muted"> / mes</span>
+            </div>
+            <div class="small-muted" style="margin-bottom:1rem;">16 paseos · 60 min</div>
+            <ul class="check-list">
+              <li>Todo lo del plan Plus</li>
+              <li>Trazabilidad GPS en vivo</li>
+              <li>Video resumen + seguro</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BANDA DE CITA ===================== -->
+  <section class="quote-band">
+    <div class="container">
+      <blockquote>
+        <p>&ldquo;La ética profesional no busca quedar bien; busca hacer lo correcto.&rdquo;</p>
+        <footer class="eyebrow eyebrow--light">Banda de cita · gradiente emerald-900 sobre imagen</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ===================== FORMULARIO ===================== -->
+  <section class="section section--white">
+    <div class="container--narrow">
+      <div class="section-head" style="margin-bottom:2rem;">
+        <div class="eyebrow">Formularios</div>
+        <h2 class="h2">Contanos sobre tu perro</h2>
+        <p class="muted">Inputs de 44px con focus emerald (borde + halo de 3px al 25% de opacidad).</p>
+      </div>
+      <form class="stack" onsubmit="return false;">
+        <div>
+          <label class="form-label" for="nombre">Nombre</label>
+          <input class="form-input" id="nombre" placeholder="Tu nombre" />
+        </div>
+        <div>
+          <label class="form-label" for="email">Email</label>
+          <input class="form-input" id="email" type="email" placeholder="tu@email.cl" />
+        </div>
+        <div>
+          <label class="form-label" for="msg">Mensaje</label>
+          <textarea class="form-input" id="msg" rows="4" placeholder="Contanos sobre tu perro…"></textarea>
+        </div>
+        <div style="text-align:center; padding-top:0.5rem;">
+          <button class="btn btn-primary" type="submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="brand">Labradog</div>
+        <p style="margin:0.25rem 0 0; font-size:0.75rem;">Footer neutral-900 · marca en emerald-400 · links hover emerald-300</p>
+      </div>
+      <nav>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Términos del servicio</a>
+        <span style="opacity:0.6;">© 2026 Labradog SpA</span>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
