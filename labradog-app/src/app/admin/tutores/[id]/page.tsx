@@ -4,7 +4,7 @@
  * Solo admin.
  */
 import { notFound } from 'next/navigation';
-import { EncabezadoPagina } from '@/components/marca/primitivas';
+import { Eyebrow } from '@/components/marca/primitivas';
 import { SeccionPerros } from '@/components/perros/seccion-perros';
 import { Breadcrumb, Volver } from '@/components/shell/volver';
 import { FormTutor } from '@/components/tutores/form-tutor';
@@ -29,7 +29,8 @@ export default async function TutorFichaPage({ params }: { params: Promise<{ id:
         <Breadcrumb
           tramos={[{ etiqueta: 'Tutores', href: '/admin/tutores' }, { etiqueta: tutor.nombre }]}
         />
-        <EncabezadoPagina eyebrow="Ficha del tutor" titulo={tutor.nombre} />
+        <Eyebrow>Ficha del tutor</Eyebrow>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">{tutor.nombre}</h1>
       </div>
 
       {/* key por version: tras guardar (datos o entrevista) la version sube y el

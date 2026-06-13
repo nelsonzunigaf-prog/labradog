@@ -100,13 +100,7 @@ export function ListaBullet({ items }: { items: ReactNode[] }) {
 /** Banda de cita con degradado emerald (patrón .quote-band del demo). */
 export function BandaCita({ children, fuente }: { children: ReactNode; fuente?: string }) {
   return (
-    <section
-      className="rounded-[1.5rem] px-8 py-10 text-white"
-      style={{
-        background:
-          'linear-gradient(to right, rgba(6,78,59,0.85), rgba(6,78,59,0.7), rgba(6,78,59,0.3)), linear-gradient(135deg, #0a4334, #116649)',
-      }}
-    >
+    <section className="grad-emerald-band rounded-[1.5rem] px-8 py-10 text-white">
       <blockquote className="mx-auto max-w-2xl">
         <p className="text-2xl font-semibold leading-snug tracking-tight">{children}</p>
         {fuente && (

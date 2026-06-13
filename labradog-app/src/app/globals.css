@@ -170,3 +170,25 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  /* Degradados de marca (sistema emerald de la landing) — utilidades únicas para
+     no repetir hex inline. Cada uno tiene su registro: hero (oscuro dramático),
+     band (banda de cita translúcida), deep (bloque de avance), tile (acento claro). */
+  .grad-hero {
+    background:
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)),
+      linear-gradient(135deg, #1a3d2e, #0c5c45 55%, #14352a);
+  }
+  .grad-emerald-band {
+    background:
+      linear-gradient(to right, rgba(6, 78, 59, 0.85), rgba(6, 78, 59, 0.7), rgba(6, 78, 59, 0.3)),
+      linear-gradient(135deg, #0a4334, #116649);
+  }
+  .grad-emerald-deep {
+    background: linear-gradient(135deg, #0c5c45, #047857 55%, #065f46);
+  }
+  .grad-emerald-tile {
+    background: linear-gradient(135deg, #34d399, #047857);
+  }
+}

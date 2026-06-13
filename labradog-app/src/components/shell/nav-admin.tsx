@@ -17,7 +17,7 @@ const SECCIONES = [
 ];
 
 export function NavAdmin() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   return (
     <header className="sticky top-0 z-10 border-b bg-card">

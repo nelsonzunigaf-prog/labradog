@@ -31,10 +31,7 @@ export default async function AdminHome() {
             href={href}
             className="group flex items-center gap-4 rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_8px_28px_-10px_rgba(6,78,59,0.16)] transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-[0_16px_36px_-12px_rgba(6,78,59,0.28)]"
           >
-            <span
-              className="flex size-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-[0_6px_14px_-4px_rgba(6,78,59,0.5)]"
-              style={{ background: 'linear-gradient(135deg, #34d399, #047857)' }}
-            >
+            <span className="grad-emerald-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-[0_6px_14px_-4px_rgba(6,78,59,0.5)]">
               <Icono className="size-6" aria-hidden="true" />
             </span>
             <span className="text-sm font-semibold tracking-tight">{etiqueta}</span>

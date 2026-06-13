@@ -4,7 +4,7 @@ baseline_commit: fe88c91
 
 # Story 2.8: App shell y rediseño Menta & Mar
 
-Status: review
+Status: done
 
 > ⚠️ Se ejecuta ANTES que la 2.3 (sprint-change-proposal-2026-06-12). Numerada 2.8 para no renumerar referencias.
 
@@ -58,6 +58,19 @@ so that la herramienta refleja el cuidado de la marca y nunca quedo atrapado en 
   - [x] Ajustar specs SOLO donde cambió lo visible: `capacitacion.spec.ts` (el link de Mi día → bottom-nav: `getByRole('link', { name: /Mi capacitación/ })` sigue funcionando si la nav usa ese texto — verificar), posibles headers/títulos movidos en admin specs.
   - [x] `npm run lint && npm run test && npm run build` + suite E2E completa (14) verdes.
   - [x] Comparar visualmente contra `mockups/key-screens-1.html` (login, mi capacitación, admin paseadores) — criterio de éxito del change proposal: las maquetas son reconocibles en la app real.
+
+### Review Findings (code review 2026-06-13)
+
+- [x] [Review][Patch] **Detalle de etapa `[slug]` no usa la primitiva `Volver`**: conserva el `<Link text-sm>` viejo → zona táctil <48px en la superficie MÓVIL crítica y rompe la consistencia del shell (AC3 + EXPERIENCE.md piso táctil) [paseador/mi-capacitacion/[slug]/page.tsx]
+- [x] [Review][Patch] **Portada: CTA en `bg-emerald-600` base + `hover:bg-emerald-500`** → blanco sobre emerald-600 = 3.3:1, FALLA AA — es el anti-patrón que DESIGN.md prohíbe explícitamente. Debe ser `bg-primary` (emerald-700, 4.54:1) + `hover:bg-primary-hover` como los demás botones (AC1) [page.tsx]
+- [x] [Review][Patch] **Degradado emerald oscuro hardcodeado y duplicado en 4 lugares con valores divergentes** (`page.tsx` hero, `BandaCita`, bloque de avance, tile admin) + `text-emerald-200` repetido en vez de `Eyebrow onDark`. Consolidar a una utilidad/constante y usar la primitiva (AC1, Do/Don't) [page.tsx, primitivas.tsx, mi-capacitacion/page.tsx, admin/page.tsx]
+- [x] [Review][Patch] **`usePathname` sin guard de null** en ambos navs: `pathname.startsWith(...)` crashea si es null [shell/nav-admin.tsx, shell/bottom-nav-paseador.tsx]
+- [x] [Review][Patch] **Encabezados inconsistentes entre fichas de detalle**: `tutores/[id]` usa `EncabezadoPagina`, pero `perros/[id]` y `paseadores/[userId]` lo arman a mano con `Eyebrow`+`h1` sueltos. Unificar a `EncabezadoPagina` y resolver el doble espaciado (`mb-6` de la primitiva + `gap-8` del main) [admin/perros/[id], admin/paseadores/[userId], primitivas.tsx]
+- [x] [Review][Patch] **Barra de avance sin semántica de progreso**: el bloque emerald de avance no expone `role="progressbar"` + `aria-valuenow/min/max` (a11y) [mi-capacitacion/page.tsx]
+- [x] [Review][Patch] **Contrato desalineado con la realidad**: DESIGN.md dice `--background: #FAFAFA` pero el tema usa `#eef4f1` + glow emerald (decisión de profundidad aprobada por Nelson). Registrar la desviación en DESIGN.md [DESIGN.md]
+- [x] [Review][Defer] Doble concepto de "secondary" (`--secondary` gris de shadcn vs `--secondary-soft/deep` emerald de marca) — deuda de naming; renombrar a `info-*` en una pasada futura
+- [x] [Review][Defer] `min-h-12` solo en inputs de auth, no en forms de admin — admin es desktop, el piso ≥48px es del paseador; alinear si admin se usa en móvil
+- (Descartados como ruido: skeletons max-w/pb-20 — el layout `max-w-md`+`pb-20` ya los gobierna; z-10 de navs — los overlays shadcn son z-50+; ListaCheck/Bullet con items vacío — no se usan con arrays dinámicos; sesión null — los layouts ya redirigen; `key={i}` en breadcrumb estático; fragilidad del selector E2E — workers:1 y 14/14 verdes; `aria-busy` sin valor — renderiza `true`, correcto.)
 
 ## Dev Notes
 
@@ -140,4 +153,5 @@ claude-fable-5 (Claude Code) — orquestación con 2 subagentes paralelos para e
 
 - 2026-06-12: Story 2.8 creada vía correct-course + create-story con los contratos UX como persistent_facts. Status → ready-for-dev.
 - 2026-06-12: Implementación completa (orquestada con 2 subagentes de retrofit en paralelo): tema en globals.css, shells paseador/admin, retrofit de 14 pantallas + 10 componentes, 4 loading states. Cero cambios de comportamiento. lint+133 unit+build+14 E2E verdes. Status → review.
+- 2026-06-13: Code review adversarial (3 capas + auditoría UX contra DESIGN/EXPERIENCE): 7 patches aplicados, 2 deferred, ~8 descartados. Fixes: `Volver` táctil en detalle de etapa (era <48px en móvil); CTA portada a emerald-700 (AA — era emerald-600, anti-patrón del contrato); degradados consolidados a utilidades `.grad-*` en globals.css (eliminado hex inline duplicado) + `Eyebrow onDark`; guard de `usePathname` null en ambos navs; encabezado de ficha tutor unificado al patrón de las otras fichas (sin doble espaciado); `role="progressbar"`+aria en la barra de avance; DESIGN.md alineado al fondo sage real. lint+133 unit+build+E2E (13 passed, 1 flaky cold-start) verdes. Status → done.
 - 2026-06-12 (PM): **Pivote de paleta** — Nelson aportó `docs/estilo-demo.html` (sistema visual de la landing real). El tema "Menta & Mar" se reemplazó por el sistema **EMERALD + neutros** de la landing: primario emerald-700 #047857 (pill, blanco AA 4.54:1), neutros, títulos semibold tracking -0.025em, cuerpo neutral-700. Los aliases de token (--secondary-deep, --secondary-ink…) conservan su NOMBRE y re-apuntan al sistema emerald → cero cambios en el código de las pantallas (solo `globals.css` + 5 toques de firma: pills, semibold, marca emerald). DESIGN.md, guardarraíles (_bmad/custom, project-context) y decision-log actualizados. Regresión: lint+133 unit+build+E2E (13 passed + 1 flaky por cold-start de Neon, recuperado en retry) verdes.

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Eyebrow } from '@/components/marca/primitivas';
 
 /**
  * Portada — fiel al sistema visual de la landing (docs/estilo-demo.html):
@@ -9,17 +10,9 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
       {/* HERO oscuro con degradado emerald (patrón .hero del demo) */}
-      <section
-        className="relative flex flex-1 flex-col items-center justify-center px-6 py-24 text-center text-white"
-        style={{
-          background:
-            'linear-gradient(to bottom, rgba(0,0,0,0.30), rgba(0,0,0,0.40), rgba(0,0,0,0.70)), linear-gradient(135deg, #1a3d2e, #0c5c45 55%, #14352a)',
-        }}
-      >
+      <section className="grad-hero relative flex flex-1 flex-col items-center justify-center px-6 py-24 text-center text-white">
         <div className="mx-auto flex max-w-3xl flex-col items-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200">
-            Labradog · Cuidado profesional
-          </p>
+          <Eyebrow onDark>Labradog · Cuidado profesional</Eyebrow>
           <h1 className="mt-6 text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[1.05] tracking-tight">
             Tu perro merece manos profesionales.
           </h1>
@@ -30,7 +23,7 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href="/login"
-              className="inline-flex h-12 items-center rounded-full bg-emerald-600 px-8 text-base font-medium text-white shadow-[0_10px_15px_-3px_rgba(6,78,59,0.4)] transition-colors hover:bg-emerald-500"
+              className="inline-flex h-12 items-center rounded-full bg-primary px-8 text-base font-medium text-primary-foreground shadow-[0_10px_15px_-3px_rgba(6,78,59,0.4)] transition-colors hover:bg-primary-hover"
             >
               Iniciar sesión
             </Link>

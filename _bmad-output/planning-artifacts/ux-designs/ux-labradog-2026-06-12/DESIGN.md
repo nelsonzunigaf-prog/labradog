@@ -12,7 +12,7 @@ colors:
   primary-deep: '#065F46'         # emerald-800 — texto emerald sobre fondos claros con AA holgado
   primary-soft: '#D1FAE5'         # emerald-100 — ring de cards destacadas, chips, fondos suaves
   primary-on-dark: '#A7F3D0'      # emerald-200 — eyebrows/acentos sobre fondos oscuros
-  background: '#FAFAFA'           # neutral-50 — fondo de página
+  background: '#EEF4F1'           # sage muy claro — fondo de página con profundidad (ver nota); + glow emerald radial en body
   foreground: '#171717'           # neutral-900 — texto principal (titulares; el cuerpo usa neutral-700)
   body-text: '#404040'            # neutral-700 — cuerpo de texto ("nunca negro puro en cuerpo")
   card: '#FFFFFF'
@@ -165,7 +165,9 @@ El sistema hereda shadcn/ui completo: este DESIGN.md es **solo el delta de marca
 - **Semánticos**: éxito = el propio emerald (certificado/aprobado); alerta #E0B14E con tinta oscura; destructivo red-600 con blanco / red-700 como texto de error.
 - **Focus**: borde `{colors.ring}` (emerald-500) + halo 3px al 25% (`rgba(16,185,129,0.25)`) — patrón exacto del demo.
 
-Mapeo shadcn (`:root`): `--background:#FAFAFA · --foreground:#171717 · --card:#FFF · --primary:#047857 · --primary-foreground:#FFF · --secondary:#F5F5F5 · --secondary-foreground:#171717 · --muted:#F5F5F5 · --muted-foreground:#525252 · --accent:#D1FAE5 · --accent-foreground:#064E3B · --destructive:#DC2626 · --border:#E5E5E5 · --input:#D4D4D4 · --ring:#10B981 · --radius:0.75rem`. Aliases del producto re-apuntados (compatibilidad con el código ya escrito): `--primary-deep:#065F46 · --primary-soft:#D1FAE5 · --secondary-deep:#047857 · --secondary-soft:#D1FAE5 · --secondary-ink:#171717 · --success:#047857 · --success-soft:#D1FAE5 · --warning:#E0B14E · --destructive-text:#B91C1C`.
+**Fondo con profundidad (decisión Nelson, code review 12/13-06-2026):** el fondo NO es blanco plano `#FAFAFA` sino un sage muy claro `#EEF4F1` + un `radial-gradient` emerald suave fijo en el `body` — así las cards blancas "flotan" en vez de fundirse (feedback "muy plano y blanco"). Los degradados de marca (hero, banda de cita, bloque de avance, tile) viven como utilidades `.grad-hero` / `.grad-emerald-band` / `.grad-emerald-deep` / `.grad-emerald-tile` en `globals.css` (no hex inline).
+
+Mapeo shadcn (`:root`): `--background:#EEF4F1 · --foreground:#171717 · --card:#FFF · --primary:#047857 · --primary-foreground:#FFF · --secondary:#F5F5F5 · --secondary-foreground:#171717 · --muted:#F5F5F5 · --muted-foreground:#525252 · --accent:#D1FAE5 · --accent-foreground:#064E3B · --destructive:#DC2626 · --border:#E5E5E5 · --input:#D4D4D4 · --ring:#10B981 · --radius:0.75rem`. Aliases del producto re-apuntados (compatibilidad con el código ya escrito): `--primary-deep:#065F46 · --primary-soft:#D1FAE5 · --secondary-deep:#047857 · --secondary-soft:#D1FAE5 · --secondary-ink:#171717 · --success:#047857 · --success-soft:#D1FAE5 · --warning:#E0B14E · --destructive-text:#B91C1C`.
 
 ## Typography
 

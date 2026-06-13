@@ -6,12 +6,12 @@
  * (pauta_md) NUNCA se muestra al paseador (es de 2.4).
  */
 import { headers } from 'next/headers';
-import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Lock } from 'lucide-react';
 import { Eyebrow } from '@/components/marca/primitivas';
+import { Volver } from '@/components/shell/volver';
 import { auth } from '@/lib/auth';
 import { obtenerEtapaParaUsuario } from '@/lib/db/queries/capacitacion';
 
@@ -30,10 +30,8 @@ export default async function EtapaCapacitacion({
   if (etapa.bloqueada) {
     return (
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
-        <Link href="/paseador/mi-capacitacion" className="text-sm text-muted-foreground">
-          ← Mi capacitación
-        </Link>
-        <div className="flex flex-col items-center gap-3 rounded-lg border p-8 text-center">
+        <Volver href="/paseador/mi-capacitacion" etiqueta="Mi capacitación" />
+        <div className="flex flex-col items-center gap-3 rounded-2xl border bg-card p-8 text-center">
           <Lock className="size-8 text-muted-foreground" aria-hidden />
           <h1 className="text-lg font-semibold">{etapa.titulo}</h1>
           <p className="text-sm text-muted-foreground" data-testid="mensaje-bloqueada">
@@ -47,9 +45,7 @@ export default async function EtapaCapacitacion({
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
       <header>
-        <Link href="/paseador/mi-capacitacion" className="text-sm text-muted-foreground">
-          ← Mi capacitación
-        </Link>
+        <Volver href="/paseador/mi-capacitacion" etiqueta="Mi capacitación" />
         <div className="mt-2">
           <Eyebrow>{etapa.esModuloRazas ? 'Módulo razas' : `Etapa ${etapa.numero}`}</Eyebrow>
           <p className="mt-1 text-xs text-muted-foreground">{etapa.duracion}</p>

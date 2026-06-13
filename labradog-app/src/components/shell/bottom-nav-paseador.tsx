@@ -15,7 +15,7 @@ const ITEMS = [
 ];
 
 export function BottomNavPaseador() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   return (
     <nav
