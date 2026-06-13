@@ -39,8 +39,8 @@ type Props = {
 
 export function SeccionPerros({ tutorId, perros }: Props) {
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-border p-4">
-      <h2 className="text-lg font-medium">Perros</h2>
+    <section className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm">
+      <h2 className="text-base font-semibold">Perros</h2>
 
       {perros.length === 0 ? (
         <p className="text-sm text-muted-foreground">Este tutor aún no tiene perros registrados.</p>
@@ -70,7 +70,7 @@ export function SeccionPerros({ tutorId, perros }: Props) {
                   <span className="flex items-center gap-2 text-sm font-medium">
                     <Link
                       href={`/admin/perros/${p.id}`}
-                      className="text-primary underline-offset-4 hover:underline"
+                      className="text-primary-deep underline-offset-4 hover:underline"
                     >
                       {p.nombre}
                     </Link>
@@ -82,7 +82,16 @@ export function SeccionPerros({ tutorId, perros }: Props) {
                   </span>
                 </div>
               </div>
-              <Badge variant={p.estado === 'activo' ? 'default' : 'secondary'}>{p.estado}</Badge>
+              {/* Vocabulario DESIGN.md: activo = info, inactivo = neutro apagado */}
+              <Badge
+                className={
+                  p.estado === 'activo'
+                    ? 'bg-secondary-soft text-secondary-deep'
+                    : 'bg-muted text-muted-foreground'
+                }
+              >
+                {p.estado}
+              </Badge>
             </li>
           ))}
         </ul>

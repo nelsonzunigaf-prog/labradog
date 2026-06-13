@@ -72,8 +72,11 @@ export function SeccionEntrevista({ tutorId, version, inicial }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4 rounded-xl border border-border p-4">
-      <h2 className="text-lg font-medium">Entrevista inicial</h2>
+    <form
+      onSubmit={onSubmit}
+      className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm"
+    >
+      <h2 className="text-base font-semibold">Entrevista inicial</h2>
 
       {(
         [
@@ -112,14 +115,18 @@ export function SeccionEntrevista({ tutorId, version, inicial }: Props) {
       {sugerirRechazo && (
         <p
           role="alert"
-          className="rounded-lg border border-destructive bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive"
+          className="rounded-lg bg-warning px-3 py-2 text-sm font-medium text-warning-foreground"
         >
           ⚠️ Evaluar rechazo del servicio ({cantidad} red flags)
         </p>
       )}
 
       {mensaje && (
-        <p className={mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'}>
+        <p
+          className={
+            mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
+          }
+        >
           {mensaje.texto}
         </p>
       )}

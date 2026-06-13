@@ -23,8 +23,8 @@ const BLOQUES = [
 
 export function SeccionHistorial() {
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-border p-4">
-      <h2 className="text-lg font-medium">Historial</h2>
+    <section className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm">
+      <h2 className="text-base font-semibold">Historial</h2>
       <div className="grid gap-4 sm:grid-cols-3">
         {BLOQUES.map((b) => (
           <div key={b.titulo} className="flex flex-col gap-1 rounded-lg border border-dashed border-border p-3">

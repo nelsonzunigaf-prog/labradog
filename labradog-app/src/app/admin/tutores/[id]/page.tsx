@@ -3,9 +3,9 @@
  * (con alerta de red flags) y anexos legales. Sección Perros (Story 1.6).
  * Solo admin.
  */
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SeccionPerros } from '@/components/perros/seccion-perros';
+import { Breadcrumb, Volver } from '@/components/shell/volver';
 import { FormTutor } from '@/components/tutores/form-tutor';
 import { SeccionAnexos } from '@/components/tutores/seccion-anexos';
 import { SeccionEntrevista } from '@/components/tutores/seccion-entrevista';
@@ -22,15 +22,13 @@ export default async function TutorFichaPage({ params }: { params: Promise<{ id:
   const perros = await listarPerrosDeTutor(tutor.id);
 
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
+    <main className="flex flex-1 flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <Link
-          href="/admin/tutores"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-        >
-          ← Tutores
-        </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">{tutor.nombre}</h1>
+        <Volver href="/admin/tutores" etiqueta="Tutores" />
+        <Breadcrumb
+          tramos={[{ etiqueta: 'Tutores', href: '/admin/tutores' }, { etiqueta: tutor.nombre }]}
+        />
+        <h1 className="text-xl font-bold tracking-tight">{tutor.nombre}</h1>
       </header>
 
       {/* key por version: tras guardar (datos o entrevista) la version sube y el

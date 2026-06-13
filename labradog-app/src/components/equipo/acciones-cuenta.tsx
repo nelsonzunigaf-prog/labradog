@@ -47,7 +47,7 @@ export function AccionesCuenta({ userId, estado, esYoMismo }: Props) {
         >
           Desactivar
         </Button>
-        {error && <span className="text-xs text-destructive">{error}</span>}
+        {error && <span className="text-xs text-destructive-text">{error}</span>}
       </div>
     );
   }
@@ -57,7 +57,7 @@ export function AccionesCuenta({ userId, estado, esYoMismo }: Props) {
       <Button variant="outline" size="sm" disabled={cargando} onClick={() => ejecutar('reactivar')}>
         Reactivar
       </Button>
-      {error && <span className="text-xs text-destructive">{error}</span>}
+      {error && <span className="text-xs text-destructive-text">{error}</span>}
     </div>
   );
 }

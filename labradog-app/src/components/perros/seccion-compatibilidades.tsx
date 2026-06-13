@@ -53,9 +53,9 @@ export function SeccionCompatibilidades({ perroId, compatibilidades, candidatos 
   }
 
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-border p-4">
+    <section className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm">
       <header>
-        <h2 className="text-lg font-medium">Compatibilidades</h2>
+        <h2 className="text-base font-semibold">Compatibilidades</h2>
         <p className="text-sm text-muted-foreground">
           Entre perros del mismo tutor — habilita paseos de hasta 3 perros (plan BASE).
         </p>
@@ -111,7 +111,11 @@ export function SeccionCompatibilidades({ perroId, compatibilidades, candidatos 
       )}
 
       {mensaje && (
-        <p className={mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'}>
+        <p
+          className={
+            mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
+          }
+        >
           {mensaje.texto}
         </p>
       )}

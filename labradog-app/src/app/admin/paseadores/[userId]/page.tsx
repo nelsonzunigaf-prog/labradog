@@ -2,9 +2,9 @@
  * Ficha de un paseador (Story 1.7): crear o editar sobre su cuenta (1:1).
  * Certificación "Sin certificar" derivada hasta Epic 2. Solo admin.
  */
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { FormFichaPaseador } from '@/components/paseadores/form-ficha-paseador';
+import { Breadcrumb, Volver } from '@/components/shell/volver';
 import { Badge } from '@/components/ui/badge';
 import { obtenerFichaPorUsuario } from '@/lib/db/queries/paseadores';
 import type { EspecialidadCaminata } from '@/lib/engine/fichas';
@@ -22,20 +22,28 @@ export default async function FichaPaseadorPage({
   const { cuenta, ficha } = datos;
 
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
+    <main className="flex flex-1 flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <Link
-          href="/admin/paseadores"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-        >
-          ← Paseadores
-        </Link>
+        <Volver href="/admin/paseadores" etiqueta="Paseadores" />
+        <Breadcrumb
+          tramos={[
+            { etiqueta: 'Paseadores', href: '/admin/paseadores' },
+            { etiqueta: cuenta.nombre },
+          ]}
+        />
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">{cuenta.nombre}</h1>
-          <Badge variant={cuenta.estadoCuenta === 'activo' ? 'default' : 'secondary'}>
+          <h1 className="text-xl font-bold tracking-tight">{cuenta.nombre}</h1>
+          {/* Vocabulario DESIGN.md: activo = info, inactivo y sin certificar = neutro */}
+          <Badge
+            className={
+              cuenta.estadoCuenta === 'activo'
+                ? 'bg-secondary-soft text-secondary-deep'
+                : 'bg-muted text-muted-foreground'
+            }
+          >
             cuenta {cuenta.estadoCuenta}
           </Badge>
-          <Badge variant="secondary">Sin certificar</Badge>
+          <Badge className="bg-muted text-muted-foreground">Sin certificar</Badge>
         </div>
         <p className="text-sm text-muted-foreground">
           {cuenta.email} · La certificación (módulo de capacitación) habilita la asignación de

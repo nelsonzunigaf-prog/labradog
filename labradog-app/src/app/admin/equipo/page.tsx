@@ -16,28 +16,31 @@ import {
 import { getActor } from '@/lib/actor';
 import { listarEquipo } from '@/lib/db/queries/usuarios';
 
+/** Rótulo de tabla admin: caption-desktop de DESIGN.md (12, uppercase, tracking). */
+const TH_CLASS = 'text-xs font-semibold uppercase tracking-wide text-muted-foreground';
+
 export default async function EquipoPage() {
   const [equipo, actor] = await Promise.all([listarEquipo(), getActor()]);
 
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
+    <main className="flex flex-1 flex-col gap-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Equipo</h1>
+        <h1 className="text-xl font-bold tracking-tight">Equipo</h1>
         <p className="text-sm text-muted-foreground">
           Crea cuentas de admins y paseadores, y activa o desactiva el acceso.
         </p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-[1fr_320px]">
-        <section className="rounded-xl border border-border">
+        <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Rol</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
+                <TableHead className={TH_CLASS}>Nombre</TableHead>
+                <TableHead className={TH_CLASS}>Email</TableHead>
+                <TableHead className={TH_CLASS}>Rol</TableHead>
+                <TableHead className={TH_CLASS}>Estado</TableHead>
+                <TableHead className={`text-right ${TH_CLASS}`}>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -47,7 +50,14 @@ export default async function EquipoPage() {
                   <TableCell>{m.email}</TableCell>
                   <TableCell className="capitalize">{m.rol}</TableCell>
                   <TableCell>
-                    <Badge variant={m.estado === 'activo' ? 'default' : 'secondary'}>
+                    {/* Vocabulario DESIGN.md: activo = info, inactivo = neutro apagado */}
+                    <Badge
+                      className={
+                        m.estado === 'activo'
+                          ? 'bg-secondary-soft text-secondary-deep'
+                          : 'bg-muted text-muted-foreground'
+                      }
+                    >
                       {m.estado}
                     </Badge>
                   </TableCell>

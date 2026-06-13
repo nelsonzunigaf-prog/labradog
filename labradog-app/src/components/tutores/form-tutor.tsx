@@ -90,9 +90,9 @@ export function FormTutor({ tutor }: Props) {
     <form
       onSubmit={onSubmit}
       noValidate
-      className="flex flex-col gap-4 rounded-xl border border-border p-4"
+      className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm"
     >
-      <h2 className="text-lg font-medium">{esEdicion ? 'Datos de la ficha' : 'Nueva ficha'}</h2>
+      <h2 className="text-base font-semibold">{esEdicion ? 'Datos de la ficha' : 'Nueva ficha'}</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
@@ -187,7 +187,11 @@ export function FormTutor({ tutor }: Props) {
       </div>
 
       {mensaje && (
-        <p className={mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'}>
+        <p
+          className={
+            mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
+          }
+        >
           {mensaje.texto}
         </p>
       )}

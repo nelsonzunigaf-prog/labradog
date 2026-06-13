@@ -52,7 +52,7 @@ export function FotoPerro({ perroId, nombre, fotoUrl }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border p-4">
+    <div className="flex items-center gap-4 rounded-2xl border bg-card p-4 shadow-sm">
       {fotoUrl ? (
         <Image
           src={fotoUrl}
@@ -80,7 +80,7 @@ export function FotoPerro({ perroId, nombre, fotoUrl }: Props) {
         {mensaje && (
           <p
             className={
-              mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'
+              mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
             }
           >
             {mensaje.texto}

@@ -17,27 +17,30 @@ import { listarTutores } from '@/lib/db/queries/tutores';
 
 const ETIQUETA_PLAN: Record<string, string> = { base: 'BASE', plus: 'PLUS', elite: 'ELITE' };
 
+/** Rótulo de tabla admin: caption-desktop de DESIGN.md (12, uppercase, tracking). */
+const TH_CLASS = 'text-xs font-semibold uppercase tracking-wide text-muted-foreground';
+
 export default async function TutoresPage() {
   const tutores = await listarTutores();
 
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
+    <main className="flex flex-1 flex-col gap-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Tutores</h1>
+        <h1 className="text-xl font-bold tracking-tight">Tutores</h1>
         <p className="text-sm text-muted-foreground">
           Registra tutores con su entrevista inicial, red flags y anexos legales.
         </p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <section className="rounded-xl border border-border">
+        <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Teléfono</TableHead>
-                <TableHead>Plan</TableHead>
-                <TableHead>Estado</TableHead>
+                <TableHead className={TH_CLASS}>Nombre</TableHead>
+                <TableHead className={TH_CLASS}>Teléfono</TableHead>
+                <TableHead className={TH_CLASS}>Plan</TableHead>
+                <TableHead className={TH_CLASS}>Estado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -53,7 +56,7 @@ export default async function TutoresPage() {
                     <TableCell className="font-medium">
                       <Link
                         href={`/admin/tutores/${t.id}`}
-                        className="text-primary underline-offset-4 hover:underline"
+                        className="text-primary-deep underline-offset-4 hover:underline"
                       >
                         {t.nombre}
                       </Link>
@@ -61,7 +64,14 @@ export default async function TutoresPage() {
                     <TableCell>{t.telefono}</TableCell>
                     <TableCell>{ETIQUETA_PLAN[t.planDefault] ?? t.planDefault}</TableCell>
                     <TableCell>
-                      <Badge variant={t.estado === 'activo' ? 'default' : 'secondary'}>
+                      {/* Vocabulario DESIGN.md: activo = info, pausado/cerrado = neutro */}
+                      <Badge
+                        className={
+                          t.estado === 'activo'
+                            ? 'bg-secondary-soft text-secondary-deep'
+                            : 'bg-muted text-muted-foreground'
+                        }
+                      >
                         {t.estado}
                       </Badge>
                     </TableCell>

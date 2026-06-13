@@ -20,14 +20,14 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-border bg-background p-6 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Enlace inválido</h1>
+      <div className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+        <h2 className="text-2xl font-semibold tracking-tight">Enlace inválido</h2>
         <p className="text-sm text-muted-foreground">
           El enlace de restablecimiento no es válido o ya venció.
         </p>
         <Link
           href="/forgot-password"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          className="text-sm font-medium text-primary-deep underline-offset-4 hover:underline"
         >
           Solicitar uno nuevo
         </Link>
@@ -63,10 +63,10 @@ function ResetPasswordForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-border bg-background p-6"
+      className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm"
     >
       <div className="flex flex-col gap-1 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Nueva contraseña</h1>
+        <h2 className="text-2xl font-semibold tracking-tight">Nueva contraseña</h2>
         <p className="text-sm text-muted-foreground">Elige una contraseña segura</p>
       </div>
 
@@ -77,6 +77,7 @@ function ResetPasswordForm() {
           type="password"
           autoComplete="new-password"
           required
+          className="min-h-12"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -89,14 +90,15 @@ function ResetPasswordForm() {
           type="password"
           autoComplete="new-password"
           required
+          className="min-h-12"
           value={confirmar}
           onChange={(e) => setConfirmar(e.target.value)}
         />
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-sm text-destructive-text">{error}</p>}
 
-      <Button type="submit" disabled={cargando}>
+      <Button type="submit" disabled={cargando} className="min-h-12">
         {cargando ? 'Guardando…' : 'Restablecer contraseña'}
       </Button>
     </form>
@@ -106,9 +108,14 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <main className="flex flex-1 items-center justify-center px-4">
-      <Suspense>
-        <ResetPasswordForm />
-      </Suspense>
+      <div className="flex w-full max-w-sm flex-col items-center gap-8">
+        <h1 className="text-center text-3xl font-extrabold tracking-tight text-secondary-ink">
+          Labradog 🐾
+        </h1>
+        <Suspense>
+          <ResetPasswordForm />
+        </Suspense>
+      </div>
     </main>
   );
 }

@@ -108,9 +108,11 @@ export function FormPerro({ tutorId, perro }: Props) {
     <form
       onSubmit={onSubmit}
       noValidate
-      className="flex flex-col gap-4 rounded-xl border border-border p-4"
+      className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm"
     >
-      <h3 className="text-sm font-medium">{esEdicion ? 'Perfil del perro' : 'Agregar perro'}</h3>
+      <h3 className="text-base font-semibold">
+        {esEdicion ? 'Perfil del perro' : 'Agregar perro'}
+      </h3>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
@@ -232,7 +234,11 @@ export function FormPerro({ tutorId, perro }: Props) {
       </div>
 
       {mensaje && (
-        <p className={mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'}>
+        <p
+          className={
+            mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
+          }
+        >
           {mensaje.texto}
         </p>
       )}

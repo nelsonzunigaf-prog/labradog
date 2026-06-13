@@ -49,8 +49,8 @@ test('paseador navega su capacitación con desbloqueo secuencial (FR-011)', asyn
   await page.getByRole('button', { name: 'Ingresar' }).click();
   await expect(page).toHaveURL(/\/paseador/, { timeout: 30000 });
 
-  // Desde "Mi día" → Mi capacitación
-  await page.getByRole('link', { name: 'Mi capacitación →' }).click();
+  // Desde "Mi día" → Mi capacitación vía la bottom-nav del shell (Story 2.8)
+  await page.getByRole('link', { name: 'Mi capacitación', exact: true }).click();
   await expect(page).toHaveURL(/\/paseador\/mi-capacitacion/);
 
   // AC1/AC4: 10 etapas, avance 0, solo la 1 abrible

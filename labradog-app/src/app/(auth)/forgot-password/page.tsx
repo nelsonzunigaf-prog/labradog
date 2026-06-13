@@ -30,18 +30,23 @@ export default function ForgotPasswordPage() {
   if (enviado) {
     return (
       <main className="flex flex-1 items-center justify-center px-4">
-        <div className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-border bg-background p-6 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Revisa tu correo</h1>
-          <p className="text-sm text-muted-foreground">
-            Si existe una cuenta con ese email, enviamos instrucciones para
-            restablecer tu contraseña.
-          </p>
-          <Link
-            href="/login"
-            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-          >
-            Volver al inicio de sesión
-          </Link>
+        <div className="flex w-full max-w-sm flex-col gap-8">
+          <h1 className="text-center text-3xl font-extrabold tracking-tight text-secondary-ink">
+            Labradog 🐾
+          </h1>
+          <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+            <h2 className="text-2xl font-semibold tracking-tight">Revisa tu correo</h2>
+            <p className="text-sm text-muted-foreground">
+              Si existe una cuenta con ese email, enviamos instrucciones para
+              restablecer tu contraseña.
+            </p>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-primary-deep underline-offset-4 hover:underline"
+            >
+              Volver al inicio de sesión
+            </Link>
+          </div>
         </div>
       </main>
     );
@@ -49,40 +54,46 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="flex flex-1 items-center justify-center px-4">
-      <form
-        onSubmit={onSubmit}
-        className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-border bg-background p-6"
-      >
-        <div className="flex flex-col gap-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Recuperar contraseña</h1>
-          <p className="text-sm text-muted-foreground">
-            Te enviaremos un enlace para restablecerla
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <Button type="submit" disabled={cargando}>
-          {cargando ? 'Enviando…' : 'Enviar enlace'}
-        </Button>
-
-        <Link
-          href="/login"
-          className="text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
+      <div className="flex w-full max-w-sm flex-col gap-8">
+        <h1 className="text-center text-3xl font-extrabold tracking-tight text-secondary-ink">
+          Labradog 🐾
+        </h1>
+        <form
+          onSubmit={onSubmit}
+          className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm"
         >
-          Volver al inicio de sesión
-        </Link>
-      </form>
+          <div className="flex flex-col gap-1 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">Recuperar contraseña</h2>
+            <p className="text-sm text-muted-foreground">
+              Te enviaremos un enlace para restablecerla
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="min-h-12"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <Button type="submit" disabled={cargando} className="min-h-12">
+            {cargando ? 'Enviando…' : 'Enviar enlace'}
+          </Button>
+
+          <Link
+            href="/login"
+            className="text-center text-sm font-medium text-primary-deep underline-offset-4 hover:underline"
+          >
+            Volver al inicio de sesión
+          </Link>
+        </form>
+      </div>
     </main>
   );
 }

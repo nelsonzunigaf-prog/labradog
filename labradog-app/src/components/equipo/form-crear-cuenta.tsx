@@ -43,8 +43,11 @@ export function FormCrearCuenta() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4 rounded-xl border border-border p-4">
-      <h2 className="text-lg font-medium">Nueva cuenta</h2>
+    <form
+      onSubmit={onSubmit}
+      className="flex flex-col gap-4 self-start rounded-2xl border bg-card p-4 shadow-sm"
+    >
+      <h2 className="text-base font-semibold">Nueva cuenta</h2>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="nombre">Nombre</Label>
@@ -76,7 +79,11 @@ export function FormCrearCuenta() {
       </div>
 
       {mensaje && (
-        <p className={mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'}>
+        <p
+          className={
+            mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
+          }
+        >
           {mensaje.texto}
         </p>
       )}

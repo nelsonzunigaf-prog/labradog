@@ -71,8 +71,8 @@ export function SeccionAnexos({ tutorId, anexos }: Props) {
   }
 
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-border p-4">
-      <h2 className="text-lg font-medium">Anexos legales</h2>
+    <section className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm">
+      <h2 className="text-base font-semibold">Anexos legales</h2>
 
       {anexos.length === 0 ? (
         <p className="text-sm text-muted-foreground">Aún no hay anexos registrados.</p>
@@ -88,7 +88,7 @@ export function SeccionAnexos({ tutorId, anexos }: Props) {
                   href={a.pdfUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-primary underline-offset-4 hover:underline"
+                  className="text-primary-deep underline-offset-4 hover:underline"
                 >
                   Ver PDF
                 </a>
@@ -150,7 +150,7 @@ export function SeccionAnexos({ tutorId, anexos }: Props) {
         {mensaje && (
           <p
             className={
-              mensaje.tipo === 'ok' ? 'text-sm text-green-600' : 'text-sm text-destructive'
+              mensaje.tipo === 'ok' ? 'text-sm text-success' : 'text-sm text-destructive-text'
             }
           >
             {mensaje.texto}

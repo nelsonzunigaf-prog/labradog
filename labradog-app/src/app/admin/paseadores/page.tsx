@@ -15,29 +15,32 @@ import {
 import { ETIQUETAS_ESPECIALIDAD, type EspecialidadCaminata } from '@/lib/engine/fichas';
 import { listarPaseadores } from '@/lib/db/queries/paseadores';
 
+/** Rótulo de tabla admin: caption-desktop de DESIGN.md (12, uppercase, tracking). */
+const TH_CLASS = 'text-xs font-semibold uppercase tracking-wide text-muted-foreground';
+
 export default async function PaseadoresPage() {
   const paseadores = await listarPaseadores();
 
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
+    <main className="flex flex-1 flex-col gap-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Paseadores</h1>
+        <h1 className="text-xl font-bold tracking-tight">Paseadores</h1>
         <p className="text-sm text-muted-foreground">
           Especialidades y % de comisión por paseador. La certificación llega con el módulo de
           capacitación.
         </p>
       </header>
 
-      <section className="rounded-xl border border-border">
+      <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Cuenta</TableHead>
-              <TableHead>Especialidades</TableHead>
-              <TableHead>% comisión</TableHead>
-              <TableHead>Certificación</TableHead>
+              <TableHead className={TH_CLASS}>Nombre</TableHead>
+              <TableHead className={TH_CLASS}>Email</TableHead>
+              <TableHead className={TH_CLASS}>Cuenta</TableHead>
+              <TableHead className={TH_CLASS}>Especialidades</TableHead>
+              <TableHead className={TH_CLASS}>% comisión</TableHead>
+              <TableHead className={TH_CLASS}>Certificación</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -53,14 +56,21 @@ export default async function PaseadoresPage() {
                   <TableCell className="font-medium">
                     <Link
                       href={`/admin/paseadores/${p.userId}`}
-                      className="text-primary underline-offset-4 hover:underline"
+                      className="text-primary-deep underline-offset-4 hover:underline"
                     >
                       {p.nombre}
                     </Link>
                   </TableCell>
                   <TableCell>{p.email}</TableCell>
                   <TableCell>
-                    <Badge variant={p.estadoCuenta === 'activo' ? 'default' : 'secondary'}>
+                    {/* Vocabulario DESIGN.md: activo = info, inactivo = neutro apagado */}
+                    <Badge
+                      className={
+                        p.estadoCuenta === 'activo'
+                          ? 'bg-secondary-soft text-secondary-deep'
+                          : 'bg-muted text-muted-foreground'
+                      }
+                    >
                       {p.estadoCuenta}
                     </Badge>
                   </TableCell>
@@ -77,8 +87,9 @@ export default async function PaseadoresPage() {
                   </TableCell>
                   <TableCell>{p.ficha ? `${p.ficha.comisionPct}%` : '—'}</TableCell>
                   <TableCell>
-                    {/* Derivado: la fuente de verdad de certificación llega con Epic 2 */}
-                    <Badge variant="secondary">Sin certificar</Badge>
+                    {/* Derivado: la fuente de verdad de certificación llega con Epic 2.
+                        Vocabulario DESIGN.md: sin certificar = badge neutro. */}
+                    <Badge className="bg-muted text-muted-foreground">Sin certificar</Badge>
                   </TableCell>
                 </TableRow>
               ))
