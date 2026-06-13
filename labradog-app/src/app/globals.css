@@ -70,7 +70,7 @@
  * Dark mode fuera de alcance v1 (bloque .dark queda default, sin uso).
  */
 :root {
-  --background: #fafafa;
+  --background: #eef4f1;
   --foreground: #171717;
   --card: #ffffff;
   --card-foreground: #171717;
@@ -155,7 +155,16 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    /* Fondo con profundidad (no blanco plano): tinte sage + glow emerald arriba.
+       Las cards blancas "flotan" sobre esto. El hero/footer oscuros lo cubren. */
+    background-color: var(--background);
+    background-image: radial-gradient(
+      52rem 26rem at 50% -9rem,
+      rgba(5, 150, 105, 0.14),
+      transparent 70%
+    );
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;

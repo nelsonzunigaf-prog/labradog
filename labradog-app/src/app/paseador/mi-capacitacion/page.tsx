@@ -92,13 +92,19 @@ export default async function MiCapacitacion() {
       ) : (
         <>
           <section aria-label="Avance">
-            <Tarjeta>
-              <p className="text-sm font-medium" data-testid="avance">
+            <div
+              className="rounded-[1.5rem] p-5 text-white shadow-[0_10px_30px_-10px_rgba(6,78,59,0.5)]"
+              style={{ background: 'linear-gradient(135deg, #0c5c45, #047857 55%, #065f46)' }}
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200">
+                Tu avance
+              </p>
+              <p className="mt-1 text-sm font-medium" data-testid="avance">
                 {capacitacion.avance.aprobadas} de {capacitacion.avance.total} etapas aprobadas
               </p>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-white/20">
                 <div
-                  className="h-full rounded-full bg-primary transition-all"
+                  className="h-full rounded-full bg-white transition-all"
                   style={{
                     width:
                       capacitacion.avance.total > 0
@@ -107,7 +113,7 @@ export default async function MiCapacitacion() {
                   }}
                 />
               </div>
-            </Tarjeta>
+            </div>
           </section>
 
           <BandaCita fuente="El método Labradog">

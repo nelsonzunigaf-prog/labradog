@@ -131,7 +131,7 @@ export function Tarjeta({
 }) {
   return (
     <div
-      className={`rounded-[1.5rem] border bg-card p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)] ${
+      className={`rounded-[1.5rem] border bg-card p-6 shadow-[0_8px_28px_-10px_rgba(6,78,59,0.16)] ${
         destacada ? 'border-primary-soft ring-2 ring-primary-soft' : 'border-border'
       } ${className}`}
     >
