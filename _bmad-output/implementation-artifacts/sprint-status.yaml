@@ -57,7 +57,7 @@ development_status:
   epic-2: in-progress
   2-1-seed-del-contenido-de-capacitacion: done
   2-2-navegacion-de-etapas-con-desbloqueo-secuencial: done
-  2-8-app-shell-y-rediseno-menta-mar: backlog # insertada por sprint-change-proposal-2026-06-12 — se ejecuta ANTES que 2.3 (rediseño primero)
+  2-8-app-shell-y-rediseno-menta-mar: in-progress # insertada por sprint-change-proposal-2026-06-12 — se ejecuta ANTES que 2.3 (rediseño primero)
   2-3-tests-de-etapa-autocorregibles: backlog
   2-4-evaluaciones-practicas-registradas-por-admin: backlog
   2-5-examen-final-desde-el-banco-de-preguntas: backlog
