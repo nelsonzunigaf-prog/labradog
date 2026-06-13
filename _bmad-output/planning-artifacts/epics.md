@@ -356,6 +356,30 @@ So that gestiono el cuello de botella del escalamiento (3-4 certificados para 30
 **When** abro el tablero de capacitación
 **Then** veo por paseador: etapa actual, % de avance, última actividad, evaluaciones prácticas pendientes de registrar y vencimientos próximos del estado de transición (FR-018)
 
+### Story 2.8: App shell y rediseño Menta & Mar
+
+> ⚠️ **Orden de ejecución:** esta story se ejecuta ANTES de la 2.3 (insertada por sprint-change-proposal-2026-06-12; las stories restantes nacen sobre el shell nuevo). Numerada 2.8 para no renumerar referencias existentes.
+
+As a usuario de Labradog (admin o paseador),
+I want que toda la plataforma tenga la identidad Menta & Mar y navegación consistente,
+So that la herramienta refleja el cuidado de la marca y nunca quedo atrapado en una pantalla.
+
+**Acceptance Criteria:**
+
+**Given** los contratos `DESIGN.md` y `EXPERIENCE.md` (`ux-designs/ux-labradog-2026-06-12/`)
+**When** se aplica el tema vía variables shadcn en globals.css
+**Then** todos los tokens de DESIGN.md quedan mapeados (--primary menta, --secondary mar, radius, etc.) y NINGUNA página usa colores/radios ad-hoc; el contraste cumple AA (tinta #1F3833 sobre menta — jamás blanco sobre menta)
+
+**And** existe el app shell de EXPERIENCE.md: layout del paseador con bottom-nav fija (Mi día 🐾 / Mi capacitación 🎓) y layout del admin con nav horizontal (Equipo · Tutores · Perros · Paseadores) + breadcrumb en páginas de detalle
+
+**And** TODA pantalla no-raíz tiene "← volver" arriba a la izquierda, en la misma posición
+
+**And** las pantallas existentes quedan retrofiteadas (portada, login, forgot/reset, admin home/equipo/tutores/tutores-[id]/perros-[id]/paseadores/paseadores-[userId], paseador home/mi-capacitacion/mi-capacitacion-[slug]) SIN cambios de comportamiento: misma data, mismas reglas, mismos flujos
+
+**And** las listas existentes muestran los estados vacío/carga según EXPERIENCE.md
+
+**And** regresión completa verde: lint + unit + build + los 14 E2E (ajustando selectores solo si cambió texto visible)
+
 ## Epic 3: Agenda viva — recurrencias, asignaciones y notificaciones
 
 La agenda mental se vuelve sistema: recurrencias que generan paseos solas, excepciones controladas y avisos automáticos.
