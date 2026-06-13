@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-06-06
-last_updated: 2026-06-12
+last_updated: 2026-06-12 (eval doc-visión: +stories 4.7 y 5.6)
 project: labradog
 project_key: NOKEY
 tracking_system: file-system
@@ -84,6 +84,7 @@ development_status:
   4-4-registro-post-paseo-de-un-toque-con-fotos: backlog
   4-5-incidentes-capturar-primero-narrar-despues: backlog
   4-6-reporte-al-tutor-por-plan: backlog
+  4-7-resolucion-de-incidentes-por-admin: backlog # insertada por evaluación doc-visión (12-06-2026)
   epic-4-retrospective: optional
 
   # Epic 5: Cobros claros — modalidades, pagos y liquidaciones
@@ -93,4 +94,5 @@ development_status:
   5-3-saldo-prepago: backlog
   5-4-liquidaciones-de-comisiones: backlog
   5-5-mis-comisiones-paseador: backlog
+  5-6-conciliacion-mensual-con-arrastre: backlog # insertada por evaluación doc-visión (12-06-2026)
   epic-5-retrospective: optional

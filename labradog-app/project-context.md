@@ -66,6 +66,9 @@ Reglas mínimas (el detalle está en los contratos): botón "← volver" en toda
 - **Máquina de estados del paseo** (`lib/engine/paseo-estados.ts`): Story 1.4 — estados `pendiente → checklist_completa → en_curso → completado | cancelado`
 - **Cola offline** (`lib/offline-queue.ts`): Story 4.2 — eventos con timestamp de origen del dispositivo
 - **Materialización idempotente**: Story 3.2 — unique `(recurrencia_id, fecha_local)`, horizonte 14 días
+- **Códigos humanos** (`lib/codes.ts`): entidades operativas (paseos `PAS-`, incidentes `INC-`, evaluaciones `EVL-`, liquidaciones `LIQ-`) llevan `codigo text unique` en español, separado del PK uuid, generado en la transacción de creación. NO retrofit a tablas de Epic 1. Primer uso: Story 3.2. (addendum architecture.md 12-06-2026)
+- **AuthContext enriquecido**: `getActor()` resuelve `paseadorId` cuando `rol==='paseador'` (lookup `paseadores.userId`) en `lib/actor.ts` — NUNCA en `additionalFields` de Better Auth. Habilita filtro forzado `paseador_id = ctx.paseadorId`. Primer uso: `/paseador/mi-agenda` (Story 3.5).
+- **Decisiones NEGATIVAS del piloto** (NO reintroducir por inercia — ver addendum architecture.md 12-06-2026): NO multi-tenant (`organizacion_id`); NO más de 2 roles de sesión (evaluador=capacidad del admin, tutor=ficha-no-usuario, aspirante=paseador pre-certificación); NO portal del tutor; NO GPS; NO CRM/landing pública; NO pasarela online. Todo eso es post-piloto documentado.
 
 ## Enforcement — todo agente IA DEBE
 

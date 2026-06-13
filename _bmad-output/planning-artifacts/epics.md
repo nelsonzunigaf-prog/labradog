@@ -337,6 +337,7 @@ So that la regla dura del negocio se cumple sin excepciones manuales.
 **Given** un paseador con 9 etapas + módulo razas aprobados
 **When** se completa el último requisito
 **Then** el sistema otorga "Paseador de Perros Profesional - Entorno Urbano" con fecha y evaluadores; su ficha pasa a "certificado" (FR-016)
+**And** la certificación exige además que la **última evaluación práctica presencial esté aprobada** — el certificado nunca sale solo con el examen teórico (regla en `lib/engine/certificacion.ts`; captura el espíritu del "paseo supervisado" del doc de visión sin un hito 10 separado — addendum architecture.md 12-06-2026)
 **Given** un paseador no certificado
 **When** alguien intenta asignarle un paseo
 **Then** `lib/engine/certificacion.ts` lo rechaza con mensaje claro (FR-017)
@@ -564,6 +565,7 @@ So that el registro es real: en una pelea mis dos manos están salvando al perro
 **Then** queda constancia inmediata con **hora del evento** (un solo toque); el detalle (descripción, acciones, si informé al tutor) se completa después con **hora de registro separada** (FR-029)
 **When** el incidente se sincroniza
 **Then** aparece destacado en el tablero admin y se envía email inmediato a los admins; queda en `event_log` inmutable con el historial del perro
+**And** el incidente se crea con **severidad** (baja/media/alta) y **código humano `INC-`** (`lib/codes.ts`), y su estado de vida arranca en `abierto` (la resolución es Story 4.7) — addendum architecture.md 12-06-2026
 
 ### Story 4.6: Reporte al tutor por plan
 
@@ -579,6 +581,23 @@ So that lo envío por WhatsApp en el momento, que es cuando el tutor lo espera.
 **And** el reporte **lee snapshots y datos registrados, jamás recalcula precios ni totales**
 **When** lo marco como enviado
 **Then** el estado cambia a "enviado" con fecha (se sincroniza si estaba offline); los admins ven todos los reportes con estado e historial por perro/tutor/paseador (FR-032)
+
+### Story 4.7: Resolución de incidentes por admin
+
+> Insertada por la evaluación del doc de visión (addendum architecture.md 12-06-2026): cierra el ciclo de vida del incidente que la 4.5 deja "abierto".
+
+As a admin,
+I want revisar y cerrar los incidentes reportados con notas de operaciones,
+So that ningún incidente queda como una alerta perdida — hay respaldo profesional de qué pasó y cómo se resolvió (NFR-05).
+
+**Acceptance Criteria:**
+
+**Given** un incidente `abierto` reportado por un paseador (Story 4.5)
+**When** lo abro desde el tablero admin
+**Then** veo su tipo, severidad, código `INC-`, hora del evento, descripción, paseo/perro/paseador relacionados, y puedo pasarlo a `en_revisión`
+**When** lo resuelvo con notas de operaciones (o lo escalo)
+**Then** queda `resuelto` o `escalado` con mi autoría, fecha y notas en `event_log`; la máquina de estados vive en `lib/engine/incidente-estados.ts` (patrón motor por entidad)
+**And** el tablero distingue incidentes abiertos/en revisión de los resueltos; los abiertos de severidad alta se destacan
 
 ## Epic 5: Cobros claros — modalidades, pagos y liquidaciones
 
@@ -612,6 +631,7 @@ So that dejo de perseguir pagos con la memoria.
 **Then** veo el cobrable del período (completados + cancelados-cobrables, desde snapshots) y su estado: al día / pendiente / moroso (FR-034/035)
 **When** registro un pago (fecha, monto, referencia de transferencia)
 **Then** se aplica contra el cobrable y queda en `event_log`
+**And** el registro de pago es **idempotente** por `(tutor, periodo)`: registrar dos veces el mismo pago no lo duplica (patrón unique constraint; addendum architecture.md 12-06-2026)
 
 ### Story 5.3: Saldo prepago
 
@@ -640,6 +660,7 @@ So that el cierre de mes toma minutos y no tiene errores.
 **Then** se calcula Σ (precio_snapshot × pct_snapshot) con **detalle por paseo**, en estado "borrador" (FR-037)
 **When** la apruebo y luego registro su pago
 **Then** transiciona borrador → aprobada → pagada, cada paso con autoría en `event_log`; los cancelados-cobrables no generan comisión salvo override explícito (FR-022)
+**And** la liquidación lleva **código humano `LIQ-`** (`lib/codes.ts`) y su máquina de estados vive en `lib/engine/liquidacion-estados.ts` (patrón motor por entidad)
 **And** el desglose por paseo de la liquidación es **exactamente el mismo origen de datos** que verá el paseador en 5.5 — una sola verdad
 
 ### Story 5.5: Mis comisiones (paseador)
@@ -654,3 +675,19 @@ So that confío en la transparencia del sistema (diferenciador vs marketplaces).
 **When** abro "Mis comisiones"
 **Then** veo lo acumulado (desde los mismos snapshots y el mismo desglose por paseo que 5.4 — misma query/motor, misma verdad) y el historial de liquidaciones con detalle y estado (FR-038)
 **And** mi % vigente es visible en mi perfil — sin sorpresas
+
+### Story 5.6: Conciliación mensual con arrastre
+
+> Insertada por la evaluación del doc de visión (addendum architecture.md 12-06-2026). Aplica solo a modalidades mensual/prepago (FR-040).
+
+As a admin,
+I want cerrar el mes por tutor con el detalle de paseos ejecutados, cancelados y arrastrados,
+So that el cobro mensual cuadra con lo realmente entregado y nada se pierde ni se cobra de más.
+
+**Acceptance Criteria:**
+
+**Given** un tutor con modalidad mensual o prepago al cierre del período
+**When** previsualizo la conciliación del mes
+**Then** veo paseos contratados vs. completados vs. cancelados, y los **cancelados por operaciones/perdidos se arrastran** al período siguiente (los cancelados por el tutor fuera de plazo cuentan como ejecutados, no arrastran) — leyendo snapshots, jamás recalculando
+**When** cierro el mes
+**Then** queda una conciliación inmutable en `event_log` con el arrastre aplicado al saldo/cobrable del período siguiente; el motor `lib/engine/cobros.ts` calcula el arrastre (regla pura, testeada)

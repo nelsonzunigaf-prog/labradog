@@ -382,3 +382,31 @@ _Auditoría independiente (subagente revisor) contra el PRD: informe completo en
 npx create-next-app@latest labradog-app --yes
 npm install drizzle-orm better-auth
 ```
+
+### Addendum — evaluación del doc de visión "arquitectura-y-roles" (12-06-2026)
+
+Análisis del documento `docs/arquitectura-y-roles.md` (una visión más madura de Labradog, escrita sobre **otro stack**: Prisma/NextAuth/Supabase/Vercel/multi-tenant) por el panel BMAD (analista + PM + arquitecto). **Conclusión: ~70% de sus patrones transversales ya los tenemos** (auditoría, soft-delete, transacciones atómicas, snapshots, máquinas de estado, TZ — en algún caso mejor: nuestro `event_log` es inmutable en BD). Se adopta su **dominio/patrones**, nunca su stack ni sus nombres en inglés. Decisiones de Nelson (12-06-2026):
+
+**MUST — patrones a incorporar (aplicar cuando la story lo toque, no retrofit):**
+
+1. **Códigos humanos legibles** — entidades operativas comunicables (paseos, incidentes, evaluaciones, liquidaciones) llevan `codigo text not null unique` generado en `src/lib/codes.ts`, **prefijos en español** (`PAS-`, `INC-`, `EVL-`, `LIQ-`), separado del PK `uuid`. Generación dentro de la `db.transaction` de creación; unique constraint + retry como red anti-colisión. **NO retrofit** a tablas de Epic 1 (tutores/perros no se comunican por código). Primer uso: Story 3.2 (materialización de paseos → `PAS-`).
+2. **AuthContext enriquecido** — `getActor()` resuelve, además del rol, el `paseadorId` cuando `rol === 'paseador'` (lookup `paseadores.userId`), **en la capa actor (`src/lib/actor.ts`) — NUNCA en `additionalFields` de Better Auth** (eso desincronizaría con la ficha). Habilita el filtro forzado `paseador_id = ctx.paseadorId` como invariante de servidor (cada rol ve solo lo suyo). Primer uso: `/paseador/mi-agenda` (Story 3.5).
+3. **Certificación final exige la última práctica presencial aprobada** — la certificación (FR-016, Story 2.6) requiere, además del examen teórico (etapa 9), que la última evaluación práctica presencial esté aprobada. Captura el espíritu del "paseo supervisado" del doc sin reescribir el Epic 2. Regla en `lib/engine/certificacion.ts`.
+
+**NICE — dirección confirmada, incremental por Epic:**
+
+4. **Máquinas de estado por entidad como patrón general** — generalizar el precedente `paseo-estados.ts`: toda entidad con ciclo de vida del negocio tiene su motor `lib/engine/<entidad>-estados.ts` (tupla pura → pgEnum, transiciones válidas explícitas). Una por story que la construya. Próximos: `incidente-estados.ts` (4.5/4.7), `liquidacion-estados.ts` (5.x), transiciones de `estado_tutor`.
+5. **Incidentes y conciliación enriquecidos** — incidentes como entidad con **severidad** + ciclo de vida `abierto → en_revisión → resuelto/escalado` (Story 4.5 + nueva 4.7 de resolución); **conciliación mensual con arrastre** de paseos cancelados por ops/perdidos (nueva Story 5.6); **idempotencia del pago manual** por `(tutor/recurrencia, periodo)` en FR-035.
+6. **Advertencia PPAA/reactivo en asignación** — al asignar un perro de grupo racial de riesgo a un paseador sin la especialidad, el sistema **advierte fuerte (no bloquea)** — Story 3.4.
+
+**Decisión NEGATIVA explícita — NO adoptar en el piloto (registrado para que ningún agente lo reintroduzca por inercia de "buenas prácticas"):**
+
+- **Multi-tenant (`organizacion_id` en todo)** — el piloto es single-org. Pagaríamos el costo (columna + FK + índice + filtro en cada query) sin beneficio. **Retrofit mecánico documentado** si el negocio escala a multi-operador: el filtro se inyecta en un solo lugar porque las queries están centralizadas en `lib/db/queries/`. NO agregar la columna aún.
+- **6 roles del doc** — se mantienen **2 roles de sesión** (`admin | paseador`) + `'sistema'` en auditoría. "Evaluador" = **capacidad del admin**, no rol nuevo. "Tutor" = **ficha, no usuario** (decisión Story 1.5). "Aspirante" = el `paseador` antes de certificarse. Una story futura NO debe multiplicar roles.
+- **Portal del tutor / tutor-como-usuario** — post-piloto. El reporte-a-WhatsApp (FR-031) cubre el valor sin el costo de una superficie nueva (auth de terceros, soporte, móvil).
+- **GPS tracking ELITE** — post-piloto (técnicamente frágil en PWA; sin portal no hay dónde mostrarlo; decisión PWA-vs-Expo pendiente).
+- **CRM de leads + landing pública** — post-piloto (los leads del piloto entran por contacto directo). La entrevista de intake **ya la tenemos** (FR-005, Story 1.5).
+- **Flow.cl / pasarela online + boletas SII** — diferido (coincide con el PRD): transferencia + registro manual basta para 30 tutores.
+- **Recertificación/expiración automática (validez 12 meses)** — agregar cuando el primer certificado se acerque al año.
+
+**LATER — anotar como dirección (post-piloto):** plan como tabla con flags de capacidad (`requiere_gps`/`requiere_fotos`/`incluye_seguro`) y add-ons del paseador como datos (precedente `PPAA_HANDLING`), cuando se modele precio/plan en Epic cobros; firma legal versionada por `(usuario, documento, versión)` cuando se vuelvan a tocar anexos.
